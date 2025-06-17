@@ -6,9 +6,35 @@ import type { Incident, IncidentType, User, UserRole } from "@/lib/types";
 import { summarizeIncidentReports } from "@/ai/flows/summarize-incident-reports";
 import { z } from "zod";
 
-// In-memory store for incidents (for demonstration purposes)
-let incidents: Incident[] = [];
-let users: User[] = []; // Resetting users array to be empty
+// This is a common pattern for in-memory stores in Node.js development
+// to survive Hot Module Replacement (HMR). It won't survive server restarts.
+// In a real application, use a proper database.
+declare global {
+  // eslint-disable-next-line no-var
+  var __users_store__: User[] | undefined;
+  // eslint-disable-next-line no-var
+  var __incidents_store__: Incident[] | undefined;
+}
+
+let users: User[];
+let incidents: Incident[];
+
+if (process.env.NODE_ENV === 'production') {
+  // In production, always start with empty stores (in-memory isn't for prod persistence)
+  users = [];
+  incidents = [];
+} else {
+  // In development, use the global store to persist across HMR
+  if (!global.__users_store__) {
+    global.__users_store__ = [];
+  }
+  if (!global.__incidents_store__) {
+    global.__incidents_store__ = [];
+  }
+  users = global.__users_store__;
+  incidents = global.__incidents_store__;
+}
+
 
 // --- User Management Schemas ---
 const CreateInitialAdminSchema = z.object({
