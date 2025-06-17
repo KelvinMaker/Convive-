@@ -1,38 +1,66 @@
+
 // src/contexts/UserContext.tsx
 "use client";
 
 import type { User, UserRole } from '@/lib/types';
-import React, { createContext, useContext, useState, ReactNode, Dispatch, SetStateAction } from 'react';
-import { USER_ROLES } from '@/lib/constants';
+import React, { createContext, useContext, useState, ReactNode, useEffect, useCallback } from 'react';
+import { USER_ROLES } from '@/lib/constants'; // Keep for role definitions if needed elsewhere
+import { checkAdminExistsAction } from '@/app/actions';
+import { useRouter, usePathname } from 'next/navigation';
 
 interface UserContextType {
   currentUser: User | null;
-  setCurrentUser: Dispatch<SetStateAction<User | null>>;
-  // Helper to quickly switch roles for demo
-  availableRoles: typeof USER_ROLES;
-  switchRole: (role: UserRole) => void;
+  setCurrentUser: React.Dispatch<React.SetStateAction<User | null>>;
+  isLoading: boolean;
+  isAdminSetupComplete: boolean;
+  login: (userData: User) => void;
+  logout: () => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-// Sample users for demo
-const sampleUsers: Record<UserRole, User> = {
-  estudiante: { id: 'user-estudiante-01', name: 'Juan Pérez', email: 'juan.perez@example.com', role: 'estudiante' },
-  docente: { id: 'user-docente-01', name: 'Ana Gómez', email: 'ana.gomez@example.com', role: 'docente' },
-  directivo: { id: 'user-directivo-01', name: 'Carlos López', email: 'carlos.lopez@example.com', role: 'directivo' },
-  anonimo: { id: 'user-anonimo-01', name: 'Usuario Anónimo', email: '', role: 'anonimo' },
-};
-
-
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-  const [currentUser, setCurrentUser] = useState<User | null>(sampleUsers.docente); // Default to docente
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAdminSetupComplete, setIsAdminSetupComplete] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
 
-  const switchRole = (role: UserRole) => {
-    setCurrentUser(sampleUsers[role] || null);
+  const fetchAdminStatus = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const adminExists = await checkAdminExistsAction();
+      setIsAdminSetupComplete(adminExists);
+      console.log("Admin exists:", adminExists);
+    } catch (error) {
+      console.error("Error checking admin status:", error);
+      // Potentially handle error, e.g., by assuming setup is needed or showing an error
+      setIsAdminSetupComplete(false); 
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchAdminStatus();
+  }, [fetchAdminStatus]);
+
+  const login = (userData: User) => {
+    setCurrentUser(userData);
+    setIsAdminSetupComplete(true); // Logging in means setup is done or user is admin
+    router.push('/'); // Redirect to dashboard after login
   };
 
+  const logout = () => {
+    setCurrentUser(null);
+    router.push('/login'); // Redirect to login after logout
+  };
+  
+  // Effect for handling redirection logic centrally might be too complex here.
+  // AuthGuard component will handle route protection.
+
   return (
-    <UserContext.Provider value={{ currentUser, setCurrentUser, availableRoles: USER_ROLES, switchRole }}>
+    <UserContext.Provider value={{ currentUser, setCurrentUser, isLoading, isAdminSetupComplete, login, logout }}>
       {children}
     </UserContext.Provider>
   );
@@ -45,3 +73,4 @@ export const useUser = (): UserContextType => {
   }
   return context;
 };
+

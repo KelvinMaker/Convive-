@@ -1,3 +1,4 @@
+
 export type UserRole = 'estudiante' | 'docente' | 'directivo' | 'anonimo';
 
 export type IncidentType = 'conflicto' | 'logro';
@@ -18,10 +19,12 @@ export interface Incident {
 
 export interface User {
   id: string;
-  name: string;
-  email: string; // Not used for 'anonimo'
+  name: string; // For admin setup, name might be derived or asked later. For now, email can serve as a stand-in.
+  email: string;
+  password?: string; // Plain text for prototype, should be hashed in production
   role: UserRole;
   groups?: string[]; // List of group IDs the user belongs to
+  status?: 'pending' | 'active'; // For future invitation system
 }
 
 export interface Group {
@@ -30,4 +33,16 @@ export interface Group {
   description?: string;
   members: string[]; // User IDs
   creatorId: string; // User ID of the creator
+}
+
+// For future invitation system
+export interface Invitation {
+  id: string;
+  email: string;
+  role: UserRole;
+  invitedBy: string; // Admin User ID
+  status: 'pending' | 'accepted' | 'expired';
+  token: string; // Unique invitation token
+  createdAt: string; // ISO Date string
+  expiresAt: string; // ISO Date string
 }

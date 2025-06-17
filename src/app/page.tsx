@@ -1,10 +1,14 @@
+
 // src/app/page.tsx - Dashboard
 "use client";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, Users, ShieldAlert, Trophy, Activity, TrendingUp, AlertTriangle } from 'lucide-react';
+import { BarChart, Users, ShieldAlert, Trophy, TrendingUp, AlertTriangle, Loader2 } from 'lucide-react';
 import { useUser } from "@/contexts/UserContext";
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+
 
 interface Metric {
   title: string;
@@ -15,7 +19,7 @@ interface Metric {
 }
 
 export default function DashboardPage() {
-  const { currentUser } = useUser();
+  const { currentUser, isLoading, isAdminSetupComplete } = useUser();
   const [greeting, setGreeting] = useState('');
 
   useEffect(() => {
@@ -25,6 +29,7 @@ export default function DashboardPage() {
     else setGreeting('Buenas noches');
   }, []);
 
+  // Metrics are displayed only if a user is logged in
   const metrics: Metric[] = [
     { title: "Incidentes Reportados Hoy", value: "12", description: "+3 desde ayer", icon: BarChart, color: "text-primary" },
     { title: "Conflictos Activos", value: "5", description: "Requieren atención", icon: ShieldAlert, color: "text-destructive" },
@@ -34,11 +39,44 @@ export default function DashboardPage() {
     { title: "Reportes Anónimos", value: "23", description: "Total este mes", icon: AlertTriangle, color: "text-yellow-600" },
   ];
 
+  if (isLoading) {
+     return <div className="flex justify-center items-center min-h-[calc(100vh-200px)]"><Loader2 className="h-8 w-8 animate-spin" /> <span className="ml-2">Cargando panel...</span></div>;
+  }
+
+  // AuthGuard should handle redirection if !isAdminSetupComplete or !currentUser
+  // This is an additional safeguard or for when AuthGuard is still processing.
+  if (!isAdminSetupComplete && !isLoading) {
+     return (
+      <div className="container mx-auto py-8 px-4 md:px-6 text-center">
+        <h1 className="text-2xl font-bold mb-4">Configuración Requerida</h1>
+        <p className="mb-6">La aplicación necesita que se configure un administrador inicial.</p>
+        <Button asChild><Link href="/setup-admin">Ir a Configuración</Link></Button>
+      </div>
+    );
+  }
+
+  if (!currentUser && isAdminSetupComplete && !isLoading) {
+    return (
+      <div className="container mx-auto py-8 px-4 md:px-6 text-center">
+        <h1 className="text-2xl font-bold mb-4">Bienvenido a Convive+</h1>
+        <p className="mb-6">Por favor, inicia sesión para acceder al panel de monitoreo.</p>
+        <Button asChild><Link href="/login">Iniciar Sesión</Link></Button>
+      </div>
+    );
+  }
+  
+  if (!currentUser) {
+    // This state should ideally not be reached if AuthGuard works correctly and isLoading is false.
+    // It's a fallback.
+    return <div className="flex justify-center items-center min-h-[calc(100vh-200px)]">Esperando datos de usuario...</div>;
+  }
+
+
   return (
     <div className="container mx-auto py-8 px-4 md:px-6">
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight font-headline">
-          {greeting}, {currentUser?.name || 'Usuario'}!
+          {greeting}, {currentUser.name || 'Usuario'}!
         </h1>
         <p className="text-muted-foreground">
           Bienvenido al Panel de Monitoreo de Convive+. Aquí tienes un resumen del estado de la convivencia.
@@ -71,7 +109,6 @@ export default function DashboardPage() {
             <CardDescription className="font-body">Últimos incidentes y logros reportados.</CardDescription>
           </CardHeader>
           <CardContent>
-            {/* Placeholder for recent activity feed */}
             <div className="space-y-4">
               {[
                 {type: "Logro", text: "Estudiantes de 5A organizaron colecta.", time: "Hace 2 horas"},
@@ -95,7 +132,6 @@ export default function DashboardPage() {
             <CardDescription className="font-body">Visualización de la distribución de incidentes.</CardDescription>
           </CardHeader>
           <CardContent className="flex justify-center items-center h-64">
-            {/* Placeholder for a chart - Recharts could be integrated here */}
             <div className="text-center">
               <BarChart className="h-24 w-24 text-muted-foreground mx-auto" />
               <p className="mt-2 text-sm text-muted-foreground">Gráfico de ejemplo aquí</p>

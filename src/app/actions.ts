@@ -1,19 +1,96 @@
+
 // src/app/actions.ts
 "use server";
 
-import type { Incident, IncidentType, UserRole } from "@/lib/types";
+import type { Incident, IncidentType, User, UserRole } from "@/lib/types";
 import { summarizeIncidentReports } from "@/ai/flows/summarize-incident-reports";
 import { z } from "zod";
 
 // In-memory store for incidents (for demonstration purposes)
 let incidents: Incident[] = [];
+let users: User[] = []; // In-memory store for users
 
-// Schema for incident submission from FormData
+// --- User Management Schemas ---
+const CreateInitialAdminSchema = z.object({
+  email: z.string().email("Email inválido."),
+  password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres."),
+  confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Las contraseñas no coinciden.",
+  path: ["confirmPassword"],
+});
+
+const LoginUserSchema = z.object({
+  email: z.string().email("Email inválido."),
+  password: z.string().min(1, "Contraseña requerida."),
+});
+
+
+// --- User Management Actions ---
+export async function checkAdminExistsAction(): Promise<boolean> {
+  return users.some(user => user.role === 'directivo' && user.status === 'active');
+}
+
+export async function createInitialAdminAction(formData: FormData): Promise<{ success: boolean; error?: string; user?: User }> {
+  const adminExists = await checkAdminExistsAction();
+  if (adminExists) {
+    return { success: false, error: "Ya existe un administrador." };
+  }
+
+  const rawData = Object.fromEntries(formData.entries());
+  const validation = CreateInitialAdminSchema.safeParse(rawData);
+
+  if (!validation.success) {
+    return { success: false, error: validation.error.flatten().fieldErrors.email?.[0] || validation.error.flatten().fieldErrors.password?.[0] || validation.error.flatten().fieldErrors.confirmPassword?.[0] || "Datos inválidos." };
+  }
+
+  const { email, password } = validation.data;
+
+  const newUser: User = {
+    id: `user-${Date.now()}`,
+    email,
+    password, // Storing plain text for prototype ONLY. HASH IN PRODUCTION!
+    role: 'directivo',
+    name: email.split('@')[0], // Use part of email as name for now
+    status: 'active',
+  };
+  users.push(newUser);
+  console.log("Admin user created (in-memory):", newUser);
+  console.log("All users:", users);
+  return { success: true, user: newUser };
+}
+
+export async function loginUserAction(formData: FormData): Promise<{ success: boolean; error?: string; user?: User }> {
+  const rawData = Object.fromEntries(formData.entries());
+  const validation = LoginUserSchema.safeParse(rawData);
+
+  if (!validation.success) {
+    return { success: false, error: validation.error.flatten().fieldErrors.email?.[0] || validation.error.flatten().fieldErrors.password?.[0] || "Datos inválidos." };
+  }
+  
+  const { email, password } = validation.data;
+  const user = users.find(u => u.email === email && u.status === 'active');
+
+  if (!user) {
+    return { success: false, error: "Usuario no encontrado o inactivo." };
+  }
+
+  // Plain text password check for prototype ONLY. USE HASHING IN PRODUCTION!
+  if (user.password !== password) {
+    return { success: false, error: "Contraseña incorrecta." };
+  }
+  
+  console.log("User logged in (in-memory):", user);
+  return { success: true, user };
+}
+
+
+// --- Incident Management Schemas & Actions ---
 const SubmitIncidentSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
   type: z.enum(["conflicto", "logro"]),
-  isAnonymous: z.string().transform(val => val === "true"), // FormData sends boolean as string
+  isAnonymous: z.string().transform(val => val === "true"),
   userId: z.string().optional(),
   userName: z.string().optional(),
   userRole: z.string().optional(),
@@ -32,7 +109,7 @@ export async function submitIncidentAction(formData: FormData) {
     const data = validation.data;
 
     const newIncident: Incident = {
-      id: Date.now().toString(), // Simple ID generation
+      id: Date.now().toString(),
       title: data.title,
       description: data.description,
       type: data.type as IncidentType,
@@ -45,7 +122,7 @@ export async function submitIncidentAction(formData: FormData) {
     };
 
     incidents.push(newIncident);
-    console.log("Incidents stored (in-memory):", incidents); // For debugging
+    console.log("Incidents stored (in-memory):", incidents);
 
     return { success: true, incidentId: newIncident.id };
   } catch (error) {
@@ -58,10 +135,7 @@ export async function generateSummaryAction(reports: string) {
   if (!reports.trim()) {
     return { success: false, error: "No hay reportes para resumir." };
   }
-
   try {
-    // The AI flow expects reports separated by newlines.
-    // Here we assume `reports` string is already formatted that way or is a single report.
     const result = await summarizeIncidentReports({ reports });
     return { success: true, summary: result.summary };
   } catch (error) {
@@ -70,13 +144,20 @@ export async function generateSummaryAction(reports: string) {
   }
 }
 
-// Action to get incidents (for future use, e.g., an incident list page)
 export async function getIncidentsAction(): Promise<{ success: boolean; data?: Incident[]; error?: string }> {
   try {
-    // In a real app, this would fetch from Firestore
-    return { success: true, data: [...incidents].reverse() }; // Return a copy, newest first
+    return { success: true, data: [...incidents].reverse() };
   } catch (error) {
     console.error("Error fetching incidents:", error);
     return { success: false, error: "Failed to fetch incidents." };
+  }
+}
+
+export async function getUsersAction(): Promise<{ success: boolean; data?: User[]; error?: string }> {
+  try {
+    return { success: true, data: [...users] };
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    return { success: false, error: "Failed to fetch users." };
   }
 }
