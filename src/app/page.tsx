@@ -3,7 +3,7 @@
 "use client";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, Users, ShieldAlert, Trophy, TrendingUp, AlertTriangle, Loader2 } from 'lucide-react';
+import { BarChart, Users, ShieldAlert, Trophy, TrendingUp, AlertTriangle, Loader2, Info } from 'lucide-react';
 import { useUser } from "@/contexts/UserContext";
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -109,20 +109,15 @@ export default function DashboardPage() {
             <CardDescription className="font-body">Últimos incidentes y logros reportados.</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {[
-                {type: "Logro", text: "Estudiantes de 5A organizaron colecta.", time: "Hace 2 horas"},
-                {type: "Conflicto", text: "Discusión en patio durante recreo.", time: "Hace 5 horas"},
-                {type: "Logro", text: "Proyecto de reciclaje exitoso.", time: "Ayer"},
-              ].map((item, idx) => (
-                <div key={idx} className="flex items-start space-x-3">
-                  {item.type === "Logro" ? <Trophy className="h-5 w-5 text-green-500 mt-1" /> : <ShieldAlert className="h-5 w-5 text-destructive mt-1" />}
-                  <div>
-                    <p className="text-sm font-medium">{item.text}</p>
-                    <p className="text-xs text-muted-foreground">{item.time}</p>
-                  </div>
-                </div>
-              ))}
+            <div className="space-y-4 text-center text-muted-foreground py-6">
+              <Info className="h-10 w-10 mx-auto mb-2" />
+              <p>No hay actividad reciente para mostrar.</p>
+              <p className="text-sm">
+                <Link href="/incidents/new" className="text-primary hover:underline">
+                  Registra un nuevo incidente
+                </Link>
+                {' '}para comenzar.
+              </p>
             </div>
           </CardContent>
         </Card>
