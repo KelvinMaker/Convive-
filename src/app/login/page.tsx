@@ -81,9 +81,9 @@ export default function LoginPage() {
     <div className="flex items-center justify-center min-h-screen bg-background p-4">
       <Card className="w-full max-w-md shadow-xl">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center font-headline">Iniciar Sesión en Convive+</CardTitle>
+          <CardTitle className="text-2xl font-bold text-center font-headline">Acceder a Convive+</CardTitle>
           <CardDescription className="text-center font-body">
-            Ingresa tus credenciales para acceder al panel.
+            Ingresa tu correo electrónico y contraseña para continuar.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -112,4 +112,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
