@@ -13,7 +13,6 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  DropdownMenuGroup,
 } from "@/components/ui/dropdown-menu";
 import { UserCircle, LogOut, Settings, LogIn, UserPlus } from 'lucide-react';
 import { useUser } from "@/contexts/UserContext";
@@ -75,16 +74,14 @@ export default function AppHeader() {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                  <DropdownMenuItem onClick={() => router.push('/profile')}> {/* Placeholder for profile page */}
-                    <UserCircle className="mr-2 h-4 w-4" />
-                    <span>Perfil</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => router.push('/settings')}> {/* Placeholder for settings page */}
-                    <Settings className="mr-2 h-4 w-4" />
-                    <span>Configuración</span>
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
+                <DropdownMenuItem onClick={() => router.push('/profile')}> {/* Placeholder for profile page */}
+                  <UserCircle className="mr-2 h-4 w-4" />
+                  <span>Perfil</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push('/settings')}> {/* Placeholder for settings page */}
+                  <Settings className="mr-2 h-4 w-4" />
+                  <span>Configuración</span>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout}>
                   <LogOut className="mr-2 h-4 w-4" />

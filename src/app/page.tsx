@@ -31,12 +31,12 @@ export default function DashboardPage() {
 
   // Metrics are displayed only if a user is logged in
   const metrics: Metric[] = [
-    { title: "Incidentes Reportados Hoy", value: "12", description: "+3 desde ayer", icon: BarChart, color: "text-primary" },
-    { title: "Conflictos Activos", value: "5", description: "Requieren atención", icon: ShieldAlert, color: "text-destructive" },
-    { title: "Logros Destacados", value: "8", description: "Esta semana", icon: Trophy, color: "text-green-500" },
-    { title: "Participación Estudiantil", value: "75%", description: "En reportes anónimos", icon: Users, color: "text-blue-500" },
-    { title: "Tendencia de Convivencia", value: "Positiva", description: "Últimos 30 días", icon: TrendingUp, color: "text-emerald-500" },
-    { title: "Reportes Anónimos", value: "23", description: "Total este mes", icon: AlertTriangle, color: "text-yellow-600" },
+    { title: "Incidentes Reportados Hoy", value: "0", description: "No hay nuevos incidentes", icon: BarChart, color: "text-primary" },
+    { title: "Conflictos Activos", value: "0", description: "Todo tranquilo", icon: ShieldAlert, color: "text-destructive" },
+    { title: "Logros Destacados", value: "0", description: "Esta semana", icon: Trophy, color: "text-green-500" },
+    { title: "Participación Estudiantil", value: "0%", description: "En reportes anónimos", icon: Users, color: "text-blue-500" },
+    { title: "Tendencia de Convivencia", value: "Estable", description: "Últimos 30 días", icon: TrendingUp, color: "text-emerald-500" },
+    { title: "Reportes Anónimos", value: "0", description: "Total este mes", icon: AlertTriangle, color: "text-yellow-600" },
   ];
 
   if (isLoading) {
