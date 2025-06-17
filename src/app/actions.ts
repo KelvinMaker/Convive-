@@ -8,7 +8,7 @@ import { z } from "zod";
 
 // In-memory store for incidents (for demonstration purposes)
 let incidents: Incident[] = [];
-let users: User[] = []; // In-memory store for users
+let users: User[] = []; // Resetting users array to be empty
 
 // --- User Management Schemas ---
 const CreateInitialAdminSchema = z.object({
