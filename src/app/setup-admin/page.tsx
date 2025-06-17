@@ -11,9 +11,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { createInitialAdminAction, checkAdminExistsAction } from "@/app/actions";
+import { createInitialAdminAction } from "@/app/actions";
 import { useUser } from "@/contexts/UserContext";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Loader2 } from "lucide-react";
 
 const SetupAdminFormSchema = z.object({
@@ -29,10 +30,10 @@ type SetupAdminFormValues = z.infer<typeof SetupAdminFormSchema>;
 
 export default function SetupAdminPage() {
   const { toast } = useToast();
-  const { login, isAdminSetupComplete, isLoading: userContextLoading } = useUser();
+  const { login, isAdminSetupComplete, isLoading: userContextLoading, currentUser } = useUser();
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [checkingAdmin, setCheckingAdmin] = useState(true);
+  const [checkingAdminStatus, setCheckingAdminStatus] = useState(true);
 
   const form = useForm<SetupAdminFormValues>({
     resolver: zodResolver(SetupAdminFormSchema),
@@ -40,12 +41,19 @@ export default function SetupAdminPage() {
   });
 
    useEffect(() => {
-    if (!userContextLoading && isAdminSetupComplete) {
-      router.push('/'); // Admin already set up, redirect to dashboard
-    } else if (!userContextLoading && !isAdminSetupComplete) {
-      setCheckingAdmin(false); // Allow rendering the form
+    if (!userContextLoading) {
+      if (isAdminSetupComplete) {
+        if (currentUser) {
+          router.push('/'); // Admin set up and user logged in, redirect to dashboard
+        } else {
+          router.push('/login'); // Admin set up but user not logged in, redirect to login
+        }
+      } else {
+        // Admin not set up, allow form rendering
+        setCheckingAdminStatus(false);
+      }
     }
-  }, [isAdminSetupComplete, userContextLoading, router]);
+  }, [isAdminSetupComplete, userContextLoading, currentUser, router]);
 
 
   async function onSubmit(data: SetupAdminFormValues) {
@@ -56,11 +64,19 @@ export default function SetupAdminPage() {
     formData.append("confirmPassword", data.confirmPassword);
 
     try {
+      // Re-check admin existence just before submission as an extra precaution,
+      // though useEffect should prevent form display if admin exists.
+      if (isAdminSetupComplete) {
+         toast({ title: "Error", description: "Un administrador ya ha sido configurado. Por favor, inicia sesión.", variant: "destructive" });
+         router.push('/login');
+         setIsSubmitting(false);
+         return;
+      }
+
       const result = await createInitialAdminAction(formData);
       if (result.success && result.user) {
         toast({ title: "Administrador Creado", description: "Cuenta de administrador creada exitosamente." });
-        login(result.user); // Log in the new admin user
-        // router.push('/'); // Login function will redirect
+        login(result.user); 
       } else {
         toast({ title: "Error", description: result.error || "No se pudo crear la cuenta.", variant: "destructive" });
       }
@@ -71,14 +87,33 @@ export default function SetupAdminPage() {
     }
   }
   
-  if (userContextLoading || checkingAdmin) {
+  if (userContextLoading || checkingAdminStatus) {
     return <div className="flex justify-center items-center min-h-screen"><Loader2 className="h-8 w-8 animate-spin" /> <span className="ml-2">Verificando configuración...</span></div>;
   }
   
-  if (isAdminSetupComplete) { // Should be caught by useEffect, but as a fallback
-     return <div className="flex justify-center items-center min-h-screen">Redirigiendo...</div>;
+  // This block is a fallback UI. Ideally, useEffect redirects before this is shown.
+  if (isAdminSetupComplete) { 
+     return (
+        <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4 text-center">
+          <Card className="w-full max-w-md shadow-xl">
+            <CardHeader>
+              <CardTitle className="text-2xl font-bold font-headline">Administrador ya Configurado</CardTitle>
+              <CardDescription className="font-body">
+                Ya existe una cuenta de administrador para Convive+.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p>Por favor, inicia sesión para acceder al panel.</p>
+              <Button asChild className="w-full">
+                <Link href="/login">Ir a Iniciar Sesión</Link>
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      );
   }
 
+  // If !isAdminSetupComplete and checks are done, render the form
   return (
     <div className="flex items-center justify-center min-h-screen bg-background p-4">
       <Card className="w-full max-w-md shadow-xl">
@@ -115,3 +150,4 @@ export default function SetupAdminPage() {
     </div>
   );
 }
+
