@@ -26,22 +26,24 @@ import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import { INCIDENT_TYPES, PREDEFINED_INCIDENT_DESCRIPTIONS } from "@/lib/constants";
-import type { IncidentType }
-from "@/lib/types";
+import { INCIDENT_TYPES, PREDEFINED_INCIDENTS_HIERARCHICAL, type SpecificIncident } from "@/lib/constants";
+import type { IncidentType } from "@/lib/types";
 import { submitIncidentAction } from "@/app/actions";
 import { useUser } from "@/contexts/UserContext";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 
 const incidentFormSchema = z.object({
-  title: z.string({
-    required_error: "Debes seleccionar una descripción para el incidente.",
-  }).min(1, "Debes seleccionar una descripción para el incidente."),
+  incidentCategory: z.string({
+    required_error: "Debes seleccionar una categoría para el incidente.",
+  }).min(1, "Debes seleccionar una categoría para el incidente."),
+  title: z.string({ // This will now hold the specific incident type
+    required_error: "Debes seleccionar un tipo específico de incidente.",
+  }).min(1, "Debes seleccionar un tipo específico de incidente."),
   description: z.string().min(10, "La descripción detallada debe tener al menos 10 caracteres.").max(1000, "La descripción detallada no puede exceder los 1000 caracteres."),
   type: z.enum(["conflicto", "logro"], {
-    required_error: "Debes seleccionar un tipo de incidente.",
+    required_error: "Debes seleccionar un tipo de reporte.",
   }),
   isAnonymous: z.boolean().default(false).optional(),
 });
@@ -53,21 +55,38 @@ export default function IncidentForm() {
   const { currentUser } = useUser();
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedCategoryValue, setSelectedCategoryValue] = useState<string>("");
+  const [specificIncidentOptions, setSpecificIncidentOptions] = useState<SpecificIncident[]>([]);
 
   const form = useForm<IncidentFormValues>({
     resolver: zodResolver(incidentFormSchema),
     defaultValues: {
-      title: "",
+      incidentCategory: "",
+      title: "", // Specific incident type
       description: "",
       type: "conflicto",
       isAnonymous: false,
     },
   });
 
+  useEffect(() => {
+    if (selectedCategoryValue) {
+      const category = PREDEFINED_INCIDENTS_HIERARCHICAL.find(
+        (cat) => cat.categoryValue === selectedCategoryValue
+      );
+      setSpecificIncidentOptions(category ? category.specificTypes : []);
+      form.setValue("title", ""); // Reset specific incident when category changes
+    } else {
+      setSpecificIncidentOptions([]);
+      form.setValue("title", "");
+    }
+  }, [selectedCategoryValue, form]);
+
   async function onSubmit(data: IncidentFormValues) {
     setIsSubmitting(true);
     const formData = new FormData();
-    formData.append("title", data.title);
+    // The 'title' field now correctly holds the specific incident type from the second dropdown
+    formData.append("title", data.title); 
     formData.append("description", data.description);
     formData.append("type", data.type);
     formData.append("isAnonymous", String(data.isAnonymous));
@@ -82,7 +101,6 @@ export default function IncidentForm() {
        formData.append("userRole", "anonimo");
     }
 
-
     try {
       const result = await submitIncidentAction(formData);
       if (result.success) {
@@ -91,7 +109,8 @@ export default function IncidentForm() {
           description: "Tu reporte ha sido enviado exitosamente.",
         });
         form.reset();
-        router.push("/"); // Redirect to dashboard or incident list
+        setSelectedCategoryValue(""); // Reset category selection
+        router.push("/"); 
       } else {
         toast({
           title: "Error",
@@ -115,38 +134,74 @@ export default function IncidentForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
-          name="title"
+          name="incidentCategory"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Descripción del Incidente</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <FormLabel>Categoría del Incidente</FormLabel>
+              <Select
+                onValueChange={(value) => {
+                  field.onChange(value);
+                  setSelectedCategoryValue(value);
+                }}
+                defaultValue={field.value}
+              >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Selecciona la descripción que mejor se ajuste..." />
+                    <SelectValue placeholder="Selecciona la categoría principal..." />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {PREDEFINED_INCIDENT_DESCRIPTIONS.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
+                  {PREDEFINED_INCIDENTS_HIERARCHICAL.map((category) => (
+                    <SelectItem key={category.categoryValue} value={category.categoryValue}>
+                      {category.categoryLabel}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
               <FormDescription>
-                Elige la categoría principal del incidente. Puedes añadir detalles específicos abajo.
+                Elige la categoría general del incidente.
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
 
+        {selectedCategoryValue && specificIncidentOptions.length > 0 && (
+          <FormField
+            control={form.control}
+            name="title" // This field now represents the specific incident type
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tipo Específico de Incidente</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecciona el tipo específico..." />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {specificIncidentOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormDescription>
+                  Selecciona el detalle del incidente. Esto será el título principal del reporte.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+
         <FormField
           control={form.control}
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Descripción Detallada (Opcional)</FormLabel>
+              <FormLabel>Descripción Detallada Adicional</FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Describe detalles adicionales, personas involucradas, lugar, fecha y hora aproximada si es necesario..."
@@ -213,7 +268,7 @@ export default function IncidentForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full md:w-auto" disabled={isSubmitting}>
+        <Button type="submit" className="w-full md:w-auto" disabled={isSubmitting || !form.formState.isValid}>
           {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {isSubmitting ? "Enviando..." : "Registrar Incidente"}
         </Button>
@@ -221,4 +276,3 @@ export default function IncidentForm() {
     </Form>
   );
 }
-
