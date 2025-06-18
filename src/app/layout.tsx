@@ -29,7 +29,7 @@ export default function RootLayout({
       <body className="font-body antialiased">
         <UserProvider>
           <SidebarProvider defaultOpen={true}>
-            <Sidebar side="left" collapsible="icon">
+            <Sidebar side="left" collapsible="offcanvas"> {/* Changed from "icon" to "offcanvas" */}
               <AppSidebar />
             </Sidebar>
             <div className="flex flex-col flex-1 min-h-screen">
