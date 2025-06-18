@@ -3,12 +3,15 @@
 "use client";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, Users, ShieldAlert, Trophy, TrendingUp, AlertTriangle, Loader2, Info } from 'lucide-react';
+import { BarChart, Users, ShieldAlert, Trophy, TrendingUp, AlertTriangle, Loader2, Info, ListChecks } from 'lucide-react';
 import { useUser } from "@/contexts/UserContext";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-
+import { getIncidentsAction } from "@/app/actions";
+import type { Incident } from "@/lib/types";
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 interface Metric {
   title: string;
@@ -16,11 +19,15 @@ interface Metric {
   description: string;
   icon: React.ElementType;
   color?: string;
+  link?: string;
 }
 
 export default function DashboardPage() {
-  const { currentUser, isLoading, isAdminSetupComplete } = useUser();
+  const { currentUser, isLoading: userContextLoading, isAdminSetupComplete } = useUser();
   const [greeting, setGreeting] = useState('');
+  const [incidents, setIncidents] = useState<Incident[]>([]);
+  const [isLoadingIncidents, setIsLoadingIncidents] = useState(true);
+  const [incidentsError, setIncidentsError] = useState<string | null>(null);
 
   useEffect(() => {
     const hour = new Date().getHours();
@@ -29,23 +36,70 @@ export default function DashboardPage() {
     else setGreeting('Buenas noches');
   }, []);
 
-  // Metrics are displayed only if a user is logged in
-  const metrics: Metric[] = [
-    { title: "Incidentes Reportados Hoy", value: "0", description: "No hay nuevos incidentes", icon: BarChart, color: "text-primary" },
-    { title: "Conflictos Activos", value: "0", description: "Todo tranquilo", icon: ShieldAlert, color: "text-destructive" },
-    { title: "Logros Destacados", value: "0", description: "Esta semana", icon: Trophy, color: "text-green-500" },
-    { title: "Participación Estudiantil", value: "0%", description: "En reportes anónimos", icon: Users, color: "text-blue-500" },
-    { title: "Tendencia de Convivencia", value: "Estable", description: "Últimos 30 días", icon: TrendingUp, color: "text-emerald-500" },
-    { title: "Reportes Anónimos", value: "0", description: "Total este mes", icon: AlertTriangle, color: "text-yellow-600" },
-  ];
+  useEffect(() => {
+    async function fetchIncidents() {
+      if (currentUser) { // Only fetch if a user is logged in
+        setIsLoadingIncidents(true);
+        setIncidentsError(null);
+        try {
+          const result = await getIncidentsAction();
+          if (result.success && result.data) {
+            setIncidents(result.data);
+          } else {
+            setIncidentsError(result.error || "No se pudieron cargar los incidentes.");
+            setIncidents([]);
+          }
+        } catch (error) {
+          console.error("Error fetching incidents for dashboard:", error);
+          setIncidentsError("Error al conectar con el servidor para obtener incidentes.");
+          setIncidents([]);
+        } finally {
+          setIsLoadingIncidents(false);
+        }
+      } else {
+        // Clear incidents if no user or logged out
+        setIncidents([]);
+        setIsLoadingIncidents(false);
+      }
+    }
+    fetchIncidents();
+  }, [currentUser]);
 
-  if (isLoading) {
+  const todayISO = new Date().toISOString().split('T')[0];
+
+  const incidentsTodayCount = useMemo(() => {
+    return incidents.filter(incident => incident.date.startsWith(todayISO)).length;
+  }, [incidents, todayISO]);
+
+  const activeConflictsCount = useMemo(() => {
+    return incidents.filter(incident => incident.type === 'conflicto').length;
+  }, [incidents]);
+
+  const logrosCount = useMemo(() => {
+    return incidents.filter(incident => incident.type === 'logro').length;
+  }, [incidents]);
+
+  const metrics: Metric[] = useMemo(() => [
+    { title: "Incidentes Reportados Hoy", value: isLoadingIncidents ? "..." : incidentsTodayCount.toString(), description: incidentsTodayCount === 1 ? "1 nuevo incidente hoy" : `${incidentsTodayCount} nuevos incidentes hoy`, icon: BarChart, color: "text-primary" },
+    { title: "Conflictos Activos", value: isLoadingIncidents ? "..." : activeConflictsCount.toString(), description: activeConflictsCount === 1 ? "1 conflicto reportado" : `${activeConflictsCount} conflictos reportados`, icon: ShieldAlert, color: "text-destructive" },
+    { title: "Logros Destacados", value: isLoadingIncidents ? "..." : logrosCount.toString(), description: "Total logros registrados", icon: Trophy, color: "text-green-500" },
+    { title: "Participación Estudiantil", value: "N/A", description: "En reportes anónimos", icon: Users, color: "text-blue-500" }, // Placeholder
+    { title: "Tendencia de Convivencia", value: "N/A", description: "Últimos 30 días", icon: TrendingUp, color: "text-emerald-500" }, // Placeholder
+    { title: "Total Reportes", value: isLoadingIncidents ? "..." : incidents.length.toString(), description: "Incidentes y logros", icon: ListChecks, color: "text-purple-500" },
+  ], [isLoadingIncidents, incidentsTodayCount, activeConflictsCount, logrosCount, incidents.length]);
+
+  const recentIncidents = useMemo(() => {
+    return [...incidents]
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .slice(0, 3);
+  }, [incidents]);
+
+
+  if (userContextLoading) {
      return <div className="flex justify-center items-center min-h-[calc(100vh-200px)]"><Loader2 className="h-8 w-8 animate-spin" /> <span className="ml-2">Cargando panel...</span></div>;
   }
 
-  // AuthGuard should handle redirection if !isAdminSetupComplete or !currentUser
-  // This is an additional safeguard or for when AuthGuard is still processing.
-  if (!isAdminSetupComplete && !isLoading) {
+  if (!isAdminSetupComplete && !userContextLoading) {
      return (
       <div className="container mx-auto py-8 px-4 md:px-6 text-center">
         <h1 className="text-2xl font-bold mb-4">Configuración Requerida</h1>
@@ -55,7 +109,7 @@ export default function DashboardPage() {
     );
   }
 
-  if (!currentUser && isAdminSetupComplete && !isLoading) {
+  if (!currentUser && isAdminSetupComplete && !userContextLoading) {
     return (
       <div className="container mx-auto py-8 px-4 md:px-6 text-center">
         <h1 className="text-2xl font-bold mb-4">Bienvenido a Convive+</h1>
@@ -66,8 +120,6 @@ export default function DashboardPage() {
   }
   
   if (!currentUser) {
-    // This state should ideally not be reached if AuthGuard works correctly and isLoading is false.
-    // It's a fallback.
     return <div className="flex justify-center items-center min-h-[calc(100vh-200px)]">Esperando datos de usuario...</div>;
   }
 
@@ -109,16 +161,49 @@ export default function DashboardPage() {
             <CardDescription className="font-body">Últimos incidentes y logros reportados.</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4 text-center text-muted-foreground py-6">
-              <Info className="h-10 w-10 mx-auto mb-2" />
-              <p>No hay actividad reciente para mostrar.</p>
-              <p className="text-sm">
-                <Link href="/incidents/new" className="text-primary hover:underline">
-                  Registra un nuevo incidente
-                </Link>
-                {' '}para comenzar.
-              </p>
-            </div>
+            {isLoadingIncidents ? (
+              <div className="flex justify-center items-center h-40">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                <span className="ml-2">Cargando actividad...</span>
+              </div>
+            ) : incidentsError ? (
+              <div className="text-center text-destructive py-6">
+                <AlertTriangle className="h-10 w-10 mx-auto mb-2" />
+                <p>Error: {incidentsError}</p>
+              </div>
+            ) : recentIncidents.length > 0 ? (
+              <ul className="space-y-3">
+                {recentIncidents.map(incident => (
+                  <li key={incident.id} className="p-3 rounded-md border bg-card/50 hover:bg-accent/20 transition-colors">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h4 className={`font-semibold ${incident.type === 'conflicto' ? 'text-destructive' : 'text-green-600'}`}>
+                          {incident.title}
+                        </h4>
+                        <p className="text-xs text-muted-foreground">
+                          Reportado por: {incident.userName || (incident.isAnonymous ? "Anónimo" : "Desconocido")}
+                        </p>
+                      </div>
+                      <span className="text-xs text-muted-foreground whitespace-nowrap">
+                        {format(new Date(incident.date), "dd MMM yyyy, HH:mm", { locale: es })}
+                      </span>
+                    </div>
+                     {/* Could add a Link to view incident details here in the future */}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="space-y-4 text-center text-muted-foreground py-6">
+                <Info className="h-10 w-10 mx-auto mb-2" />
+                <p>No hay actividad reciente para mostrar.</p>
+                <p className="text-sm">
+                  <Link href="/incidents/new" className="text-primary hover:underline">
+                    Registra un nuevo incidente
+                  </Link>
+                  {' '}para comenzar.
+                </p>
+              </div>
+            )}
           </CardContent>
         </Card>
         <Card className="shadow-lg">
@@ -127,14 +212,22 @@ export default function DashboardPage() {
             <CardDescription className="font-body">Visualización de la distribución de incidentes.</CardDescription>
           </CardHeader>
           <CardContent className="flex justify-center items-center h-64">
-            <div className="text-center">
-              <BarChart className="h-24 w-24 text-muted-foreground mx-auto" />
-              <p className="mt-2 text-sm text-muted-foreground">Gráfico de ejemplo aquí</p>
-              <p className="text-xs text-muted-foreground">(Integrar Recharts o similar)</p>
-            </div>
+            {isLoadingIncidents ? (
+                 <Loader2 className="h-12 w-12 animate-spin text-primary" />
+            ) : incidentsError ? (
+                 <AlertTriangle className="h-12 w-12 text-destructive" />
+            ): (
+              <div className="text-center">
+                <BarChart className="h-24 w-24 text-muted-foreground mx-auto" />
+                <p className="mt-2 text-sm text-muted-foreground">Gráfico de ejemplo aquí</p>
+                <p className="text-xs text-muted-foreground">(Integrar Recharts o similar)</p>
+              </div>
+            )}
+            
           </CardContent>
         </Card>
       </div>
     </div>
   );
 }
+
