@@ -20,6 +20,7 @@ interface Metric {
   icon: React.ElementType;
   color?: string;
   link?: string;
+  clickable?: boolean;
 }
 
 export default function DashboardPage() {
@@ -83,9 +84,9 @@ export default function DashboardPage() {
     { title: "Incidentes Reportados Hoy", value: isLoadingIncidents ? "..." : incidentsTodayCount.toString(), description: incidentsTodayCount === 1 ? "1 nuevo incidente hoy" : `${incidentsTodayCount} nuevos incidentes hoy`, icon: BarChart, color: "text-primary" },
     { title: "Conflictos Activos", value: isLoadingIncidents ? "..." : activeConflictsCount.toString(), description: activeConflictsCount === 1 ? "1 conflicto reportado" : `${activeConflictsCount} conflictos reportados`, icon: ShieldAlert, color: "text-destructive" },
     { title: "Logros Destacados", value: isLoadingIncidents ? "..." : logrosCount.toString(), description: "Total logros registrados", icon: Trophy, color: "text-green-500" },
-    { title: "Participación Estudiantil", value: "N/A", description: "En reportes anónimos", icon: Users, color: "text-blue-500" }, // Placeholder
-    { title: "Tendencia de Convivencia", value: "N/A", description: "Últimos 30 días", icon: TrendingUp, color: "text-emerald-500" }, // Placeholder
-    { title: "Total Reportes", value: isLoadingIncidents ? "..." : incidents.length.toString(), description: "Incidentes y logros", icon: ListChecks, color: "text-purple-500" },
+    { title: "Participación Estudiantil", value: "N/A", description: "En reportes anónimos", icon: Users, color: "text-blue-500" },
+    { title: "Tendencia de Convivencia", value: "N/A", description: "Últimos 30 días", icon: TrendingUp, color: "text-emerald-500" },
+    { title: "Total Reportes", value: isLoadingIncidents ? "..." : incidents.length.toString(), description: "Incidentes y logros", icon: ListChecks, color: "text-purple-500", link: "/incidents/list", clickable: true },
   ], [isLoadingIncidents, incidentsTodayCount, activeConflictsCount, logrosCount, incidents.length]);
 
   const recentIncidents = useMemo(() => {
@@ -136,22 +137,31 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {metrics.map((metric, index) => (
-          <Card key={index} className="shadow-lg hover:shadow-xl transition-shadow duration-300">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium font-body">
-                {metric.title}
-              </CardTitle>
-              <metric.icon className={`h-5 w-5 ${metric.color || 'text-muted-foreground'}`} />
-            </CardHeader>
-            <CardContent>
-              <div className={`text-2xl font-bold ${metric.color || ''}`}>{metric.value}</div>
-              <p className="text-xs text-muted-foreground pt-1">
-                {metric.description}
-              </p>
-            </CardContent>
-          </Card>
-        ))}
+        {metrics.map((metric, index) => {
+          const cardContent = (
+            <Card className={`shadow-lg hover:shadow-xl transition-shadow duration-300 ${metric.clickable ? 'cursor-pointer' : ''}`}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium font-body">
+                  {metric.title}
+                </CardTitle>
+                <metric.icon className={`h-5 w-5 ${metric.color || 'text-muted-foreground'}`} />
+              </CardHeader>
+              <CardContent>
+                <div className={`text-2xl font-bold ${metric.color || ''}`}>{metric.value}</div>
+                <p className="text-xs text-muted-foreground pt-1">
+                  {metric.description}
+                </p>
+              </CardContent>
+            </Card>
+          );
+          return metric.link ? (
+            <Link href={metric.link} key={index} className="no-underline">
+              {cardContent}
+            </Link>
+          ) : (
+            <div key={index}>{cardContent}</div>
+          );
+        })}
       </div>
 
       <div className="mt-8 grid gap-8 md:grid-cols-2">
@@ -188,7 +198,6 @@ export default function DashboardPage() {
                         {format(new Date(incident.date), "dd MMM yyyy, HH:mm", { locale: es })}
                       </span>
                     </div>
-                     {/* Could add a Link to view incident details here in the future */}
                   </li>
                 ))}
               </ul>
