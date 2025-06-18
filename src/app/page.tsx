@@ -146,9 +146,9 @@ export default function DashboardPage() {
                 </CardTitle>
                 <metric.icon className={`h-5 w-5 ${metric.color || 'text-muted-foreground'}`} />
               </CardHeader>
-              <CardContent className="flex-grow flex flex-col justify-center"> {/* Allow content to grow and center for button case */}
+              <CardContent className="flex-grow flex flex-col justify-start"> {/* Changed justify-center to justify-start */}
                 {metric.title === "Incidentes Reportados" && !isLoadingIncidents && incidentsTodayCount === 0 ? (
-                  <div className="text-center pt-2">
+                  <div className="text-center pt-2 flex-grow flex flex-col justify-center"> {/* Centering for button case */}
                     <p className="text-sm text-muted-foreground mb-3">
                       No hay nuevos incidentes hoy.
                     </p>
@@ -173,11 +173,11 @@ export default function DashboardPage() {
             </Card>
           );
           return metric.link ? (
-            <Link href={metric.link} key={index} className="no-underline flex"> {/* Added flex to Link for Card to fill height */}
+            <Link href={metric.link} key={index} className="no-underline flex">
               {cardComponent}
             </Link>
           ) : (
-            <div key={index} className="flex">{cardComponent}</div> /* Added flex for Card to fill height */
+            <div key={index} className="flex">{cardComponent}</div>
           );
         })}
       </div>
