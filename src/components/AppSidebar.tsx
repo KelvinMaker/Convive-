@@ -13,7 +13,7 @@ import {
   SidebarFooter,
 } from "@/components/ui/sidebar";
 import AppLogo from "./AppLogo";
-import { LayoutDashboard, FilePlus2, Sparkles, Settings, LogOut, Users } from 'lucide-react'; // Added Users
+import { LayoutDashboard, Sparkles, Settings, LogOut, Users } from 'lucide-react'; // Removed FilePlus2
 import { cn } from '@/lib/utils';
 import { useUser } from '@/contexts/UserContext';
 import { Button } from './ui/button';
@@ -28,7 +28,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { href: '/', label: 'Panel de Monitoreo', icon: LayoutDashboard, roles: ['estudiante', 'docente', 'directivo'] },
-  { href: '/incidents/new', label: 'Registrar Incidente', icon: FilePlus2, roles: ['estudiante', 'docente', 'directivo', 'anonimo'] }, // anonimo can access form if direct link
+  // { href: '/incidents/new', label: 'Registrar Incidente', icon: FilePlus2, roles: ['estudiante', 'docente', 'directivo', 'anonimo'] }, // Removed this line
   { href: '/summaries', label: 'Resúmenes IA', icon: Sparkles, roles: ['docente', 'directivo'] },
   // Example for a future admin-only item (user management/invitations)
   // { href: '/admin/users', label: 'Gestionar Usuarios', icon: Users, roles: ['directivo'] },
@@ -94,3 +94,4 @@ export default function AppSidebar() {
     </>
   );
 }
+
