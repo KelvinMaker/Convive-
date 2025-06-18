@@ -53,7 +53,7 @@ type IncidentFormValues = z.infer<typeof incidentFormSchema>;
 export default function IncidentForm() {
   const { toast } = useToast();
   const { currentUser } = useUser();
-  const router = useRouter();
+  const router = useRouter(); // Keep router if needed for other purposes, but not for redirect on success
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedCategoryValue, setSelectedCategoryValue] = useState<string>("");
   const [specificIncidentOptions, setSpecificIncidentOptions] = useState<SpecificIncident[]>([]);
@@ -110,7 +110,7 @@ export default function IncidentForm() {
         });
         form.reset();
         setSelectedCategoryValue(""); // Reset category selection
-        router.push("/"); 
+        // router.push("/"); // Removed navigation to allow continuous entry
       } else {
         toast({
           title: "Error",
@@ -173,7 +173,7 @@ export default function IncidentForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Tipo Específico de Incidente</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}> {/* Added value prop */}
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Selecciona el tipo específico..." />
@@ -276,3 +276,4 @@ export default function IncidentForm() {
     </Form>
   );
 }
+
