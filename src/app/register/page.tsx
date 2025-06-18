@@ -19,13 +19,14 @@ import Link from "next/link";
 import { Loader2 } from "lucide-react";
 import { SELF_REGISTER_USER_ROLES } from '@/lib/constants';
 import type { UserRole } from '@/lib/types';
+import { FormField, FormControl, FormItem } from "@/components/ui/form"; // Added FormItem
 
 const RegisterFormSchema = z.object({
   name: z.string().min(1, "El nombre es requerido."),
   email: z.string().email("Debe ser un email válido."),
   password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres."),
   confirmPassword: z.string(),
-  role: z.enum(SELF_REGISTER_USER_ROLES.map(role => role.value) as [UserRole, ...UserRole[]], { // Type assertion for Zod
+  role: z.enum(SELF_REGISTER_USER_ROLES.map(role => role.value) as [UserRole, ...UserRole[]], { 
     required_error: "Debes seleccionar un rol.",
   }),
 }).refine(data => data.password === data.confirmPassword, {
@@ -49,9 +50,9 @@ export default function RegisterPage() {
   useEffect(() => {
     if (!userContextLoading) {
       if (currentUser) {
-        router.push('/'); // Already logged in, redirect to dashboard
+        router.push('/'); 
       } else if (!isAdminSetupComplete) {
-        router.push('/setup-admin'); // Admin not set up
+        router.push('/setup-admin'); 
       }
     }
   }, [currentUser, isAdminSetupComplete, userContextLoading, router]);
@@ -153,6 +154,3 @@ export default function RegisterPage() {
     </div>
   );
 }
-
-// Need to import FormField and FormControl for the Select component within the form
-import { FormField, FormControl, FormItem } from "@/components/ui/form";

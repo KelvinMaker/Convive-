@@ -183,4 +183,3 @@ export const PREDEFINED_INCIDENTS_HIERARCHICAL: HierarchicalIncidentCategory[] =
 
 
 export const APP_NAME = 'Convive+';
-

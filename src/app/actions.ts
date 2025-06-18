@@ -83,9 +83,9 @@ export async function createInitialAdminAction(formData: FormData): Promise<{ su
   const newUser: User = {
     id: `user-${Date.now()}`,
     email,
-    password, // Storing plain text for prototype ONLY. HASH IN PRODUCTION!
+    password, 
     role: 'directivo',
-    name: email.split('@')[0], // Use part of email as name for now
+    name: email.split('@')[0], 
     status: 'active',
   };
   users.push(newUser);
@@ -138,9 +138,9 @@ export async function createUserAction(formData: FormData): Promise<{ success: b
     id: `user-${Date.now()}`,
     name,
     email,
-    password, // Storing plain text for prototype ONLY. HASH IN PRODUCTION!
-    role: role as UserRole, // Role is validated by schema
-    status: 'active', // New users are active by default
+    password, 
+    role: role as UserRole, 
+    status: 'active', 
   };
   users.push(newUser);
   console.log("New user created (in-memory):", newUser);
@@ -243,4 +243,3 @@ export async function getUsersAction(): Promise<{ success: boolean; data?: User[
     return { success: false, error: "Failed to fetch users." };
   }
 }
-
