@@ -81,7 +81,7 @@ export default function DashboardPage() {
   }, [incidents]);
 
   const metrics: Metric[] = useMemo(() => [
-    { title: "Incidentes Reportados Hoy", value: isLoadingIncidents ? "..." : incidentsTodayCount.toString(), description: incidentsTodayCount === 1 ? "1 nuevo incidente hoy" : `${incidentsTodayCount} nuevos incidentes hoy`, icon: BarChart, color: "text-primary" },
+    { title: "Incidentes Reportados", value: isLoadingIncidents ? "..." : incidentsTodayCount.toString(), description: incidentsTodayCount === 1 ? "1 nuevo incidente hoy" : `${incidentsTodayCount} nuevos incidentes hoy`, icon: BarChart, color: "text-primary" },
     { title: "Conflictos Activos", value: isLoadingIncidents ? "..." : activeConflictsCount.toString(), description: activeConflictsCount === 1 ? "1 conflicto reportado" : `${activeConflictsCount} conflictos reportados`, icon: ShieldAlert, color: "text-destructive" },
     { title: "Logros Destacados", value: isLoadingIncidents ? "..." : logrosCount.toString(), description: "Total logros registrados", icon: Trophy, color: "text-green-500" },
     { title: "Participación Estudiantil", value: "N/A", description: "En reportes anónimos", icon: Users, color: "text-blue-500" },
