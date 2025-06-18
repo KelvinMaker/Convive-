@@ -2,45 +2,82 @@
 // src/app/incidents/list/page.tsx
 "use client";
 
-import { useEffect, useState } from 'react';
-import { getIncidentsAction } from '@/app/actions';
+import { useEffect, useState, useCallback } from 'react';
+import { getIncidentsAction, deleteIncidentAction } from '@/app/actions';
 import type { Incident } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, AlertTriangle, ListChecks } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Loader2, AlertTriangle, ListChecks, Trash2, Edit3, ShieldAlert, Trophy } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import { useUser } from '@/contexts/UserContext';
+import { useToast } from "@/hooks/use-toast";
+
 
 export default function IncidentListPage() {
   const [incidents, setIncidents] = useState<Incident[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { currentUser } = useUser();
+  const { toast } = useToast();
+
+  const fetchIncidents = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const result = await getIncidentsAction();
+      if (result.success && result.data) {
+        setIncidents(result.data);
+      } else {
+        setError(result.error || "No se pudieron cargar los incidentes.");
+        setIncidents([]);
+      }
+    } catch (err) {
+      console.error("Error fetching incidents:", err);
+      setError("Error al conectar con el servidor para obtener incidentes.");
+      setIncidents([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    async function fetchIncidents() {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const result = await getIncidentsAction();
-        if (result.success && result.data) {
-          setIncidents(result.data);
-        } else {
-          setError(result.error || "No se pudieron cargar los incidentes.");
-          setIncidents([]);
-        }
-      } catch (err) {
-        console.error("Error fetching incidents:", err);
-        setError("Error al conectar con el servidor para obtener incidentes.");
-        setIncidents([]);
-      } finally {
-        setIsLoading(false);
-      }
-    }
     fetchIncidents();
-  }, []);
+  }, [fetchIncidents]);
+
+  const handleDeleteIncident = async (incidentId: string) => {
+    try {
+      const result = await deleteIncidentAction(incidentId);
+      if (result.success) {
+        toast({ title: "Incidente Eliminado", description: "El incidente ha sido eliminado correctamente." });
+        fetchIncidents(); // Refresh the list
+      } else {
+        toast({ title: "Error al Eliminar", description: result.error || "No se pudo eliminar el incidente.", variant: "destructive" });
+      }
+    } catch (err) {
+      toast({ title: "Error Inesperado", description: "Ocurrió un error al eliminar el incidente.", variant: "destructive" });
+    }
+  };
+
+  const handleEditIncident = (incidentId: string) => {
+    // Placeholder for edit functionality
+    toast({ title: "Función no Implementada", description: "La edición de incidentes aún no está disponible." });
+    console.log("Edit incident:", incidentId);
+  };
 
   const getRoleDisplayName = (role?: string) => {
     if (!role) return 'Desconocido';
@@ -55,7 +92,7 @@ export default function IncidentListPage() {
 
   const getTypeBadgeVariant = (type: string): "default" | "destructive" | "secondary" | "outline" | null | undefined => {
     if (type === 'conflicto') return 'destructive';
-    if (type === 'logro') return 'default'; // Or a success-like color if you add one
+    if (type === 'logro') return 'default';
     return 'secondary';
   };
   
@@ -63,6 +100,12 @@ export default function IncidentListPage() {
     if (type === 'conflicto') return 'Conflicto';
     if (type === 'logro') return 'Logro';
     return type;
+  }
+
+  const getTypeIcon = (type: string) => {
+    if (type === 'conflicto') return <ShieldAlert className="h-4 w-4 mr-1 inline-block" />;
+    if (type === 'logro') return <Trophy className="h-4 w-4 mr-1 inline-block" />;
+    return null;
   }
 
 
@@ -107,6 +150,7 @@ export default function IncidentListPage() {
                     <TableHead>Fecha</TableHead>
                     <TableHead>Reportado por</TableHead>
                     <TableHead>Rol del Reportante</TableHead>
+                    {currentUser?.role === 'directivo' && <TableHead className="text-right">Acciones</TableHead>}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -114,7 +158,8 @@ export default function IncidentListPage() {
                     <TableRow key={incident.id}>
                       <TableCell className="font-medium">{incident.title}</TableCell>
                       <TableCell>
-                        <Badge variant={getTypeBadgeVariant(incident.type)}>
+                        <Badge variant={getTypeBadgeVariant(incident.type)} className="flex items-center">
+                          {getTypeIcon(incident.type)}
                           {getTypeDisplayName(incident.type)}
                         </Badge>
                       </TableCell>
@@ -127,6 +172,45 @@ export default function IncidentListPage() {
                            {getRoleDisplayName(incident.userRole)}
                         </Badge>
                       </TableCell>
+                      {currentUser?.role === 'directivo' && (
+                        <TableCell className="text-right">
+                          <div className="flex justify-end space-x-2">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleEditIncident(incident.id)}
+                              title="Editar Incidente"
+                            >
+                              <Edit3 className="h-4 w-4" />
+                            </Button>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button variant="ghost" size="icon" title="Eliminar Incidente">
+                                  <Trash2 className="h-4 w-4 text-destructive" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Esta acción no se puede deshacer. Esto eliminará permanentemente el incidente
+                                    del sistema.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                  <AlertDialogAction
+                                    onClick={() => handleDeleteIncident(incident.id)}
+                                    className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+                                  >
+                                    Eliminar
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </div>
+                        </TableCell>
+                      )}
                     </TableRow>
                   ))}
                 </TableBody>
@@ -138,4 +222,3 @@ export default function IncidentListPage() {
     </div>
   );
 }
-

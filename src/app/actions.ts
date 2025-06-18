@@ -147,7 +147,7 @@ export async function submitIncidentAction(formData: FormData) {
       userRole: data.isAnonymous ? "anonimo" : data.userRole as UserRole,
     };
 
-    incidents.push(newIncident);
+    incidents.push(newIncident); // This ensures incidents are appended
     console.log("Incidents stored (in-memory):", incidents);
 
     return { success: true, incidentId: newIncident.id };
@@ -172,12 +172,31 @@ export async function generateSummaryAction(reports: string) {
 
 export async function getIncidentsAction(): Promise<{ success: boolean; data?: Incident[]; error?: string }> {
   try {
+    // Return a copy and reverse for display (newest first)
     return { success: true, data: [...incidents].reverse() };
   } catch (error) {
     console.error("Error fetching incidents:", error);
     return { success: false, error: "Failed to fetch incidents." };
   }
 }
+
+export async function deleteIncidentAction(incidentId: string): Promise<{ success: boolean; error?: string }> {
+  try {
+    const initialLength = incidents.length;
+    incidents = incidents.filter(incident => incident.id !== incidentId);
+    if (incidents.length < initialLength) {
+      console.log("Incident deleted (in-memory):", incidentId);
+      console.log("Remaining incidents:", incidents);
+      return { success: true };
+    } else {
+      return { success: false, error: "Incidente no encontrado." };
+    }
+  } catch (error) {
+    console.error("Error deleting incident:", error);
+    return { success: false, error: "Error al eliminar el incidente." };
+  }
+}
+
 
 export async function getUsersAction(): Promise<{ success: boolean; data?: User[]; error?: string }> {
   try {
