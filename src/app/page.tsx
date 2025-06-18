@@ -138,28 +138,46 @@ export default function DashboardPage() {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {metrics.map((metric, index) => {
-          const cardContent = (
-            <Card className={`shadow-lg hover:shadow-xl transition-shadow duration-300 ${metric.clickable ? 'cursor-pointer' : ''}`}>
+          const cardComponent = (
+            <Card className={`shadow-lg hover:shadow-xl transition-shadow duration-300 ${metric.clickable ? 'cursor-pointer' : ''} flex flex-col`}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium font-body">
                   {metric.title}
                 </CardTitle>
                 <metric.icon className={`h-5 w-5 ${metric.color || 'text-muted-foreground'}`} />
               </CardHeader>
-              <CardContent>
-                <div className={`text-2xl font-bold ${metric.color || ''}`}>{metric.value}</div>
-                <p className="text-xs text-muted-foreground pt-1">
-                  {metric.description}
-                </p>
+              <CardContent className="flex-grow flex flex-col justify-center"> {/* Allow content to grow and center for button case */}
+                {metric.title === "Incidentes Reportados" && !isLoadingIncidents && incidentsTodayCount === 0 ? (
+                  <div className="text-center pt-2">
+                    <p className="text-sm text-muted-foreground mb-3">
+                      No hay nuevos incidentes hoy.
+                    </p>
+                    <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2 justify-center">
+                      <Button asChild size="sm" variant="default">
+                        <Link href="/incidents/new">Registrar Incidente</Link>
+                      </Button>
+                      <Button asChild size="sm" variant="outline">
+                        <Link href="/incidents/list">Ver Incidentes</Link>
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div className={`text-2xl font-bold ${metric.color || ''}`}>{metric.value}</div>
+                    <p className="text-xs text-muted-foreground pt-1">
+                      {metric.description}
+                    </p>
+                  </>
+                )}
               </CardContent>
             </Card>
           );
           return metric.link ? (
-            <Link href={metric.link} key={index} className="no-underline">
-              {cardContent}
+            <Link href={metric.link} key={index} className="no-underline flex"> {/* Added flex to Link for Card to fill height */}
+              {cardComponent}
             </Link>
           ) : (
-            <div key={index}>{cardContent}</div>
+            <div key={index} className="flex">{cardComponent}</div> /* Added flex for Card to fill height */
           );
         })}
       </div>
