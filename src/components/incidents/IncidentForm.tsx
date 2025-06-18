@@ -1,3 +1,4 @@
+
 // src/components/incidents/IncidentForm.tsx
 "use client";
 
@@ -14,12 +15,18 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import { INCIDENT_TYPES } from "@/lib/constants";
+import { INCIDENT_TYPES, PREDEFINED_INCIDENT_DESCRIPTIONS } from "@/lib/constants";
 import type { IncidentType }
 from "@/lib/types";
 import { submitIncidentAction } from "@/app/actions";
@@ -29,8 +36,10 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 
 const incidentFormSchema = z.object({
-  title: z.string().min(5, "El título debe tener al menos 5 caracteres.").max(100, "El título no puede exceder los 100 caracteres."),
-  description: z.string().min(10, "La descripción debe tener al menos 10 caracteres.").max(1000, "La descripción no puede exceder los 1000 caracteres."),
+  title: z.string({
+    required_error: "Debes seleccionar una descripción para el incidente.",
+  }).min(1, "Debes seleccionar una descripción para el incidente."),
+  description: z.string().min(10, "La descripción detallada debe tener al menos 10 caracteres.").max(1000, "La descripción detallada no puede exceder los 1000 caracteres."),
   type: z.enum(["conflicto", "logro"], {
     required_error: "Debes seleccionar un tipo de incidente.",
   }),
@@ -109,12 +118,23 @@ export default function IncidentForm() {
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Título del Incidente</FormLabel>
-              <FormControl>
-                <Input placeholder="Ej: Discusión en el aula" {...field} />
-              </FormControl>
+              <FormLabel>Descripción del Incidente</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecciona la descripción que mejor se ajuste..." />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {PREDEFINED_INCIDENT_DESCRIPTIONS.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormDescription>
-                Un resumen breve del incidente.
+                Elige la categoría principal del incidente. Puedes añadir detalles específicos abajo.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -126,14 +146,17 @@ export default function IncidentForm() {
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Descripción Detallada</FormLabel>
+              <FormLabel>Descripción Detallada (Opcional)</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Describe lo ocurrido, personas involucradas, lugar, fecha y hora aproximada..."
+                  placeholder="Describe detalles adicionales, personas involucradas, lugar, fecha y hora aproximada si es necesario..."
                   className="resize-y min-h-[120px]"
                   {...field}
                 />
               </FormControl>
+              <FormDescription>
+                Proporciona cualquier información adicional que consideres relevante.
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -144,7 +167,7 @@ export default function IncidentForm() {
           name="type"
           render={({ field }) => (
             <FormItem className="space-y-3">
-              <FormLabel>Tipo de Incidente</FormLabel>
+              <FormLabel>Tipo de Reporte</FormLabel>
               <FormControl>
                 <RadioGroup
                   onValueChange={field.onChange}
@@ -198,3 +221,4 @@ export default function IncidentForm() {
     </Form>
   );
 }
+
