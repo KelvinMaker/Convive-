@@ -8,6 +8,12 @@ export const USER_ROLES: { value: UserRole; label: string }[] = [
   { value: 'anonimo', label: 'Anónimo' }, // For selection in forms if applicable
 ];
 
+export const SELF_REGISTER_USER_ROLES: { value: UserRole; label: string }[] = [
+  { value: 'estudiante', label: 'Estudiante' },
+  { value: 'docente', label: 'Docente' },
+];
+
+
 export const INCIDENT_TYPES: { value: IncidentType; label: string }[] = [
   { value: 'conflicto', label: 'Conflicto' },
   { value: 'logro', label: 'Logro' },
@@ -177,3 +183,4 @@ export const PREDEFINED_INCIDENTS_HIERARCHICAL: HierarchicalIncidentCategory[] =
 
 
 export const APP_NAME = 'Convive+';
+

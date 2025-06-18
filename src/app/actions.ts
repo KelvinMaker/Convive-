@@ -5,10 +5,9 @@
 import type { Incident, IncidentType, User, UserRole } from "@/lib/types";
 import { summarizeIncidentReports } from "@/ai/flows/summarize-incident-reports";
 import { z } from "zod";
+import { SELF_REGISTER_USER_ROLES } from "@/lib/constants";
 
-// This is a common pattern for in-memory stores in Node.js development
-// to survive Hot Module Replacement (HMR). It won't survive server restarts.
-// In a real application, use a proper database.
+
 declare global {
   // eslint-disable-next-line no-var
   var __users_store__: User[] | undefined;
@@ -20,11 +19,9 @@ let users: User[];
 let incidents: Incident[];
 
 if (process.env.NODE_ENV === 'production') {
-  // In production, always start with empty stores (in-memory isn't for prod persistence)
   users = [];
   incidents = [];
 } else {
-  // In development, use the global store to persist across HMR
   if (!global.__users_store__) {
     global.__users_store__ = [];
   }
@@ -49,6 +46,17 @@ const CreateInitialAdminSchema = z.object({
 const LoginUserSchema = z.object({
   email: z.string().email("Email inválido."),
   password: z.string().min(1, "Contraseña requerida."),
+});
+
+const CreateUserSchema = z.object({
+  name: z.string().min(1, "El nombre es requerido."),
+  email: z.string().email("Debe ser un email válido."),
+  password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres."),
+  confirmPassword: z.string(),
+  role: z.enum(SELF_REGISTER_USER_ROLES.map(role => role.value) as [UserRole, ...UserRole[]]),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Las contraseñas no coinciden.",
+  path: ["confirmPassword"],
 });
 
 
@@ -101,13 +109,43 @@ export async function loginUserAction(formData: FormData): Promise<{ success: bo
     return { success: false, error: "Usuario no encontrado o inactivo." };
   }
 
-  // Plain text password check for prototype ONLY. USE HASHING IN PRODUCTION!
   if (user.password !== password) {
     return { success: false, error: "Contraseña incorrecta." };
   }
   
   console.log("User logged in (in-memory):", user);
   return { success: true, user };
+}
+
+export async function createUserAction(formData: FormData): Promise<{ success: boolean; error?: string; user?: User }> {
+  const rawData = Object.fromEntries(formData.entries());
+  const validation = CreateUserSchema.safeParse(rawData);
+
+  if (!validation.success) {
+    const fieldErrors = validation.error.flatten().fieldErrors;
+    const errorMessages = Object.values(fieldErrors).flat().join(". ");
+    return { success: false, error: errorMessages || "Datos de registro inválidos." };
+  }
+
+  const { name, email, password, role } = validation.data;
+
+  const existingUser = users.find(u => u.email === email);
+  if (existingUser) {
+    return { success: false, error: "Ya existe un usuario con este correo electrónico." };
+  }
+
+  const newUser: User = {
+    id: `user-${Date.now()}`,
+    name,
+    email,
+    password, // Storing plain text for prototype ONLY. HASH IN PRODUCTION!
+    role: role as UserRole, // Role is validated by schema
+    status: 'active', // New users are active by default
+  };
+  users.push(newUser);
+  console.log("New user created (in-memory):", newUser);
+  console.log("All users:", users);
+  return { success: true, user: newUser };
 }
 
 
@@ -147,7 +185,7 @@ export async function submitIncidentAction(formData: FormData) {
       userRole: data.isAnonymous ? "anonimo" : data.userRole as UserRole,
     };
 
-    incidents.push(newIncident); // This ensures incidents are appended
+    incidents.push(newIncident); 
     console.log("Incidents stored (in-memory):", incidents);
 
     return { success: true, incidentId: newIncident.id };
@@ -172,7 +210,6 @@ export async function generateSummaryAction(reports: string) {
 
 export async function getIncidentsAction(): Promise<{ success: boolean; data?: Incident[]; error?: string }> {
   try {
-    // Return a copy and reverse for display (newest first)
     return { success: true, data: [...incidents].reverse() };
   } catch (error) {
     console.error("Error fetching incidents:", error);
@@ -206,3 +243,4 @@ export async function getUsersAction(): Promise<{ success: boolean; data?: User[
     return { success: false, error: "Failed to fetch users." };
   }
 }
+

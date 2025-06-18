@@ -99,11 +99,18 @@ export default function AppHeader() {
                 </Button>
               )}
               {isAdminSetupComplete && (
-                 <Button asChild variant="outline" size="sm">
-                  <Link href="/login">
-                    <LogIn className="mr-2 h-4 w-4" /> Iniciar Sesión
-                  </Link>
-                </Button>
+                <>
+                  <Button asChild variant="outline" size="sm">
+                    <Link href="/login">
+                      <LogIn className="mr-2 h-4 w-4" /> Iniciar Sesión
+                    </Link>
+                  </Button>
+                  <Button asChild variant="default" size="sm">
+                    <Link href="/register">
+                      <UserPlus className="mr-2 h-4 w-4" /> Registrar Usuario
+                    </Link>
+                  </Button>
+                </>
               )}
             </>
           )}
