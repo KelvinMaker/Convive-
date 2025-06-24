@@ -224,6 +224,10 @@ export async function closeIncidentAction(formData: FormData): Promise<{ success
       return { success: false, error: "Incidente no encontrado." };
     }
 
+    if (incidents[incidentIndex].status === 'closed') {
+      return { success: false, error: "Este incidente ya ha sido cerrado." };
+    }
+
     incidents[incidentIndex] = {
       ...incidents[incidentIndex],
       status: 'closed',
@@ -288,5 +292,7 @@ export async function getUsersAction(): Promise<{ success: boolean; data?: User[
     return { success: false, error: "Failed to fetch users." };
   }
 }
+
+    
 
     

@@ -41,8 +41,8 @@ export default function CloseIncidentForm() {
       setIsLoadingIncidents(true);
       const result = await getIncidentsAction();
       if (result.success && result.data) {
-        // Filter for open incidents to show in the dropdown
-        setIncidents(result.data.filter(inc => inc.status === 'open'));
+        // Show all incidents; closed incidents will be disabled in the dropdown.
+        setIncidents(result.data);
       }
       setIsLoadingIncidents(false);
     }
@@ -101,19 +101,19 @@ export default function CloseIncidentForm() {
               <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoadingIncidents}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder={isLoadingIncidents ? "Cargando incidentes..." : "Selecciona un incidente abierto..."} />
+                    <SelectValue placeholder={isLoadingIncidents ? "Cargando incidentes..." : "Selecciona un incidente..."} />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {!isLoadingIncidents && incidents.length === 0 && <SelectItem value="none" disabled>No hay incidentes abiertos para cerrar</SelectItem>}
+                  {!isLoadingIncidents && incidents.length === 0 && <SelectItem value="none" disabled>No hay incidentes para seleccionar</SelectItem>}
                   {incidents.map((incident) => (
-                    <SelectItem key={incident.id} value={incident.id}>
-                      {incident.title}
+                    <SelectItem key={incident.id} value={incident.id} disabled={incident.status === 'closed'}>
+                      {incident.title} {incident.status === 'closed' ? <span className="text-muted-foreground opacity-70 ml-2">(Cerrado)</span> : ''}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-              <FormDescription>Elige el incidente que deseas marcar como resuelto.</FormDescription>
+              <FormDescription>Elige el incidente que deseas marcar como resuelto. Los incidentes ya cerrados están deshabilitados.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -144,3 +144,5 @@ export default function CloseIncidentForm() {
     </Form>
   );
 }
+
+    
