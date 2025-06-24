@@ -12,6 +12,9 @@ import { getIncidentsAction } from "@/app/actions";
 import type { Incident } from "@/lib/types";
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { ResponsiveContainer, BarChart as RechartsBarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar } from 'recharts';
+import { PREDEFINED_INCIDENTS_HIERARCHICAL } from "@/lib/constants";
+
 
 interface Metric {
   title: string;
@@ -95,6 +98,28 @@ export default function DashboardPage() {
       .slice(0, 3);
   }, [incidents]);
 
+  const chartData = useMemo(() => {
+    if (isLoadingIncidents || incidents.length === 0) return [];
+    
+    const categoryMap = new Map<string, number>();
+
+    const titleToCategoryMap = new Map<string, string>();
+    PREDEFINED_INCIDENTS_HIERARCHICAL.forEach(category => {
+        category.specificTypes.forEach(specificType => {
+            titleToCategoryMap.set(specificType.value, category.categoryLabel);
+        });
+    });
+
+    incidents.forEach(incident => {
+        const categoryLabel = titleToCategoryMap.get(incident.title);
+        if (categoryLabel) {
+            categoryMap.set(categoryLabel, (categoryMap.get(categoryLabel) || 0) + 1);
+        }
+    });
+    
+    return Array.from(categoryMap, ([name, count]) => ({ name, count }));
+  }, [incidents, isLoadingIncidents]);
+
 
   if (userContextLoading) {
      return <div className="flex justify-center items-center min-h-[calc(100vh-200px)]"><Loader2 className="h-8 w-8 animate-spin" /> <span className="ml-2">Cargando panel...</span></div>;
@@ -146,14 +171,14 @@ export default function DashboardPage() {
                 </CardTitle>
                 <metric.icon className={`h-5 w-5 ${metric.color || 'text-muted-foreground'}`} />
               </CardHeader>
-              <CardContent className="flex-grow flex flex-col justify-between">
-                <div>
+              <CardContent className="flex-grow flex flex-col justify-start">
+                 <div>
                   <div className={`text-2xl font-bold ${metric.color || ''}`}>{metric.value}</div>
                   <p className="text-xs text-muted-foreground pt-1">
                     {metric.description}
                   </p>
                 </div>
-                <div className="pt-2">
+                <div className="pt-2 mt-auto">
                   {metric.title === "Incidentes Reportados" ? (
                     <Button asChild size="sm" variant="default" className="w-full">
                       <Link href="/incidents/new">Registrar Nuevo Incidente</Link>
@@ -228,22 +253,54 @@ export default function DashboardPage() {
         </Card>
         <Card className="shadow-lg">
           <CardHeader>
-            <CardTitle className="font-headline">Incidentes por Tipo (Últimos 7 días)</CardTitle>
-            <CardDescription className="font-body">Visualización de la distribución de incidentes.</CardDescription>
+            <CardTitle className="font-headline">Incidentes por Categoría</CardTitle>
+            <CardDescription className="font-body">Visualización de la distribución de incidentes por categoría.</CardDescription>
           </CardHeader>
-          <CardContent className="flex justify-center items-center h-64">
-            {isLoadingIncidents ? (
-                 <Loader2 className="h-12 w-12 animate-spin text-primary" />
+          <CardContent className="h-96 p-4">
+             {isLoadingIncidents ? (
+                <div className="flex justify-center items-center h-full">
+                    <Loader2 className="h-12 w-12 animate-spin text-primary" />
+                </div>
             ) : incidentsError ? (
-                 <AlertTriangle className="h-12 w-12 text-destructive" />
-            ): (
-              <div className="text-center">
-                <BarChart className="h-24 w-24 text-muted-foreground mx-auto" />
-                <p className="mt-2 text-sm text-muted-foreground">Gráfico de ejemplo aquí</p>
-                <p className="text-xs text-muted-foreground">(Integrar Recharts o similar)</p>
-              </div>
+                <div className="flex flex-col justify-center items-center h-full text-center text-destructive">
+                    <AlertTriangle className="h-12 w-12 mx-auto" />
+                    <p className="mt-2">Error al cargar datos del gráfico.</p>
+                </div>
+            ) : chartData.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                    <RechartsBarChart 
+                        data={chartData}
+                        margin={{ top: 5, right: 20, left: -10, bottom: 120 }}
+                    >
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                        <XAxis 
+                            dataKey="name" 
+                            angle={-60}
+                            textAnchor="end" 
+                            interval={0}
+                            tick={{ fontSize: 10 }}
+                            height={110}
+                        />
+                        <YAxis allowDecimals={false} />
+                        <Tooltip 
+                            contentStyle={{ 
+                                backgroundColor: 'hsl(var(--background))', 
+                                borderColor: 'hsl(var(--border))',
+                                borderRadius: 'var(--radius)',
+                            }}
+                            labelStyle={{ fontWeight: 'bold', color: 'hsl(var(--foreground))' }}
+                            itemStyle={{ color: 'hsl(var(--foreground))' }}
+                            cursor={{ fill: 'hsl(var(--accent))', fillOpacity: 0.2 }}
+                        />
+                        <Bar dataKey="count" name="Incidentes" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                    </RechartsBarChart>
+                </ResponsiveContainer>
+            ) : (
+                <div className="flex flex-col justify-center items-center h-full text-center text-muted-foreground">
+                    <BarChart className="h-24 w-24 mx-auto" />
+                    <p className="mt-2 text-sm">No hay datos de incidentes para mostrar.</p>
+                </div>
             )}
-            
           </CardContent>
         </Card>
       </div>
