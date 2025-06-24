@@ -168,6 +168,7 @@ export default function IncidentListPage() {
                   {incidents.map((incident) => {
                     const incidentDate = new Date(incident.date);
                     const expirationDate = incident.expiresAt ? new Date(incident.expiresAt) : add(incidentDate, { days: 30 });
+                    const isClosed = incident.status === 'closed';
                     
                     return (
                     <TableRow key={incident.id}>
@@ -179,8 +180,8 @@ export default function IncidentListPage() {
                         </Badge>
                       </TableCell>
                        <TableCell>
-                        <Badge variant={incident.status === 'open' ? (incident.type === 'conflicto' ? 'destructive' : 'default') : 'secondary'}>
-                          {incident.status === 'open' ? 'Abierto' : 'Cerrado'}
+                        <Badge variant={!isClosed ? (incident.type === 'conflicto' ? 'destructive' : 'default') : 'secondary'}>
+                          {!isClosed ? 'Abierto' : 'Cerrado'}
                         </Badge>
                       </TableCell>
                       <TableCell>
