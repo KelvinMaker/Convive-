@@ -217,7 +217,7 @@ export default function DashboardPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {metrics.map((metric, index) => {
           const cardComponent = (
-            <Card className={`shadow-lg hover:shadow-xl transition-shadow duration-300 ${metric.clickable ? 'cursor-pointer' : ''} flex flex-col`}>
+            <Card className={`w-full shadow-lg hover:shadow-xl transition-shadow duration-300 ${metric.clickable ? 'cursor-pointer' : ''} flex flex-col`}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium font-body">
                   {metric.title}
@@ -244,11 +244,11 @@ export default function DashboardPage() {
             </Card>
           );
           return metric.link ? (
-            <Link href={metric.link} key={index} className="no-underline flex">
+            <Link href={metric.link} key={index} className="no-underline flex w-full">
               {cardComponent}
             </Link>
           ) : (
-            <div key={index} className="flex">{cardComponent}</div>
+            <div key={index} className="flex w-full">{cardComponent}</div>
           );
         })}
       </div>
