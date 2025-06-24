@@ -161,6 +161,13 @@ const SubmitIncidentSchema = z.object({
   userRole: z.string().optional(),
 });
 
+const CloseIncidentSchema = z.object({
+  incidentId: z.string().min(1, "Debe seleccionar un incidente."),
+  closingObservation: z.string().min(10, "La observación debe tener al menos 10 caracteres."),
+  userId: z.string(), // ID of the user closing the incident
+});
+
+
 export async function submitIncidentAction(formData: FormData) {
   try {
     const rawData = Object.fromEntries(formData.entries());
@@ -186,6 +193,7 @@ export async function submitIncidentAction(formData: FormData) {
       userId: data.isAnonymous ? undefined : data.userId,
       userName: data.isAnonymous ? "Anónimo" : data.userName,
       userRole: data.isAnonymous ? "anonimo" : data.userRole as UserRole,
+      status: 'open',
     };
 
     incidents.push(newIncident); 
@@ -194,6 +202,40 @@ export async function submitIncidentAction(formData: FormData) {
     return { success: true, incidentId: newIncident.id };
   } catch (error) {
     console.error("Error submitting incident:", error);
+    return { success: false, error: "Ocurrió un error en el servidor." };
+  }
+}
+
+export async function closeIncidentAction(formData: FormData): Promise<{ success: boolean; error?: string }> {
+  try {
+    const rawData = Object.fromEntries(formData.entries());
+    const validation = CloseIncidentSchema.safeParse(rawData);
+
+    if (!validation.success) {
+      const fieldErrors = validation.error.flatten().fieldErrors;
+      const errorMessages = Object.values(fieldErrors).flat().join(". ");
+      return { success: false, error: errorMessages || "Datos inválidos." };
+    }
+
+    const { incidentId, closingObservation, userId } = validation.data;
+    const incidentIndex = incidents.findIndex(inc => inc.id === incidentId);
+
+    if (incidentIndex === -1) {
+      return { success: false, error: "Incidente no encontrado." };
+    }
+
+    incidents[incidentIndex] = {
+      ...incidents[incidentIndex],
+      status: 'closed',
+      closingObservation,
+      closedAt: new Date().toISOString(),
+      closedBy: userId,
+    };
+
+    console.log("Incident closed (in-memory):", incidents[incidentIndex]);
+    return { success: true };
+  } catch (error) {
+    console.error("Error closing incident:", error);
     return { success: false, error: "Ocurrió un error en el servidor." };
   }
 }

@@ -16,6 +16,10 @@ export interface Incident {
   userName?: string; // Name of the user if not anonymous
   userRole?: UserRole; // Role of the user if not anonymous
   group?: string; // Group ID, optional
+  status: 'open' | 'closed';
+  closingObservation?: string;
+  closedAt?: string; // ISO string
+  closedBy?: string; // User ID
 }
 
 export interface User {

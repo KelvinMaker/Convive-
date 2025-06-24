@@ -3,7 +3,7 @@
 "use client";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, Users, ShieldAlert, Trophy, TrendingUp, AlertTriangle, Loader2, Info, ListChecks, Download, LayoutDashboard, Sparkles } from 'lucide-react';
+import { BarChart, Users, ShieldAlert, Trophy, TrendingUp, AlertTriangle, Loader2, Info, ListChecks, Download, LayoutDashboard, Sparkles, FolderClosed } from 'lucide-react';
 import { useUser } from "@/contexts/UserContext";
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
@@ -24,6 +24,7 @@ interface Metric {
   color?: string;
   link?: string;
   clickable?: boolean;
+  actionButton?: React.ReactNode;
 }
 
 export default function DashboardPage() {
@@ -76,7 +77,7 @@ export default function DashboardPage() {
   }, [incidents, todayISO]);
 
   const activeConflictsCount = useMemo(() => {
-    return incidents.filter(incident => incident.type === 'conflicto').length;
+    return incidents.filter(incident => incident.type === 'conflicto' && incident.status === 'open').length;
   }, [incidents]);
 
   const logrosCount = useMemo(() => {
@@ -84,13 +85,27 @@ export default function DashboardPage() {
   }, [incidents]);
 
   const metrics: Metric[] = useMemo(() => [
-    { title: "Incidentes Reportados", value: isLoadingIncidents ? "..." : incidentsTodayCount.toString(), description: incidentsTodayCount === 1 ? "1 nuevo incidente hoy" : `${incidentsTodayCount} nuevos incidentes hoy`, icon: BarChart, color: "text-primary" },
-    { title: "Conflictos Activos", value: isLoadingIncidents ? "..." : activeConflictsCount.toString(), description: activeConflictsCount === 1 ? "1 conflicto reportado" : `${activeConflictsCount} conflictos reportados`, icon: ShieldAlert, color: "text-destructive" },
+    { title: "Incidentes Reportados", value: isLoadingIncidents ? "..." : incidentsTodayCount.toString(), description: incidentsTodayCount === 1 ? "1 nuevo incidente hoy" : `${incidentsTodayCount} nuevos incidentes hoy`, icon: BarChart, color: "text-primary",
+      actionButton: (
+        <Button asChild size="sm" variant="default" className="w-full">
+          <Link href="/incidents/new">Registrar Nuevo Incidente</Link>
+        </Button>
+      )
+    },
+    { title: "Conflictos Activos", value: isLoadingIncidents ? "..." : activeConflictsCount.toString(), description: activeConflictsCount === 1 ? "1 conflicto por resolver" : `${activeConflictsCount} conflictos por resolver`, icon: ShieldAlert, color: "text-destructive",
+      actionButton: (
+        currentUser?.role === 'directivo' ? (
+          <Button asChild size="sm" variant="outline" className="w-full">
+            <Link href="/incidents/close"><FolderClosed className="mr-2 h-4 w-4"/>Cerrar Incidente</Link>
+          </Button>
+        ) : <div className="h-9" />
+      )
+    },
     { title: "Logros Destacados", value: isLoadingIncidents ? "..." : logrosCount.toString(), description: "Total logros registrados", icon: Trophy, color: "text-green-500" },
     { title: "Participación Estudiantil", value: "N/A", description: "En reportes anónimos", icon: Users, color: "text-blue-500" },
     { title: "Tendencia de Convivencia", value: "N/A", description: "Últimos 30 días", icon: TrendingUp, color: "text-emerald-500" },
     { title: "Total Reportes", value: isLoadingIncidents ? "..." : incidents.length.toString(), description: "Incidentes y logros", icon: ListChecks, color: "text-purple-500", link: "/incidents/list", clickable: true },
-  ], [isLoadingIncidents, incidentsTodayCount, activeConflictsCount, logrosCount, incidents.length]);
+  ], [isLoadingIncidents, incidentsTodayCount, activeConflictsCount, logrosCount, incidents.length, currentUser?.role]);
 
   const recentIncidents = useMemo(() => {
     return [...incidents]
@@ -232,13 +247,7 @@ export default function DashboardPage() {
                   </p>
                 </div>
                 <div className="pt-2 mt-auto">
-                  {metric.title === "Incidentes Reportados" ? (
-                    <Button asChild size="sm" variant="default" className="w-full">
-                      <Link href="/incidents/new">Registrar Nuevo Incidente</Link>
-                    </Button>
-                  ) : (
-                    <div className="h-9" />
-                  )}
+                   {metric.actionButton ? metric.actionButton : <div className="h-9" />}
                 </div>
               </CardContent>
             </Card>

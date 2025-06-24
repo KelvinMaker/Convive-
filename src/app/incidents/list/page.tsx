@@ -156,6 +156,7 @@ export default function IncidentListPage() {
                   <TableRow>
                     <TableHead>Título</TableHead>
                     <TableHead>Tipo</TableHead>
+                    <TableHead>Estado</TableHead>
                     <TableHead>Fecha</TableHead>
                     <TableHead>Vence el</TableHead>
                     <TableHead>Reportado por</TableHead>
@@ -177,6 +178,11 @@ export default function IncidentListPage() {
                         <Badge variant={getTypeBadgeVariant(incident.type)} className="flex items-center">
                           {getTypeIcon(incident.type)}
                           {getTypeDisplayName(incident.type)}
+                        </Badge>
+                      </TableCell>
+                       <TableCell>
+                        <Badge variant={incident.status === 'open' ? (incident.type === 'conflicto' ? 'destructive' : 'default') : 'secondary'}>
+                          {incident.status === 'open' ? 'Abierto' : 'Cerrado'}
                         </Badge>
                       </TableCell>
                       <TableCell>
