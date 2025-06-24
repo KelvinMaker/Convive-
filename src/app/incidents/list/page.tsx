@@ -1,4 +1,3 @@
-
 // src/app/incidents/list/page.tsx
 "use client";
 
@@ -21,7 +20,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Loader2, AlertTriangle, ListChecks, Trash2, Edit3, ShieldAlert, Trophy, CalendarOff, ArrowLeft } from 'lucide-react';
-import { format, isValid } from 'date-fns';
+import { format, isValid, add } from 'date-fns';
 import { es } from 'date-fns/locale';
 import Link from 'next/link';
 import { useUser } from '@/contexts/UserContext';
@@ -167,7 +166,9 @@ export default function IncidentListPage() {
                 <TableBody>
                   {incidents.map((incident) => {
                     const incidentDate = new Date(incident.date);
-                    const expirationDate = incident.expiresAt ? new Date(incident.expiresAt) : null;
+                    // The expiration date is calculated as 30 days after the incident's registration date.
+                    // This ensures that all incidents, new or old, will display a correct expiration date.
+                    const expirationDate = add(incidentDate, { days: 30 });
                     
                     return (
                     <TableRow key={incident.id}>
@@ -182,7 +183,7 @@ export default function IncidentListPage() {
                         {isValid(incidentDate) ? format(incidentDate, "dd MMM yyyy, HH:mm", { locale: es }) : 'Fecha inválida'}
                       </TableCell>
                        <TableCell>
-                        {expirationDate && isValid(expirationDate) ? (
+                        {isValid(expirationDate) ? (
                           <div className="flex items-center gap-1 text-muted-foreground">
                             <CalendarOff className="h-3.5 w-3.5"/>
                             {format(expirationDate, "dd MMM yyyy", { locale: es })}
