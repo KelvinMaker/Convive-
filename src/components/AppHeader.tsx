@@ -2,7 +2,6 @@
 // src/components/AppHeader.tsx
 "use client";
 
-import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import AppLogo from "./AppLogo";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -22,7 +21,6 @@ import { useRouter } from "next/navigation";
 
 export default function AppHeader() {
   const { currentUser, logout, isAdminSetupComplete, isLoading } = useUser();
-  const { toggleSidebar } = useSidebar();
   const router = useRouter();
 
   const getInitials = (name?: string) => {
@@ -41,7 +39,6 @@ export default function AppHeader() {
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-2">
-          {currentUser && <SidebarTrigger className="md:hidden" onClick={toggleSidebar}/>}
           <div className="hidden md:block">
             <AppLogo size="sm" />
           </div>

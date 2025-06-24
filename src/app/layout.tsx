@@ -3,9 +3,7 @@ import type { Metadata } from 'next';
 import { PT_Sans } from 'next/font/google'; 
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
-import { SidebarProvider, Sidebar, SidebarInset } from "@/components/ui/sidebar";
 import AppHeader from "@/components/AppHeader";
-import AppSidebar from "@/components/AppSidebar";
 import { UserProvider } from '@/contexts/UserContext';
 import AuthGuard from '@/components/AuthGuard'; // Import AuthGuard
 
@@ -28,22 +26,15 @@ export default function RootLayout({
       </head>
       <body className="font-body antialiased">
         <UserProvider>
-          <SidebarProvider defaultOpen={true}>
-            <Sidebar side="left" collapsible="offcanvas"> {/* Changed from "icon" to "offcanvas" */}
-              <AppSidebar />
-            </Sidebar>
-            <div className="flex flex-col flex-1 min-h-screen">
+            <div className="flex flex-col min-h-screen">
               <AppHeader />
-              <SidebarInset>
-                {/* AuthGuard wraps the main content area that needs protection/redirection */}
-                <AuthGuard>
-                  <main className="flex-1 p-4 md:p-6 lg:p-8 bg-background">
-                    {children}
-                  </main>
-                </AuthGuard>
-              </SidebarInset>
+              {/* AuthGuard wraps the main content area that needs protection/redirection */}
+              <AuthGuard>
+                <main className="flex-1 p-4 md:p-6 lg:p-8 bg-background">
+                  {children}
+                </main>
+              </AuthGuard>
             </div>
-          </SidebarProvider>
           <Toaster />
         </UserProvider>
       </body>

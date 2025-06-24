@@ -3,7 +3,7 @@
 "use client";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, Users, ShieldAlert, Trophy, TrendingUp, AlertTriangle, Loader2, Info, ListChecks, Download } from 'lucide-react';
+import { BarChart, Users, ShieldAlert, Trophy, TrendingUp, AlertTriangle, Loader2, Info, ListChecks, Download, LayoutDashboard, Sparkles } from 'lucide-react';
 import { useUser } from "@/contexts/UserContext";
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
@@ -195,6 +195,23 @@ export default function DashboardPage() {
         <p className="text-muted-foreground">
           Bienvenido al Panel de Monitoreo de Convive+. Aquí tienes un resumen del estado de la convivencia.
         </p>
+      </div>
+
+      <div className="mb-8 flex flex-wrap items-center gap-4 border-b pb-4">
+        <Button asChild variant="default">
+          <Link href="/">
+            <LayoutDashboard className="mr-2 h-4 w-4" />
+            Panel de Monitoreo
+          </Link>
+        </Button>
+        {currentUser && ['docente', 'directivo'].includes(currentUser.role) && (
+          <Button asChild variant="outline">
+            <Link href="/summaries">
+              <Sparkles className="mr-2 h-4 w-4" />
+              Resúmenes IA
+            </Link>
+          </Button>
+        )}
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
