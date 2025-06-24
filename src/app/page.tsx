@@ -3,7 +3,7 @@
 "use client";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, Users, ShieldAlert, Trophy, TrendingUp, AlertTriangle, Loader2, Info, ListChecks } from 'lucide-react';
+import { BarChart, Users, ShieldAlert, Trophy, TrendingUp, AlertTriangle, Loader2, Info, ListChecks, Download } from 'lucide-react';
 import { useUser } from "@/contexts/UserContext";
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
@@ -98,17 +98,20 @@ export default function DashboardPage() {
       .slice(0, 3);
   }, [incidents]);
 
+  const titleToCategoryMap = useMemo(() => {
+    const map = new Map<string, string>();
+    PREDEFINED_INCIDENTS_HIERARCHICAL.forEach(category => {
+      category.specificTypes.forEach(specificType => {
+        map.set(specificType.value, category.categoryLabel);
+      });
+    });
+    return map;
+  }, []);
+
   const chartData = useMemo(() => {
     if (isLoadingIncidents || incidents.length === 0) return [];
     
     const categoryMap = new Map<string, number>();
-
-    const titleToCategoryMap = new Map<string, string>();
-    PREDEFINED_INCIDENTS_HIERARCHICAL.forEach(category => {
-        category.specificTypes.forEach(specificType => {
-            titleToCategoryMap.set(specificType.value, category.categoryLabel);
-        });
-    });
 
     incidents.forEach(incident => {
         const categoryLabel = titleToCategoryMap.get(incident.title);
@@ -118,7 +121,40 @@ export default function DashboardPage() {
     });
     
     return Array.from(categoryMap, ([name, count]) => ({ name, count }));
-  }, [incidents, isLoadingIncidents]);
+  }, [incidents, isLoadingIncidents, titleToCategoryMap]);
+
+  const handleDownloadCSV = () => {
+    if (incidents.length === 0) return;
+
+    const headers = ["Fecha de registro", "Categoria", "Tipo especifico", "Descripcion", "Usuario que registra"];
+    const csvRows = [headers.join(",")];
+
+    const escapeCSV = (str: string) => `"${str.replace(/"/g, '""')}"`;
+
+    incidents.forEach(incident => {
+      const row = [
+        escapeCSV(format(new Date(incident.date), "dd/MM/yyyy HH:mm:ss", { locale: es })),
+        escapeCSV(titleToCategoryMap.get(incident.title) || 'Desconocida'),
+        escapeCSV(incident.title),
+        escapeCSV(incident.description),
+        escapeCSV(incident.userName || (incident.isAnonymous ? "Anónimo" : "Desconocido")),
+      ];
+      csvRows.push(row.join(","));
+    });
+
+    const csvString = csvRows.join("\n");
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    if (link.download !== undefined) {
+      const url = URL.createObjectURL(blob);
+      link.setAttribute("href", url);
+      link.setAttribute("download", "incidentes.csv");
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
 
 
   if (userContextLoading) {
@@ -253,8 +289,21 @@ export default function DashboardPage() {
         </Card>
         <Card className="shadow-lg">
           <CardHeader>
-            <CardTitle className="font-headline">Incidentes por Categoría</CardTitle>
-            <CardDescription className="font-body">Visualización de la distribución de incidentes por categoría.</CardDescription>
+            <div className="flex justify-between items-start gap-4">
+                <div>
+                    <CardTitle className="font-headline">Incidentes por Categoría</CardTitle>
+                    <CardDescription className="font-body mt-1">Visualización de la distribución de incidentes.</CardDescription>
+                </div>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleDownloadCSV}
+                    disabled={isLoadingIncidents || incidents.length === 0}
+                >
+                    <Download className="mr-2 h-4 w-4" />
+                    Descargar CSV
+                </Button>
+            </div>
           </CardHeader>
           <CardContent className="h-96 p-4">
              {isLoadingIncidents ? (
