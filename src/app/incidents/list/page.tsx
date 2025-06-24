@@ -167,9 +167,7 @@ export default function IncidentListPage() {
                 <TableBody>
                   {incidents.map((incident) => {
                     const incidentDate = new Date(incident.date);
-                    // The expiration date is calculated as 30 days after the incident's registration date.
-                    // This ensures that all incidents, new or old, will display a correct expiration date.
-                    const expirationDate = add(incidentDate, { days: 30 });
+                    const expirationDate = incident.expiresAt ? new Date(incident.expiresAt) : add(incidentDate, { days: 30 });
                     
                     return (
                     <TableRow key={incident.id}>
