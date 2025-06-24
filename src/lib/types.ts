@@ -8,6 +8,7 @@ export interface Incident {
   title: string;
   description: string;
   date: string; // ISO string
+  expiresAt: string; // ISO string
   type: IncidentType;
   isAnonymous: boolean;
   reportedBy: string; // User ID or 'anonimo'

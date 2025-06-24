@@ -6,6 +6,7 @@ import type { Incident, IncidentType, User, UserRole } from "@/lib/types";
 import { summarizeIncidentReports } from "@/ai/flows/summarize-incident-reports";
 import { z } from "zod";
 import { SELF_REGISTER_USER_ROLES } from "@/lib/constants";
+import { add } from "date-fns";
 
 
 declare global {
@@ -171,6 +172,7 @@ export async function submitIncidentAction(formData: FormData) {
     }
     
     const data = validation.data;
+    const creationDate = new Date();
 
     const newIncident: Incident = {
       id: Date.now().toString(),
@@ -178,7 +180,8 @@ export async function submitIncidentAction(formData: FormData) {
       description: data.description,
       type: data.type as IncidentType,
       isAnonymous: data.isAnonymous,
-      date: new Date().toISOString(),
+      date: creationDate.toISOString(),
+      expiresAt: add(creationDate, { months: 1 }).toISOString(),
       reportedBy: data.isAnonymous ? "anonimo" : data.userId || "desconocido",
       userId: data.isAnonymous ? undefined : data.userId,
       userName: data.isAnonymous ? "Anónimo" : data.userName,

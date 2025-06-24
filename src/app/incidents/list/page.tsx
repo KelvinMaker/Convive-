@@ -20,7 +20,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Loader2, AlertTriangle, ListChecks, Trash2, Edit3, ShieldAlert, Trophy } from 'lucide-react';
+import { Loader2, AlertTriangle, ListChecks, Trash2, Edit3, ShieldAlert, Trophy, CalendarOff } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import Link from 'next/link';
@@ -148,6 +148,7 @@ export default function IncidentListPage() {
                     <TableHead>Título</TableHead>
                     <TableHead>Tipo</TableHead>
                     <TableHead>Fecha</TableHead>
+                    <TableHead>Vence el</TableHead>
                     <TableHead>Reportado por</TableHead>
                     <TableHead>Rol del Reportante</TableHead>
                     {currentUser?.role === 'directivo' && <TableHead className="text-right">Acciones</TableHead>}
@@ -165,6 +166,12 @@ export default function IncidentListPage() {
                       </TableCell>
                       <TableCell>
                         {format(new Date(incident.date), "dd MMM yyyy, HH:mm", { locale: es })}
+                      </TableCell>
+                       <TableCell>
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <CalendarOff className="h-3.5 w-3.5"/>
+                          {format(new Date(incident.expiresAt), "dd MMM yyyy", { locale: es })}
+                        </div>
                       </TableCell>
                       <TableCell>{incident.userName || (incident.isAnonymous ? "Anónimo" : "Desconocido")}</TableCell>
                       <TableCell>
