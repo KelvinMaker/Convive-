@@ -146,29 +146,22 @@ export default function DashboardPage() {
                 </CardTitle>
                 <metric.icon className={`h-5 w-5 ${metric.color || 'text-muted-foreground'}`} />
               </CardHeader>
-              <CardContent className="flex-grow flex flex-col justify-start"> {/* Changed justify-center to justify-start */}
-                {metric.title === "Incidentes Reportados" && !isLoadingIncidents && incidentsTodayCount === 0 ? (
-                  <div className="text-center pt-2 flex-grow flex flex-col justify-center"> {/* Centering for button case */}
-                    <p className="text-sm text-muted-foreground mb-3">
-                      No hay nuevos incidentes hoy.
-                    </p>
-                    <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2 justify-center">
-                      <Button asChild size="sm" variant="default">
-                        <Link href="/incidents/new">Registrar Incidente</Link>
-                      </Button>
-                      <Button asChild size="sm" variant="outline">
-                        <Link href="/incidents/list">Ver Incidentes</Link>
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
-                  <>
-                    <div className={`text-2xl font-bold ${metric.color || ''}`}>{metric.value}</div>
-                    <p className="text-xs text-muted-foreground pt-1">
-                      {metric.description}
-                    </p>
-                  </>
-                )}
+              <CardContent className="flex-grow flex flex-col justify-between">
+                <div>
+                  <div className={`text-2xl font-bold ${metric.color || ''}`}>{metric.value}</div>
+                  <p className="text-xs text-muted-foreground pt-1">
+                    {metric.description}
+                  </p>
+                </div>
+                <div className="pt-2">
+                  {metric.title === "Incidentes Reportados" ? (
+                    <Button asChild size="sm" variant="default" className="w-full">
+                      <Link href="/incidents/new">Registrar Nuevo Incidente</Link>
+                    </Button>
+                  ) : (
+                    <div className="h-9" />
+                  )}
+                </div>
               </CardContent>
             </Card>
           );
@@ -257,4 +250,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
