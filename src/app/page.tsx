@@ -5,7 +5,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Users, Trophy, TrendingUp, AlertTriangle, Loader2, Info, ListChecks, Download, LayoutDashboard, Sparkles, FolderClosed } from 'lucide-react';
 import { useUser } from "@/contexts/UserContext";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { getIncidentsAction } from "@/app/actions";
@@ -14,6 +14,7 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { ResponsiveContainer, BarChart as RechartsBarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar } from 'recharts';
 import { PREDEFINED_INCIDENTS_HIERARCHICAL } from "@/lib/constants";
+import { usePathname } from "next/navigation";
 
 
 interface Metric {
@@ -33,6 +34,7 @@ export default function DashboardPage() {
   const [incidents, setIncidents] = useState<Incident[]>([]);
   const [isLoadingIncidents, setIsLoadingIncidents] = useState(true);
   const [incidentsError, setIncidentsError] = useState<string | null>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
     const hour = new Date().getHours();
@@ -41,8 +43,7 @@ export default function DashboardPage() {
     else setGreeting('Buenas noches');
   }, []);
 
-  useEffect(() => {
-    async function fetchIncidents() {
+  const fetchIncidents = useCallback(async () => {
       if (currentUser) { // Only fetch if a user is logged in
         setIsLoadingIncidents(true);
         setIncidentsError(null);
@@ -66,9 +67,15 @@ export default function DashboardPage() {
         setIncidents([]);
         setIsLoadingIncidents(false);
       }
+    }, [currentUser]);
+
+  useEffect(() => {
+    // This effect runs when the component mounts and whenever the user navigates to this page.
+    // This ensures the data is fresh.
+    if (pathname === '/') {
+      fetchIncidents();
     }
-    fetchIncidents();
-  }, [currentUser]);
+  }, [fetchIncidents, pathname]); 
 
   const todayISO = new Date().toISOString().split('T')[0];
 
@@ -384,5 +391,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
-    
