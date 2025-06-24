@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import type { Incident } from "@/lib/types";
+import { Label } from "@/components/ui/label";
 
 const closeIncidentSchema = z.object({
   incidentId: z.string().min(1, "Debes seleccionar un incidente."),
@@ -30,6 +31,7 @@ export default function CloseIncidentForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [incidents, setIncidents] = useState<Incident[]>([]);
   const [isLoadingIncidents, setIsLoadingIncidents] = useState(true);
+  const [selectedIncidentDescription, setSelectedIncidentDescription] = useState("");
 
   const form = useForm<CloseIncidentFormValues>({
     resolver: zodResolver(closeIncidentSchema),
@@ -98,7 +100,18 @@ export default function CloseIncidentForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Incidente a Cerrar</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoadingIncidents}>
+              <Select
+                onValueChange={(value) => {
+                  field.onChange(value);
+                  const selected = incidents.find((inc) => inc.id === value);
+                  setSelectedIncidentDescription(selected ? selected.description : "");
+                  if (!value) {
+                    setSelectedIncidentDescription("");
+                  }
+                }}
+                defaultValue={field.value}
+                disabled={isLoadingIncidents}
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder={isLoadingIncidents ? "Cargando incidentes..." : "Selecciona un incidente..."} />
@@ -118,6 +131,22 @@ export default function CloseIncidentForm() {
             </FormItem>
           )}
         />
+
+        {form.watch("incidentId") && selectedIncidentDescription && (
+          <div className="space-y-2">
+            <Label htmlFor="incident-description">Descripción del Incidente Registrado</Label>
+            <Textarea
+              id="incident-description"
+              readOnly
+              value={selectedIncidentDescription}
+              className="resize-y min-h-[100px] bg-muted/50 focus-visible:ring-0 focus-visible:ring-offset-0 cursor-default"
+            />
+            <FormDescription>
+              Esta es la descripción original que se registró con el incidente.
+            </FormDescription>
+          </div>
+        )}
+
         <FormField
           control={form.control}
           name="closingObservation"
@@ -144,5 +173,3 @@ export default function CloseIncidentForm() {
     </Form>
   );
 }
-
-    
