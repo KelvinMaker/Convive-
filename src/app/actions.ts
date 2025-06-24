@@ -181,7 +181,7 @@ export async function submitIncidentAction(formData: FormData) {
       type: data.type as IncidentType,
       isAnonymous: data.isAnonymous,
       date: creationDate.toISOString(),
-      expiresAt: add(creationDate, { months: 1 }).toISOString(),
+      expiresAt: add(creationDate, { days: 30 }).toISOString(),
       reportedBy: data.isAnonymous ? "anonimo" : data.userId || "desconocido",
       userId: data.isAnonymous ? undefined : data.userId,
       userName: data.isAnonymous ? "Anónimo" : data.userName,
