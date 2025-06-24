@@ -1,3 +1,4 @@
+
 // src/app/incidents/list/page.tsx
 "use client";
 
@@ -59,8 +60,12 @@ export default function IncidentListPage() {
   }, [fetchIncidents]);
 
   const handleDeleteIncident = async (incidentId: string) => {
+    if (!currentUser) {
+      toast({ title: "Error", description: "Debes iniciar sesión para eliminar un incidente.", variant: "destructive" });
+      return;
+    }
     try {
-      const result = await deleteIncidentAction(incidentId);
+      const result = await deleteIncidentAction(incidentId, currentUser.id);
       if (result.success) {
         toast({ title: "Incidente Eliminado", description: "El incidente ha sido eliminado correctamente." });
         fetchIncidents(); // Refresh the list
@@ -107,6 +112,7 @@ export default function IncidentListPage() {
     return null;
   }
 
+  const canManageIncidents = currentUser && ['directivo', 'docente'].includes(currentUser.role);
 
   return (
     <div className="container mx-auto py-8 px-4 md:px-6">
@@ -161,13 +167,14 @@ export default function IncidentListPage() {
                     <TableHead>Vence el</TableHead>
                     <TableHead>Reportado por</TableHead>
                     <TableHead>Rol del Reportante</TableHead>
-                    {currentUser?.role === 'directivo' && <TableHead className="text-right">Acciones</TableHead>}
+                    {canManageIncidents && <TableHead className="text-right">Acciones</TableHead>}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {incidents.map((incident) => {
                     const incidentDate = new Date(incident.date);
                     const expirationDate = incident.expiresAt ? new Date(incident.expiresAt) : add(incidentDate, { days: 30 });
+                    // Robust check: assume 'open' if status is missing or not 'closed'
                     const isClosed = incident.status === 'closed';
                     
                     return (
@@ -180,8 +187,8 @@ export default function IncidentListPage() {
                         </Badge>
                       </TableCell>
                        <TableCell>
-                        <Badge variant={!isClosed ? (incident.type === 'conflicto' ? 'destructive' : 'default') : 'secondary'}>
-                          {!isClosed ? 'Abierto' : 'Cerrado'}
+                        <Badge variant={isClosed ? 'secondary' : (incident.type === 'conflicto' ? 'destructive' : 'default')}>
+                          {isClosed ? 'Cerrado' : 'Abierto'}
                         </Badge>
                       </TableCell>
                       <TableCell>
@@ -203,7 +210,7 @@ export default function IncidentListPage() {
                            {getRoleDisplayName(incident.userRole)}
                         </Badge>
                       </TableCell>
-                      {currentUser?.role === 'directivo' && (
+                      {canManageIncidents && (
                         <TableCell className="text-right">
                           <div className="flex justify-end space-x-2">
                             <Button

@@ -7,30 +7,46 @@ import { summarizeIncidentReports } from "@/ai/flows/summarize-incident-reports"
 import { z } from "zod";
 import { SELF_REGISTER_USER_ROLES } from "@/lib/constants";
 import { add } from "date-fns";
+import { promises as fs } from 'fs';
+import path from 'path';
 
 
-declare global {
-  // eslint-disable-next-line no-var
-  var __users_store__: User[] | undefined;
-  // eslint-disable-next-line no-var
-  var __incidents_store__: Incident[] | undefined;
+// --- File System Data Persistence ---
+
+const dataDir = path.join(process.cwd(), 'data');
+const usersFilePath = path.join(dataDir, 'users.json');
+const incidentsFilePath = path.join(dataDir, 'incidents.json');
+
+async function ensureDataDirExists() {
+  try {
+    await fs.access(dataDir);
+  } catch {
+    await fs.mkdir(dataDir, { recursive: true });
+  }
 }
 
-let users: User[];
-let incidents: Incident[];
+async function readData<T>(filePath: string): Promise<T[]> {
+  await ensureDataDirExists();
+  try {
+    const fileContent = await fs.readFile(filePath, 'utf-8');
+    return JSON.parse(fileContent) as T[];
+  } catch (error: any) {
+    if (error.code === 'ENOENT') {
+      return []; // File doesn't exist yet, return empty array.
+    }
+    console.error(`Error reading data from ${filePath}:`, error);
+    throw new Error(`Could not read data from ${filePath}`);
+  }
+}
 
-if (process.env.NODE_ENV === 'production') {
-  users = [];
-  incidents = [];
-} else {
-  if (!global.__users_store__) {
-    global.__users_store__ = [];
+async function writeData<T>(filePath: string, data: T[]): Promise<void> {
+  await ensureDataDirExists();
+  try {
+    await fs.writeFile(filePath, JSON.stringify(data, null, 2), 'utf-8');
+  } catch (error) {
+    console.error(`Error writing data to ${filePath}:`, error);
+    throw new Error(`Could not write data to ${filePath}`);
   }
-  if (!global.__incidents_store__) {
-    global.__incidents_store__ = [];
-  }
-  users = global.__users_store__;
-  incidents = global.__incidents_store__;
 }
 
 
@@ -63,6 +79,7 @@ const CreateUserSchema = z.object({
 
 // --- User Management Actions ---
 export async function checkAdminExistsAction(): Promise<boolean> {
+  const users = await readData<User>(usersFilePath);
   return users.some(user => user.role === 'directivo' && user.status === 'active');
 }
 
@@ -80,6 +97,7 @@ export async function createInitialAdminAction(formData: FormData): Promise<{ su
   }
 
   const { email, password } = validation.data;
+  const users = await readData<User>(usersFilePath);
 
   const newUser: User = {
     id: `user-${Date.now()}`,
@@ -90,8 +108,9 @@ export async function createInitialAdminAction(formData: FormData): Promise<{ su
     status: 'active',
   };
   users.push(newUser);
-  console.log("Admin user created (in-memory):", newUser);
-  console.log("All users:", users);
+  await writeData<User>(usersFilePath, users);
+  
+  console.log("Admin user created (file system):", newUser);
   return { success: true, user: newUser };
 }
 
@@ -104,6 +123,7 @@ export async function loginUserAction(formData: FormData): Promise<{ success: bo
   }
   
   const { email, password } = validation.data;
+  const users = await readData<User>(usersFilePath);
   const user = users.find(u => u.email === email && u.status === 'active');
 
   if (!user) {
@@ -114,7 +134,7 @@ export async function loginUserAction(formData: FormData): Promise<{ success: bo
     return { success: false, error: "Contraseña incorrecta." };
   }
   
-  console.log("User logged in (in-memory):", user);
+  console.log("User logged in (file system):", user);
   return { success: true, user };
 }
 
@@ -129,6 +149,7 @@ export async function createUserAction(formData: FormData): Promise<{ success: b
   }
 
   const { name, email, password, role } = validation.data;
+  const users = await readData<User>(usersFilePath);
 
   const existingUser = users.find(u => u.email === email);
   if (existingUser) {
@@ -144,8 +165,8 @@ export async function createUserAction(formData: FormData): Promise<{ success: b
     status: 'active', 
   };
   users.push(newUser);
-  console.log("New user created (in-memory):", newUser);
-  console.log("All users:", users);
+  await writeData<User>(usersFilePath, users);
+  console.log("New user created (file system):", newUser);
   return { success: true, user: newUser };
 }
 
@@ -196,8 +217,10 @@ export async function submitIncidentAction(formData: FormData) {
       status: 'open',
     };
 
+    const incidents = await readData<Incident>(incidentsFilePath);
     incidents.push(newIncident); 
-    console.log("Incidents stored (in-memory):", incidents);
+    await writeData<Incident>(incidentsFilePath, incidents);
+    console.log("Incident stored (file system):", newIncident.id);
 
     return { success: true, incidentId: newIncident.id };
   } catch (error) {
@@ -218,6 +241,7 @@ export async function closeIncidentAction(formData: FormData): Promise<{ success
     }
 
     const { incidentId, closingObservation, userId } = validation.data;
+    const incidents = await readData<Incident>(incidentsFilePath);
     const incidentIndex = incidents.findIndex(inc => inc.id === incidentId);
 
     if (incidentIndex === -1) {
@@ -236,7 +260,8 @@ export async function closeIncidentAction(formData: FormData): Promise<{ success
       closedBy: userId,
     };
 
-    console.log("Incident closed (in-memory):", incidents[incidentIndex]);
+    await writeData<Incident>(incidentsFilePath, incidents);
+    console.log("Incident closed (file system):", incidents[incidentIndex]);
     return { success: true };
   } catch (error) {
     console.error("Error closing incident:", error);
@@ -259,6 +284,7 @@ export async function generateSummaryAction(reports: string) {
 
 export async function getIncidentsAction(): Promise<{ success: boolean; data?: Incident[]; error?: string }> {
   try {
+    const incidents = await readData<Incident>(incidentsFilePath);
     return { success: true, data: [...incidents].reverse() };
   } catch (error) {
     console.error("Error fetching incidents:", error);
@@ -266,13 +292,22 @@ export async function getIncidentsAction(): Promise<{ success: boolean; data?: I
   }
 }
 
-export async function deleteIncidentAction(incidentId: string): Promise<{ success: boolean; error?: string }> {
+export async function deleteIncidentAction(incidentId: string, userId: string): Promise<{ success: boolean; error?: string }> {
   try {
+    const users = await readData<User>(usersFilePath);
+    const user = users.find(u => u.id === userId);
+
+    if (!user || !['directivo', 'docente'].includes(user.role)) {
+      return { success: false, error: "No tienes permiso para eliminar incidentes." };
+    }
+
+    let incidents = await readData<Incident>(incidentsFilePath);
     const initialLength = incidents.length;
     incidents = incidents.filter(incident => incident.id !== incidentId);
+    
     if (incidents.length < initialLength) {
-      console.log("Incident deleted (in-memory):", incidentId);
-      console.log("Remaining incidents:", incidents);
+      await writeData<Incident>(incidentsFilePath, incidents);
+      console.log("Incident deleted (file system):", incidentId);
       return { success: true };
     } else {
       return { success: false, error: "Incidente no encontrado." };
@@ -286,13 +321,10 @@ export async function deleteIncidentAction(incidentId: string): Promise<{ succes
 
 export async function getUsersAction(): Promise<{ success: boolean; data?: User[]; error?: string }> {
   try {
+    const users = await readData<User>(usersFilePath);
     return { success: true, data: [...users] };
   } catch (error) {
     console.error("Error fetching users:", error);
     return { success: false, error: "Failed to fetch users." };
   }
 }
-
-    
-
-    
