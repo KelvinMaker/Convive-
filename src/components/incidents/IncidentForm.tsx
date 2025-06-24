@@ -53,7 +53,7 @@ type IncidentFormValues = z.infer<typeof incidentFormSchema>;
 export default function IncidentForm() {
   const { toast } = useToast();
   const { currentUser } = useUser();
-  const router = useRouter(); // Keep router if needed for other purposes, but not for redirect on success
+  const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedCategoryValue, setSelectedCategoryValue] = useState<string>("");
   const [specificIncidentOptions, setSpecificIncidentOptions] = useState<SpecificIncident[]>([]);
@@ -106,11 +106,9 @@ export default function IncidentForm() {
       if (result.success) {
         toast({
           title: "Incidente Registrado",
-          description: "Tu reporte ha sido enviado exitosamente.",
+          description: "Tu reporte ha sido enviado exitosamente. Serás redirigido.",
         });
-        form.reset();
-        setSelectedCategoryValue(""); // Reset category selection
-        // router.push("/"); // Removed navigation to allow continuous entry
+        router.push("/"); // Redirect to the main dashboard
       } else {
         toast({
           title: "Error",
@@ -276,4 +274,3 @@ export default function IncidentForm() {
     </Form>
   );
 }
-
