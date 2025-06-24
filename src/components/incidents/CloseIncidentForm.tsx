@@ -42,7 +42,7 @@ export default function CloseIncidentForm() {
       const result = await getIncidentsAction();
       if (result.success && result.data) {
         // Filter for open incidents to show in the dropdown
-        setIncidents(result.data.filter(inc => inc.status === 'open' && inc.type === 'conflicto'));
+        setIncidents(result.data.filter(inc => inc.status === 'open'));
       }
       setIsLoadingIncidents(false);
     }
@@ -101,11 +101,11 @@ export default function CloseIncidentForm() {
               <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoadingIncidents}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder={isLoadingIncidents ? "Cargando incidentes..." : "Selecciona un conflicto activo..."} />
+                    <SelectValue placeholder={isLoadingIncidents ? "Cargando incidentes..." : "Selecciona un incidente abierto..."} />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {!isLoadingIncidents && incidents.length === 0 && <SelectItem value="none" disabled>No hay conflictos activos para cerrar</SelectItem>}
+                  {!isLoadingIncidents && incidents.length === 0 && <SelectItem value="none" disabled>No hay incidentes abiertos para cerrar</SelectItem>}
                   {incidents.map((incident) => (
                     <SelectItem key={incident.id} value={incident.id}>
                       {incident.title}
