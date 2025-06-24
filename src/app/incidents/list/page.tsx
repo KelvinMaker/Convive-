@@ -21,7 +21,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Loader2, AlertTriangle, ListChecks, Trash2, Edit3, ShieldAlert, Trophy, CalendarOff } from 'lucide-react';
-import { format } from 'date-fns';
+import { format, isValid } from 'date-fns';
 import { es } from 'date-fns/locale';
 import Link from 'next/link';
 import { useUser } from '@/contexts/UserContext';
@@ -155,7 +155,11 @@ export default function IncidentListPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {incidents.map((incident) => (
+                  {incidents.map((incident) => {
+                    const incidentDate = new Date(incident.date);
+                    const expirationDate = incident.expiresAt ? new Date(incident.expiresAt) : null;
+                    
+                    return (
                     <TableRow key={incident.id}>
                       <TableCell className="font-medium">{incident.title}</TableCell>
                       <TableCell>
@@ -165,13 +169,17 @@ export default function IncidentListPage() {
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        {format(new Date(incident.date), "dd MMM yyyy, HH:mm", { locale: es })}
+                        {isValid(incidentDate) ? format(incidentDate, "dd MMM yyyy, HH:mm", { locale: es }) : 'Fecha inválida'}
                       </TableCell>
                        <TableCell>
-                        <div className="flex items-center gap-1 text-muted-foreground">
-                          <CalendarOff className="h-3.5 w-3.5"/>
-                          {format(new Date(incident.expiresAt), "dd MMM yyyy", { locale: es })}
-                        </div>
+                        {expirationDate && isValid(expirationDate) ? (
+                          <div className="flex items-center gap-1 text-muted-foreground">
+                            <CalendarOff className="h-3.5 w-3.5"/>
+                            {format(expirationDate, "dd MMM yyyy", { locale: es })}
+                          </div>
+                        ) : (
+                          <span className="text-muted-foreground text-xs">N/A</span>
+                        )}
                       </TableCell>
                       <TableCell>{incident.userName || (incident.isAnonymous ? "Anónimo" : "Desconocido")}</TableCell>
                       <TableCell>
@@ -219,7 +227,7 @@ export default function IncidentListPage() {
                         </TableCell>
                       )}
                     </TableRow>
-                  ))}
+                  )})}
                 </TableBody>
               </Table>
             </div>
@@ -229,5 +237,3 @@ export default function IncidentListPage() {
     </div>
   );
 }
-
-    
