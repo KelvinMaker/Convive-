@@ -20,7 +20,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Loader2, AlertTriangle, ListChecks, Trash2, Edit3, ShieldAlert, Trophy, CalendarOff } from 'lucide-react';
+import { Loader2, AlertTriangle, ListChecks, Trash2, Edit3, ShieldAlert, Trophy, CalendarOff, ArrowLeft } from 'lucide-react';
 import { format, isValid } from 'date-fns';
 import { es } from 'date-fns/locale';
 import Link from 'next/link';
@@ -113,13 +113,23 @@ export default function IncidentListPage() {
     <div className="container mx-auto py-8 px-4 md:px-6">
       <Card className="shadow-lg">
         <CardHeader>
-          <div className="flex items-center gap-2">
-            <ListChecks className="h-6 w-6 text-primary" />
-            <CardTitle className="text-2xl font-bold font-headline">Todos los Incidentes Reportados</CardTitle>
-          </div>
-          <CardDescription className="font-body">
-            Un listado completo de todos los incidentes y logros registrados en el sistema.
-          </CardDescription>
+          <div className="flex justify-between items-start">
+              <div>
+                <div className="flex items-center gap-2">
+                  <ListChecks className="h-6 w-6 text-primary" />
+                  <CardTitle className="text-2xl font-bold font-headline">Todos los Incidentes Reportados</CardTitle>
+                </div>
+                <CardDescription className="font-body">
+                  Un listado completo de todos los incidentes y logros registrados en el sistema.
+                </CardDescription>
+              </div>
+              <Button asChild variant="outline">
+                <Link href="/">
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Volver al Panel Principal
+                </Link>
+              </Button>
+            </div>
         </CardHeader>
         <CardContent>
           {isLoading ? (
