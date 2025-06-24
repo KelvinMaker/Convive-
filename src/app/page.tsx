@@ -14,7 +14,6 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { ResponsiveContainer, BarChart as RechartsBarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar } from 'recharts';
 import { PREDEFINED_INCIDENTS_HIERARCHICAL } from "@/lib/constants";
-import { usePathname } from "next/navigation";
 
 
 interface Metric {
@@ -34,7 +33,6 @@ export default function DashboardPage() {
   const [incidents, setIncidents] = useState<Incident[]>([]);
   const [isLoadingIncidents, setIsLoadingIncidents] = useState(true);
   const [incidentsError, setIncidentsError] = useState<string | null>(null);
-  const pathname = usePathname();
 
   useEffect(() => {
     const hour = new Date().getHours();
@@ -44,38 +42,30 @@ export default function DashboardPage() {
   }, []);
 
   const fetchIncidents = useCallback(async () => {
-      if (currentUser) { // Only fetch if a user is logged in
-        setIsLoadingIncidents(true);
-        setIncidentsError(null);
-        try {
-          const result = await getIncidentsAction();
-          if (result.success && result.data) {
-            setIncidents(result.data);
-          } else {
-            setIncidentsError(result.error || "No se pudieron cargar los incidentes.");
-            setIncidents([]);
-          }
-        } catch (error) {
-          console.error("Error fetching incidents for dashboard:", error);
-          setIncidentsError("Error al conectar con el servidor para obtener incidentes.");
-          setIncidents([]);
-        } finally {
-          setIsLoadingIncidents(false);
-        }
+    setIsLoadingIncidents(true);
+    setIncidentsError(null);
+    try {
+      const result = await getIncidentsAction();
+      if (result.success && result.data) {
+        setIncidents(result.data);
       } else {
-        // Clear incidents if no user or logged out
+        setIncidentsError(result.error || "No se pudieron cargar los incidentes.");
         setIncidents([]);
-        setIsLoadingIncidents(false);
       }
-    }, [currentUser]);
+    } catch (error) {
+      console.error("Error fetching incidents for dashboard:", error);
+      setIncidentsError("Error al conectar con el servidor para obtener incidentes.");
+      setIncidents([]);
+    } finally {
+      setIsLoadingIncidents(false);
+    }
+  }, []);
 
   useEffect(() => {
-    // This effect runs when the component mounts and whenever the user navigates to this page.
-    // This ensures the data is fresh.
-    if (pathname === '/') {
+    if (currentUser) {
       fetchIncidents();
     }
-  }, [fetchIncidents, pathname]); 
+  }, [currentUser, fetchIncidents]);
 
   const todayISO = new Date().toISOString().split('T')[0];
 

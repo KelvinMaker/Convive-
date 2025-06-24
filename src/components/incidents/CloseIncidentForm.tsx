@@ -1,3 +1,4 @@
+
 // src/components/incidents/CloseIncidentForm.tsx
 "use client";
 
@@ -43,8 +44,7 @@ export default function CloseIncidentForm() {
       setIsLoadingIncidents(true);
       const result = await getIncidentsAction();
       if (result.success && result.data) {
-        // Show only open incidents in the dropdown.
-        setIncidents(result.data.filter(inc => inc.status === 'open'));
+        setIncidents(result.data);
       }
       setIsLoadingIncidents(false);
     }
@@ -114,19 +114,19 @@ export default function CloseIncidentForm() {
               >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder={isLoadingIncidents ? "Cargando incidentes..." : "Selecciona un incidente..."} />
+                    <SelectValue placeholder={isLoadingIncidents ? "Cargando incidentes..." : "Selecciona un incidente abierto..."} />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {!isLoadingIncidents && incidents.length === 0 && <SelectItem value="none" disabled>No hay incidentes abiertos para cerrar</SelectItem>}
+                  {!isLoadingIncidents && incidents.length === 0 && <SelectItem value="none" disabled>No hay incidentes para cerrar</SelectItem>}
                   {incidents.map((incident) => (
-                    <SelectItem key={incident.id} value={incident.id}>
-                      {incident.title}
+                    <SelectItem key={incident.id} value={incident.id} disabled={incident.status === 'closed'}>
+                      {incident.title} {incident.status === 'closed' ? '(Cerrado)' : ''}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-              <FormDescription>Elige el incidente que deseas marcar como resuelto. Solo se muestran los incidentes abiertos.</FormDescription>
+              <FormDescription>Elige el incidente que deseas marcar como resuelto. Los incidentes ya cerrados están deshabilitados.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
