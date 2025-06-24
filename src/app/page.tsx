@@ -93,7 +93,15 @@ export default function DashboardPage() {
       )
     },
     { title: "Incidentes Cerrados", value: isLoadingIncidents ? "..." : closedIncidentsCount.toString(), description: closedIncidentsCount === 1 ? "1 incidente cerrado" : `${closedIncidentsCount} incidentes cerrados`, icon: FolderClosed, color: "text-green-500",
-      actionButton: ( <div className="h-9" /> )
+      actionButton: (
+        currentUser?.role === 'directivo' ? (
+          <Button asChild size="sm" variant="secondary" className="w-full">
+            <Link href="/incidents/close">Cerrar Incidente</Link>
+          </Button>
+        ) : (
+          <div className="h-9" />
+        )
+      )
     },
     { title: "Logros Destacados", value: isLoadingIncidents ? "..." : logrosCount.toString(), description: "Total logros registrados", icon: Trophy, color: "text-green-500" },
     { title: "Participación Estudiantil", value: "N/A", description: "En reportes anónimos", icon: Users, color: "text-blue-500" },
@@ -220,14 +228,6 @@ export default function DashboardPage() {
               Resúmenes IA
             </Link>
           </Button>
-        )}
-        {currentUser?.role === 'directivo' && (
-            <Button asChild variant="outline">
-                <Link href="/incidents/close">
-                    <FolderClosed className="mr-2 h-4 w-4"/>
-                    Cerrar Incidente
-                </Link>
-            </Button>
         )}
       </div>
 
