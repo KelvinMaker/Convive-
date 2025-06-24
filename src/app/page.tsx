@@ -289,12 +289,58 @@ export default function DashboardPage() {
         </Card>
         <Card className="shadow-lg">
           <CardHeader>
-            <div className="flex justify-between items-start gap-4">
-                <div>
-                    <CardTitle className="font-headline">Incidentes por Categoría</CardTitle>
-                    <CardDescription className="font-body mt-1">Visualización de la distribución de incidentes.</CardDescription>
-                </div>
-                <Button
+            <CardTitle className="font-headline">Incidentes por Categoría</CardTitle>
+            <CardDescription className="font-body mt-1">Visualización de la distribución de incidentes.</CardDescription>
+          </CardHeader>
+          <CardContent className="p-4">
+             <div className="h-96">
+                {isLoadingIncidents ? (
+                    <div className="flex justify-center items-center h-full">
+                        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+                    </div>
+                ) : incidentsError ? (
+                    <div className="flex flex-col justify-center items-center h-full text-center text-destructive">
+                        <AlertTriangle className="h-12 w-12 mx-auto" />
+                        <p className="mt-2">Error al cargar datos del gráfico.</p>
+                    </div>
+                ) : chartData.length > 0 ? (
+                    <ResponsiveContainer width="100%" height="100%">
+                        <RechartsBarChart 
+                            data={chartData}
+                            margin={{ top: 5, right: 20, left: -10, bottom: 120 }}
+                        >
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                            <XAxis 
+                                dataKey="name" 
+                                angle={-60}
+                                textAnchor="end" 
+                                interval={0}
+                                tick={{ fontSize: 10 }}
+                                height={110}
+                            />
+                            <YAxis allowDecimals={false} />
+                            <Tooltip 
+                                contentStyle={{ 
+                                    backgroundColor: 'hsl(var(--background))', 
+                                    borderColor: 'hsl(var(--border))',
+                                    borderRadius: 'var(--radius)',
+                                }}
+                                labelStyle={{ fontWeight: 'bold', color: 'hsl(var(--foreground))' }}
+                                itemStyle={{ color: 'hsl(var(--foreground))' }}
+                                cursor={{ fill: 'hsl(var(--accent))', fillOpacity: 0.2 }}
+                            />
+                            <Bar dataKey="count" name="Incidentes" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                        </RechartsBarChart>
+                    </ResponsiveContainer>
+                ) : (
+                    <div className="flex flex-col justify-center items-center h-full text-center text-muted-foreground">
+                        <BarChart className="h-24 w-24 mx-auto" />
+                        <p className="mt-2 text-sm">No hay datos de incidentes para mostrar.</p>
+                    </div>
+                )}
+             </div>
+             <div className="mt-6 flex justify-center">
+                 <Button
                     variant="outline"
                     size="sm"
                     onClick={handleDownloadCSV}
@@ -303,56 +349,12 @@ export default function DashboardPage() {
                     <Download className="mr-2 h-4 w-4" />
                     Descargar CSV
                 </Button>
-            </div>
-          </CardHeader>
-          <CardContent className="h-96 p-4">
-             {isLoadingIncidents ? (
-                <div className="flex justify-center items-center h-full">
-                    <Loader2 className="h-12 w-12 animate-spin text-primary" />
-                </div>
-            ) : incidentsError ? (
-                <div className="flex flex-col justify-center items-center h-full text-center text-destructive">
-                    <AlertTriangle className="h-12 w-12 mx-auto" />
-                    <p className="mt-2">Error al cargar datos del gráfico.</p>
-                </div>
-            ) : chartData.length > 0 ? (
-                <ResponsiveContainer width="100%" height="100%">
-                    <RechartsBarChart 
-                        data={chartData}
-                        margin={{ top: 5, right: 20, left: -10, bottom: 120 }}
-                    >
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                        <XAxis 
-                            dataKey="name" 
-                            angle={-60}
-                            textAnchor="end" 
-                            interval={0}
-                            tick={{ fontSize: 10 }}
-                            height={110}
-                        />
-                        <YAxis allowDecimals={false} />
-                        <Tooltip 
-                            contentStyle={{ 
-                                backgroundColor: 'hsl(var(--background))', 
-                                borderColor: 'hsl(var(--border))',
-                                borderRadius: 'var(--radius)',
-                            }}
-                            labelStyle={{ fontWeight: 'bold', color: 'hsl(var(--foreground))' }}
-                            itemStyle={{ color: 'hsl(var(--foreground))' }}
-                            cursor={{ fill: 'hsl(var(--accent))', fillOpacity: 0.2 }}
-                        />
-                        <Bar dataKey="count" name="Incidentes" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-                    </RechartsBarChart>
-                </ResponsiveContainer>
-            ) : (
-                <div className="flex flex-col justify-center items-center h-full text-center text-muted-foreground">
-                    <BarChart className="h-24 w-24 mx-auto" />
-                    <p className="mt-2 text-sm">No hay datos de incidentes para mostrar.</p>
-                </div>
-            )}
+             </div>
           </CardContent>
         </Card>
       </div>
     </div>
   );
 }
+
+    
