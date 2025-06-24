@@ -103,10 +103,9 @@ export default function LoginPage() {
               {isSubmitting ? "Ingresando..." : "Iniciar Sesión"}
             </Button>
           </form>
-          {/* Add link to password recovery or contact admin in the future */}
-          {/* <p className="mt-4 text-center text-sm">
-            ¿Problemas para ingresar? <Link href="/ayuda" className="underline text-primary">Contacta al administrador</Link>.
-          </p> */}
+          <p className="mt-4 text-center text-sm">
+            ¿No tienes cuenta? <Link href="/register" className="underline text-primary">Regístrate aquí</Link>.
+          </p>
         </CardContent>
       </Card>
     </div>

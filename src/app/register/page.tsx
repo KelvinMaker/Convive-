@@ -19,7 +19,7 @@ import Link from "next/link";
 import { Loader2 } from "lucide-react";
 import { SELF_REGISTER_USER_ROLES } from '@/lib/constants';
 import type { UserRole } from '@/lib/types';
-import { FormField, FormControl, FormItem } from "@/components/ui/form"; // Added FormItem
+import { Form, FormField, FormControl, FormItem, FormMessage } from "@/components/ui/form"; 
 
 const RegisterFormSchema = z.object({
   name: z.string().min(1, "El nombre es requerido."),
@@ -98,54 +98,88 @@ export default function RegisterPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="name">Nombre Completo</Label>
-              <Input id="name" placeholder="Tu Nombre Completo" {...form.register("name")} />
-              {form.formState.errors.name && <p className="text-sm text-destructive">{form.formState.errors.name.message}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Correo Electrónico</Label>
-              <Input id="email" type="email" placeholder="usuario@example.com" {...form.register("email")} />
-              {form.formState.errors.email && <p className="text-sm text-destructive">{form.formState.errors.email.message}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Contraseña</Label>
-              <Input id="password" type="password" placeholder="********" {...form.register("password")} />
-              {form.formState.errors.password && <p className="text-sm text-destructive">{form.formState.errors.password.message}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirmar Contraseña</Label>
-              <Input id="confirmPassword" type="password" placeholder="********" {...form.register("confirmPassword")} />
-              {form.formState.errors.confirmPassword && <p className="text-sm text-destructive">{form.formState.errors.confirmPassword.message}</p>}
-            </div>
-             <FormField
-              control={form.control}
-              name="role"
-              render={({ field }) => (
-                <FormItem>
-                  <Label>Rol</Label>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <Label>Nombre Completo</Label>
                     <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecciona un rol" />
-                      </SelectTrigger>
+                      <Input placeholder="Tu Nombre Completo" {...field} />
                     </FormControl>
-                    <SelectContent>
-                      {SELF_REGISTER_USER_ROLES.map(role => (
-                        <SelectItem key={role.value} value={role.value}>{role.label}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {form.formState.errors.role && <p className="text-sm text-destructive">{form.formState.errors.role.message}</p>}
-                </FormItem>
-              )}
-            />
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {isSubmitting ? "Registrando..." : "Crear Cuenta"}
-            </Button>
-          </form>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <Label>Correo Electrónico</Label>
+                    <FormControl>
+                      <Input type="email" placeholder="usuario@example.com" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <Label>Contraseña</Label>
+                    <FormControl>
+                      <Input type="password" placeholder="********" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <Label>Confirmar Contraseña</Label>
+                    <FormControl>
+                      <Input type="password" placeholder="********" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+               <FormField
+                control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem>
+                    <Label>Rol</Label>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecciona un rol" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {SELF_REGISTER_USER_ROLES.map(role => (
+                          <SelectItem key={role.value} value={role.value}>{role.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
+                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {isSubmitting ? "Registrando..." : "Crear Cuenta"}
+              </Button>
+            </form>
+          </Form>
           <p className="mt-4 text-center text-sm">
             ¿Ya tienes una cuenta? <Link href="/login" className="underline text-primary">Inicia Sesión</Link>.
           </p>
