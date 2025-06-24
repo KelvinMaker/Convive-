@@ -21,69 +21,71 @@ export default function AuthGuard({ children, allowedRoles }: AuthGuardProps) {
 
   useEffect(() => {
     if (isLoading) {
-      console.log("AuthGuard: User context loading...");
+      // Still loading user/admin state, wait before running logic
       return; 
     }
-    console.log("AuthGuard: isLoading false. isAdminSetupComplete:", isAdminSetupComplete, "currentUser:", !!currentUser, "pathname:", pathname);
 
+    // --- Redirection Logic ---
 
+    // 1. If admin is not set up, force redirect to the setup page
     if (!isAdminSetupComplete) {
       if (pathname !== '/setup-admin') {
-        console.log("AuthGuard: Admin not set up, redirecting to /setup-admin from", pathname);
         router.push('/setup-admin');
       }
       return;
     }
 
-    // Admin setup IS complete from this point onwards
+    // 2. If admin IS set up, but user is NOT logged in...
     if (!currentUser) {
-      if (pathname !== '/login') { // Only allow /login if not authenticated and setup is complete
-        console.log("AuthGuard: Not logged in, redirecting to /login from", pathname);
+      const publicPaths = ['/login', '/register'];
+      // ...allow access only to public pages, otherwise redirect to login.
+      if (!publicPaths.includes(pathname)) {
         router.push('/login');
       }
       return;
     }
 
-    // User is logged in, check roles if specified for the route
+    // 3. If user IS logged in, check role-based access
     if (allowedRoles && allowedRoles.length > 0 && !allowedRoles.includes(currentUser.role)) {
-      console.log(`AuthGuard: Role mismatch. User role: ${currentUser.role}, Allowed: ${allowedRoles}. Redirecting to / from`, pathname);
-      router.push('/'); // Redirect to a default page (dashboard) if role not allowed
+      // User does not have the required role, redirect to dashboard
+      router.push('/');
       return;
     }
-    console.log("AuthGuard: Access granted for", pathname);
 
   }, [currentUser, isLoading, isAdminSetupComplete, router, pathname, allowedRoles]);
 
+  // --- Render Logic ---
+
+  // While loading, show a global loading indicator
   if (isLoading) {
     return <div className="flex flex-col justify-center items-center min-h-screen text-center p-4"><Loader2 className="h-10 w-10 animate-spin text-primary mb-4" /> <p>Cargando aplicación...</p></div>;
   }
-
-  // Render children if all checks pass or if the current path is one of the public/setup paths
-  // This ensures that /setup-admin and /login can render their own content while AuthGuard handles redirection for other paths.
-  if (!isAdminSetupComplete && pathname === '/setup-admin') {
-    return <>{children}</>;
-  }
-  if (isAdminSetupComplete && !currentUser && pathname === '/login') {
-    return <>{children}</>;
-  }
   
-  // If we are still loading, or if redirection is about to happen, show a generic loading/redirecting message.
-  // This helps prevent flashing of content before redirection.
-  if (!isAdminSetupComplete && pathname !== '/setup-admin') {
+  // Define public/setup paths
+  const publicPathsWhenNotLoggedIn = ['/login', '/register'];
+  const setupPath = '/setup-admin';
+
+  // Case 1: App not set up. Render only the setup page, show redirect message for others.
+  if (!isAdminSetupComplete) {
+    if (pathname === setupPath) {
+      return <>{children}</>;
+    }
     return <div className="flex flex-col justify-center items-center min-h-screen text-center p-4"><Loader2 className="h-10 w-10 animate-spin text-primary mb-4" /> <p>Redirigiendo a la configuración inicial...</p></div>;
   }
-  if (isAdminSetupComplete && !currentUser && pathname !== '/login') {
-    return <div className="flex flex-col justify-center items-center min-h-screen text-center p-4"><Loader2 className="h-10 w-10 animate-spin text-primary mb-4" /> <p>Redirigiendo al inicio de sesión...</p></div>;
-  }
-  if (currentUser && allowedRoles && allowedRoles.length > 0 && !allowedRoles.includes(currentUser.role)) {
-     return <div className="flex flex-col justify-center items-center min-h-screen text-center p-4"><Loader2 className="h-10 w-10 animate-spin text-primary mb-4" /> <p>Acceso denegado. Redirigiendo...</p></div>;
+  
+  // Case 2: App is set up, but user is not logged in. Render public pages, show redirect for others.
+  if (!currentUser) {
+      if (publicPathsWhenNotLoggedIn.includes(pathname)) {
+          return <>{children}</>;
+      }
+      return <div className="flex flex-col justify-center items-center min-h-screen text-center p-4"><Loader2 className="h-10 w-10 animate-spin text-primary mb-4" /> <p>Redirigiendo al inicio de sesión...</p></div>;
   }
 
-  // If user is logged in and admin setup is complete, and current path doesn't require specific roles or matches allowed roles
-  if (currentUser && isAdminSetupComplete) {
-    return <>{children}</>;
+  // Case 3: User is logged in. Check for role mismatch before rendering.
+  if (allowedRoles && allowedRoles.length > 0 && !allowedRoles.includes(currentUser.role)) {
+    return <div className="flex flex-col justify-center items-center min-h-screen text-center p-4"><Loader2 className="h-10 w-10 animate-spin text-primary mb-4" /> <p>Acceso denegado. Redirigiendo...</p></div>;
   }
-  
-  // Fallback for any unhandled intermediate states, though useEffect should cover.
-  return <div className="flex flex-col justify-center items-center min-h-screen text-center p-4"><Loader2 className="h-10 w-10 animate-spin text-primary mb-4" /> <p>Verificando acceso...</p></div>;
+
+  // If all checks pass, render the children for the authenticated user.
+  return <>{children}</>;
 }
