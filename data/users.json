@@ -14,5 +14,21 @@
     "password": "123456",
     "role": "docente",
     "status": "active"
+  },
+  {
+    "id": "user-1760107835789",
+    "name": "Kevin yanez",
+    "email": "kyanez@estudiantes.areandina.edu.co",
+    "password": "987654321.K",
+    "role": "docente",
+    "status": "active"
+  },
+  {
+    "id": "user-1760108600718",
+    "name": "Claudia Rocha ",
+    "email": "patriv.2807@gmail.com",
+    "password": "MCLR0905.,",
+    "role": "estudiante",
+    "status": "active"
   }
 ]

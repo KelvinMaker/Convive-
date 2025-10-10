@@ -98,8 +98,7 @@ export default function ReportsDashboardPage() {
   const metrics: Metric[] = useMemo(() => [
     { title: "Partidas de Trivia Jugadas", value: isLoadingData ? "..." : triviaStats.gamesPlayed.toString(), description: "Total de partidas completadas.", icon: Gamepad2, color: "text-purple-500", link: "/trivia", clickable: true },
     { title: "Puntaje Promedio Trivia", value: isLoadingData ? "..." : `${triviaStats.averageScore.toFixed(1)}/10`, description: "Rendimiento promedio en la trivia.", icon: Percent, color: "text-blue-500", link: "/trivia", clickable: true },
-    { title: "Total Reportes de Incidentes", value: isLoadingData ? "..." : incidents.length.toString(), description: "Incidentes y logros.", icon: ListChecks, color: "text-orange-500", link: "/incidents/list", clickable: true },
-  ], [isLoadingData, incidents.length, triviaStats]);
+  ], [isLoadingData, triviaStats]);
 
   const recentTriviaResults = useMemo(() => {
     return [...triviaResults]
@@ -216,7 +215,7 @@ export default function ReportsDashboardPage() {
 
 
   return (
-    <div className="container mx-auto py-8 px-4 sm:px-6">
+    <div className="container mx-auto py-4 sm:py-8 px-4 sm:px-6">
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight font-headline">
           {greeting}, {currentUser.name || 'Usuario'}!
@@ -253,7 +252,7 @@ export default function ReportsDashboardPage() {
         )}
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
         {metrics.map((metric, index) => {
           const cardComponent = (
             <Card className={`w-full shadow-lg hover:shadow-xl transition-shadow duration-300 ${metric.clickable ? 'cursor-pointer' : ''} flex flex-col`}>
@@ -286,7 +285,7 @@ export default function ReportsDashboardPage() {
         })}
       </div>
 
-      <div className="mt-8 grid gap-8 lg:grid-cols-2">
+      <div className="mt-8 grid gap-8 md:grid-cols-1 lg:grid-cols-2">
         <Card className="shadow-lg">
           <CardHeader>
             <CardTitle className="font-headline">Últimas 5 Partidas de Trivia</CardTitle>

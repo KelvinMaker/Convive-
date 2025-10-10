@@ -14,5 +14,21 @@
     "score": 2,
     "totalQuestions": 10,
     "playedAt": "2025-10-10T13:21:44.633Z"
+  },
+  {
+    "id": "trivia-1760103289253",
+    "userId": "user-1750810122871",
+    "userName": "Abdala Chadid",
+    "score": 3,
+    "totalQuestions": 10,
+    "playedAt": "2025-10-10T13:34:49.253Z"
+  },
+  {
+    "id": "trivia-1760107495647",
+    "userId": "user-1750810122871",
+    "userName": "Abdala Chadid",
+    "score": 4,
+    "totalQuestions": 10,
+    "playedAt": "2025-10-10T14:44:55.647Z"
   }
 ]
