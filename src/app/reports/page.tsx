@@ -240,12 +240,6 @@ export default function ReportsDashboardPage() {
                 Resúmenes IA
               </Link>
             </Button>
-             <Button asChild variant="outline">
-                <Link href="/incidents/list">
-                  <ListChecks className="mr-2 h-4 w-4" />
-                  Ver todos los Incidentes
-                </Link>
-            </Button>
           </>
         )}
       </div>
@@ -409,5 +403,3 @@ export default function ReportsDashboardPage() {
     </div>
   );
 }
-
-    
