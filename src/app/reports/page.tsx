@@ -122,39 +122,6 @@ export default function ReportsDashboardPage() {
     return Array.from(scoreMap, ([score, count]) => ({ score, count }));
   }, [triviaResults, isLoadingData]);
 
-  const handleDownloadIncidentsCSV = () => {
-    if (incidents.length === 0) return;
-    const headers = ["ID", "Título", "Descripción", "Tipo", "Anónimo", "Fecha", "Reportado por", "Rol"];
-    const csvRows = [headers.join(",")];
-    const escapeCSV = (str: string | undefined | null) => `"${String(str || '').replace(/"/g, '""')}"`;
-
-    incidents.forEach(incident => {
-      const row = [
-        incident.id,
-        escapeCSV(incident.title),
-        escapeCSV(incident.description),
-        escapeCSV(incident.type),
-        String(incident.isAnonymous),
-        escapeCSV(format(new Date(incident.date), "dd/MM/yyyy HH:mm:ss", { locale: es })),
-        escapeCSV(incident.userName),
-        escapeCSV(incident.userRole),
-      ];
-      csvRows.push(row.join(","));
-    });
-    const csvString = csvRows.join("\n");
-    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement("a");
-    if (link.download !== undefined) {
-      const url = URL.createObjectURL(blob);
-      link.setAttribute("href", url);
-      link.setAttribute("download", "incidentes.csv");
-      link.style.visibility = 'hidden';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-  };
-
   const handleDownloadTriviaCSV = () => {
     if (triviaResults.length === 0) return;
     const headers = ["Usuario", "Puntaje", "Total Preguntas", "Fecha"];
@@ -336,15 +303,6 @@ export default function ReportsDashboardPage() {
                 <Download className="mr-2 h-4 w-4" />
                 Descargar Historial de Trivia
               </Button>
-               <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleDownloadIncidentsCSV}
-                    disabled={isLoadingData || incidents.length === 0}
-                >
-                    <Download className="mr-2 h-4 w-4" />
-                    Descargar CSV de Incidentes
-                </Button>
             </div>
           </CardContent>
         </Card>
@@ -354,7 +312,7 @@ export default function ReportsDashboardPage() {
             <CardDescription className="font-body mt-1">Distribución de puntajes obtenidos en todas las partidas.</CardDescription>
           </CardHeader>
           <CardContent className="p-2 sm:p-4">
-             <div className="h-96">
+             <div className="h-96 w-full">
                 {isLoadingData ? (
                     <div className="flex justify-center items-center h-full">
                         <Loader2 className="h-12 w-12 animate-spin text-primary" />
@@ -403,3 +361,5 @@ export default function ReportsDashboardPage() {
     </div>
   );
 }
+
+    

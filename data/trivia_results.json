@@ -30,5 +30,29 @@
     "score": 4,
     "totalQuestions": 10,
     "playedAt": "2025-10-10T14:44:55.647Z"
+  },
+  {
+    "id": "trivia-1760109530201",
+    "userId": "user-1760108600718",
+    "userName": "Claudia Rocha ",
+    "score": 8,
+    "totalQuestions": 10,
+    "playedAt": "2025-10-10T15:18:50.201Z"
+  },
+  {
+    "id": "trivia-1760110509925",
+    "userId": "user-1760110380795",
+    "userName": "Donovan Lambraño ",
+    "score": 7,
+    "totalQuestions": 10,
+    "playedAt": "2025-10-10T15:35:09.925Z"
+  },
+  {
+    "id": "trivia-1760110559424",
+    "userId": "user-1750810122871",
+    "userName": "Abdala Chadid",
+    "score": 9,
+    "totalQuestions": 10,
+    "playedAt": "2025-10-10T15:35:59.424Z"
   }
 ]

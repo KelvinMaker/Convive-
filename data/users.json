@@ -30,5 +30,13 @@
     "password": "MCLR0905.,",
     "role": "estudiante",
     "status": "active"
+  },
+  {
+    "id": "user-1760110380795",
+    "name": "Donovan Lambraño ",
+    "email": "donovanlambrano0@gmail.com",
+    "password": "dslr2808",
+    "role": "estudiante",
+    "status": "active"
   }
 ]
