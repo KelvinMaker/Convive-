@@ -8,8 +8,8 @@ import { useUser } from "@/contexts/UserContext";
 import { useEffect, useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { getIncidentsAction, getTriviaStatsAction } from "@/app/actions";
-import type { Incident } from "@/lib/types";
+import { getIncidentsAction, getTriviaStatsAction, getTriviaResultsAction } from "@/app/actions";
+import type { Incident, TriviaResult } from "@/lib/types";
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { ResponsiveContainer, BarChart as RechartsBarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar } from 'recharts';
@@ -37,6 +37,7 @@ export default function ReportsDashboardPage() {
   const [greeting, setGreeting] = useState('');
   const [incidents, setIncidents] = useState<Incident[]>([]);
   const [triviaStats, setTriviaStats] = useState<TriviaStats>({ gamesPlayed: 0, averageScore: 0 });
+  const [triviaResults, setTriviaResults] = useState<TriviaResult[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [dataError, setDataError] = useState<string | null>(null);
 
@@ -51,9 +52,10 @@ export default function ReportsDashboardPage() {
     setIsLoadingData(true);
     setDataError(null);
     try {
-      const [incidentsResult, triviaStatsResult] = await Promise.all([
+      const [incidentsResult, triviaStatsResult, allTriviaResults] = await Promise.all([
         getIncidentsAction(),
         getTriviaStatsAction(),
+        getTriviaResultsAction(),
       ]);
 
       if (incidentsResult.success && incidentsResult.data) {
@@ -66,9 +68,15 @@ export default function ReportsDashboardPage() {
       if (triviaStatsResult.success && triviaStatsResult.data) {
         setTriviaStats(triviaStatsResult.data);
       } else {
-        // Non-critical error, can be ignored or logged
         console.warn(triviaStatsResult.error || "No se pudieron cargar las estadísticas de trivia.");
         setTriviaStats({ gamesPlayed: 0, averageScore: 0 });
+      }
+
+       if (allTriviaResults.success && allTriviaResults.data) {
+        setTriviaResults(allTriviaResults.data);
+      } else {
+        console.warn(allTriviaResults.error || "No se pudieron cargar los resultados de trivia.");
+        setTriviaResults([]);
       }
 
     } catch (error) {
@@ -76,6 +84,7 @@ export default function ReportsDashboardPage() {
       setDataError("Error al conectar con el servidor para obtener datos.");
       setIncidents([]);
       setTriviaStats({ gamesPlayed: 0, averageScore: 0 });
+      setTriviaResults([]);
     } finally {
       setIsLoadingData(false);
     }
@@ -86,16 +95,6 @@ export default function ReportsDashboardPage() {
       fetchData();
     }
   }, [currentUser, fetchData]);
-
-  const todayISO = new Date().toISOString().split('T')[0];
-
-  const incidentsTodayCount = useMemo(() => {
-    return incidents.filter(incident => incident.date.startsWith(todayISO)).length;
-  }, [incidents, todayISO]);
-
-  const closedIncidentsCount = useMemo(() => {
-    return incidents.filter(incident => incident.status === 'closed').length;
-  }, [incidents]);
 
   const logrosCount = useMemo(() => {
     return incidents.filter(incident => incident.type === 'logro').length;
@@ -108,11 +107,11 @@ export default function ReportsDashboardPage() {
     { title: "Total Reportes", value: isLoadingData ? "..." : incidents.length.toString(), description: "Incidentes y logros", icon: ListChecks, color: "text-orange-500", link: "/incidents/list", clickable: true },
   ], [isLoadingData, incidents.length, logrosCount, triviaStats]);
 
-  const recentIncidents = useMemo(() => {
-    return [...incidents]
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-      .slice(0, 3);
-  }, [incidents]);
+  const recentTriviaResults = useMemo(() => {
+    return [...triviaResults]
+      .sort((a, b) => new Date(b.playedAt).getTime() - new Date(a.playedAt).getTime())
+      .slice(0, 5);
+  }, [triviaResults]);
 
   const titleToCategoryMap = useMemo(() => {
     const map = new Map<string, string>();
@@ -139,14 +138,11 @@ export default function ReportsDashboardPage() {
     return Array.from(categoryMap, ([name, count]) => ({ name, count }));
   }, [incidents, isLoadingData, titleToCategoryMap]);
 
-  const handleDownloadCSV = () => {
+  const handleDownloadIncidentsCSV = () => {
     if (incidents.length === 0) return;
-
     const headers = ["Fecha de registro", "Categoria", "Tipo especifico", "Descripcion", "Usuario que registra"];
     const csvRows = [headers.join(",")];
-
     const escapeCSV = (str: string) => `"${str.replace(/"/g, '""')}"`;
-
     incidents.forEach(incident => {
       const row = [
         escapeCSV(format(new Date(incident.date), "dd/MM/yyyy HH:mm:ss", { locale: es })),
@@ -157,7 +153,6 @@ export default function ReportsDashboardPage() {
       ];
       csvRows.push(row.join(","));
     });
-
     const csvString = csvRows.join("\n");
     const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
@@ -169,6 +164,35 @@ export default function ReportsDashboardPage() {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+    }
+  };
+
+  const handleDownloadTriviaCSV = () => {
+    if (triviaResults.length === 0) return;
+    const headers = ["Usuario", "Puntaje", "Total Preguntas", "Fecha"];
+    const csvRows = [headers.join(",")];
+    const escapeCSV = (str: string) => `"${str.replace(/"/g, '""')}"`;
+    // Use full triviaResults data, not just recent ones
+    [...triviaResults].reverse().forEach(result => {
+        const row = [
+            escapeCSV(result.userName || 'Anónimo'),
+            result.score,
+            result.totalQuestions,
+            escapeCSV(format(new Date(result.playedAt), "dd/MM/yyyy HH:mm:ss", { locale: es })),
+        ];
+        csvRows.push(row.join(","));
+    });
+    const csvString = csvRows.join("\n");
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    if (link.download !== undefined) {
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", "resultados_trivia.csv");
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
   };
 
@@ -271,35 +295,35 @@ export default function ReportsDashboardPage() {
       <div className="mt-8 grid gap-8 md:grid-cols-2">
         <Card className="shadow-lg">
           <CardHeader>
-            <CardTitle className="font-headline">Resumen de Actividad Reciente</CardTitle>
-            <CardDescription className="font-body">Últimos incidentes y logros reportados.</CardDescription>
+            <CardTitle className="font-headline">Últimas Partidas de Trivia</CardTitle>
+            <CardDescription className="font-body">Resultados más recientes del juego.</CardDescription>
           </CardHeader>
           <CardContent>
             {isLoadingData ? (
               <div className="flex justify-center items-center h-40">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                <span className="ml-2">Cargando actividad...</span>
+                <span className="ml-2">Cargando resultados...</span>
               </div>
             ) : dataError ? (
               <div className="text-center text-destructive py-6">
                 <AlertTriangle className="h-10 w-10 mx-auto mb-2" />
                 <p>Error: {dataError}</p>
               </div>
-            ) : recentIncidents.length > 0 ? (
+            ) : recentTriviaResults.length > 0 ? (
               <ul className="space-y-3">
-                {recentIncidents.map(incident => (
-                  <li key={incident.id} className="p-3 rounded-md border bg-card/50 hover:bg-accent/20 transition-colors">
+                {recentTriviaResults.map(result => (
+                  <li key={result.id} className="p-3 rounded-md border bg-card/50 hover:bg-accent/20 transition-colors">
                     <div className="flex justify-between items-start">
                       <div>
-                        <h4 className={`font-semibold ${incident.type === 'conflicto' ? 'text-destructive' : 'text-green-600'}`}>
-                          {incident.title}
+                        <h4 className="font-semibold text-primary">
+                          {result.userName || "Anónimo"}
                         </h4>
                         <p className="text-xs text-muted-foreground">
-                          Reportado por: {incident.userName || (incident.isAnonymous ? "Anónimo" : "Desconocido")}
+                          {format(new Date(result.playedAt), "dd MMM yyyy, HH:mm", { locale: es })}
                         </p>
                       </div>
-                      <span className="text-xs text-muted-foreground whitespace-nowrap">
-                        {format(new Date(incident.date), "dd MMM yyyy, HH:mm", { locale: es })}
+                      <span className="text-lg font-bold text-foreground">
+                        {result.score}/{result.totalQuestions}
                       </span>
                     </div>
                   </li>
@@ -308,15 +332,26 @@ export default function ReportsDashboardPage() {
             ) : (
               <div className="space-y-4 text-center text-muted-foreground py-6">
                 <Info className="h-10 w-10 mx-auto mb-2" />
-                <p>No hay actividad reciente para mostrar.</p>
+                <p>No hay resultados de trivia para mostrar.</p>
                 <p className="text-sm">
-                  <Link href="/incidents/new" className="text-primary hover:underline">
-                    Registra un nuevo incidente
+                  <Link href="/trivia" className="text-primary hover:underline">
+                    Juega una partida
                   </Link>
-                  {' '}para comenzar.
+                  {' '}para ver los resultados aquí.
                 </p>
               </div>
             )}
+            <div className="mt-6 flex justify-center">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleDownloadTriviaCSV}
+                disabled={isLoadingData || triviaResults.length === 0}
+              >
+                <Download className="mr-2 h-4 w-4" />
+                Descargar Historial de Trivia
+              </Button>
+            </div>
           </CardContent>
         </Card>
         <Card className="shadow-lg">
@@ -375,11 +410,11 @@ export default function ReportsDashboardPage() {
                  <Button
                     variant="outline"
                     size="sm"
-                    onClick={handleDownloadCSV}
+                    onClick={handleDownloadIncidentsCSV}
                     disabled={isLoadingData || incidents.length === 0}
                 >
                     <Download className="mr-2 h-4 w-4" />
-                    Descargar CSV
+                    Descargar CSV de Incidentes
                 </Button>
              </div>
           </CardContent>
@@ -388,5 +423,3 @@ export default function ReportsDashboardPage() {
     </div>
   );
 }
-
-    

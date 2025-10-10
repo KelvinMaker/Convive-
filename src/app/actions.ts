@@ -387,3 +387,13 @@ export async function getTriviaStatsAction(): Promise<{ success: boolean; data?:
     return { success: false, error: "No se pudieron obtener las estadísticas de la trivia." };
   }
 }
+
+export async function getTriviaResultsAction(): Promise<{ success: boolean; data?: TriviaResult[]; error?: string }> {
+    try {
+        const results = await readData<TriviaResult>(triviaResultsFilePath);
+        return { success: true, data: [...results].reverse() };
+    } catch (error) {
+        console.error("Error fetching trivia results:", error);
+        return { success: false, error: "No se pudieron obtener los resultados de la trivia." };
+    }
+}
