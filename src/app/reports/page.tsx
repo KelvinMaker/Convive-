@@ -1,4 +1,3 @@
-
 // src/app/reports/page.tsx - Dashboard
 "use client";
 
@@ -13,7 +12,6 @@ import type { Incident, TriviaResult } from "@/lib/types";
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { ResponsiveContainer, BarChart as RechartsBarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar } from 'recharts';
-import { PREDEFINED_INCIDENTS_HIERARCHICAL } from "@/lib/constants";
 
 
 interface Metric {
@@ -113,43 +111,38 @@ export default function ReportsDashboardPage() {
       .slice(0, 5);
   }, [triviaResults]);
 
-  const titleToCategoryMap = useMemo(() => {
-    const map = new Map<string, string>();
-    PREDEFINED_INCIDENTS_HIERARCHICAL.forEach(category => {
-      category.specificTypes.forEach(specificType => {
-        map.set(specificType.value, category.categoryLabel);
-      });
-    });
-    return map;
-  }, []);
 
-  const chartData = useMemo(() => {
-    if (isLoadingData || incidents.length === 0) return [];
+  const triviaScoreDistribution = useMemo(() => {
+    if (isLoadingData || triviaResults.length === 0) return [];
     
-    const categoryMap = new Map<string, number>();
+    const scoreMap = new Map<number, number>();
+    for (let i = 0; i <= 10; i++) {
+        scoreMap.set(i, 0);
+    }
 
-    incidents.forEach(incident => {
-        const categoryLabel = titleToCategoryMap.get(incident.title);
-        if (categoryLabel) {
-            categoryMap.set(categoryLabel, (categoryMap.get(categoryLabel) || 0) + 1);
-        }
+    triviaResults.forEach(result => {
+        scoreMap.set(result.score, (scoreMap.get(result.score) || 0) + 1);
     });
     
-    return Array.from(categoryMap, ([name, count]) => ({ name, count }));
-  }, [incidents, isLoadingData, titleToCategoryMap]);
+    return Array.from(scoreMap, ([score, count]) => ({ score, count }));
+  }, [triviaResults, isLoadingData]);
 
   const handleDownloadIncidentsCSV = () => {
     if (incidents.length === 0) return;
-    const headers = ["Fecha de registro", "Categoria", "Tipo especifico", "Descripcion", "Usuario que registra"];
+    const headers = ["ID", "Título", "Descripción", "Tipo", "Anónimo", "Fecha", "Reportado por", "Rol"];
     const csvRows = [headers.join(",")];
-    const escapeCSV = (str: string) => `"${str.replace(/"/g, '""')}"`;
+    const escapeCSV = (str: string | undefined | null) => `"${String(str || '').replace(/"/g, '""')}"`;
+
     incidents.forEach(incident => {
       const row = [
-        escapeCSV(format(new Date(incident.date), "dd/MM/yyyy HH:mm:ss", { locale: es })),
-        escapeCSV(titleToCategoryMap.get(incident.title) || 'Desconocida'),
+        incident.id,
         escapeCSV(incident.title),
         escapeCSV(incident.description),
-        escapeCSV(incident.userName || (incident.isAnonymous ? "Anónimo" : "Desconocido")),
+        escapeCSV(incident.type),
+        String(incident.isAnonymous),
+        escapeCSV(format(new Date(incident.date), "dd/MM/yyyy HH:mm:ss", { locale: es })),
+        escapeCSV(incident.userName),
+        escapeCSV(incident.userRole),
       ];
       csvRows.push(row.join(","));
     });
@@ -253,8 +246,7 @@ export default function ReportsDashboardPage() {
               </Link>
             </Button>
             <Button asChild size="sm" variant="secondary" className="ml-auto">
-                <Link href="/incidents/new">Registrar Incidente</Link>
-            </Button>
+                <Link href="/incidents/new">Registrar Incidente</Link></Button>
           </>
         )}
       </div>
@@ -295,7 +287,7 @@ export default function ReportsDashboardPage() {
       <div className="mt-8 grid gap-8 md:grid-cols-2">
         <Card className="shadow-lg">
           <CardHeader>
-            <CardTitle className="font-headline">Últimas Partidas de Trivia</CardTitle>
+            <CardTitle className="font-headline">Últimas 5 Partidas de Trivia</CardTitle>
             <CardDescription className="font-body">Resultados más recientes del juego.</CardDescription>
           </CardHeader>
           <CardContent>
@@ -307,7 +299,7 @@ export default function ReportsDashboardPage() {
             ) : dataError ? (
               <div className="text-center text-destructive py-6">
                 <AlertTriangle className="h-10 w-10 mx-auto mb-2" />
-                <p>Error: {dataError}</p>
+                <p>No se pudieron cargar los datos de la trivia.</p>
               </div>
             ) : recentTriviaResults.length > 0 ? (
               <ul className="space-y-3">
@@ -341,7 +333,7 @@ export default function ReportsDashboardPage() {
                 </p>
               </div>
             )}
-            <div className="mt-6 flex justify-center">
+             <div className="mt-6 flex justify-center gap-4">
               <Button
                 variant="outline"
                 size="sm"
@@ -351,13 +343,22 @@ export default function ReportsDashboardPage() {
                 <Download className="mr-2 h-4 w-4" />
                 Descargar Historial de Trivia
               </Button>
+               <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleDownloadIncidentsCSV}
+                    disabled={isLoadingData || incidents.length === 0}
+                >
+                    <Download className="mr-2 h-4 w-4" />
+                    Descargar CSV de Incidentes
+                </Button>
             </div>
           </CardContent>
         </Card>
         <Card className="shadow-lg">
           <CardHeader>
-            <CardTitle className="font-headline">Incidentes por Categoría</CardTitle>
-            <CardDescription className="font-body mt-1">Visualización de la distribución de incidentes.</CardDescription>
+            <CardTitle className="font-headline">Informe de Resultados de Trivia</CardTitle>
+            <CardDescription className="font-body mt-1">Distribución de puntajes obtenidos en todas las partidas.</CardDescription>
           </CardHeader>
           <CardContent className="p-4">
              <div className="h-96">
@@ -370,22 +371,19 @@ export default function ReportsDashboardPage() {
                         <AlertTriangle className="h-12 w-12 mx-auto" />
                         <p className="mt-2">Error al cargar datos del gráfico.</p>
                     </div>
-                ) : chartData.length > 0 ? (
+                ) : triviaScoreDistribution.length > 0 && triviaResults.length > 0 ? (
                     <ResponsiveContainer width="100%" height="100%">
                         <RechartsBarChart 
-                            data={chartData}
-                            margin={{ top: 5, right: 20, left: -10, bottom: 120 }}
+                            data={triviaScoreDistribution}
+                            margin={{ top: 5, right: 20, left: -10, bottom: 20 }}
                         >
                             <CartesianGrid strokeDasharray="3 3" vertical={false} />
                             <XAxis 
-                                dataKey="name" 
-                                angle={-60}
-                                textAnchor="end" 
-                                interval={0}
-                                tick={{ fontSize: 10 }}
-                                height={110}
+                                dataKey="score" 
+                                tick={{ fontSize: 12 }}
+                                label={{ value: 'Puntaje Obtenido', position: 'insideBottom', offset: -10, fontSize: 12 }}
                             />
-                            <YAxis allowDecimals={false} />
+                            <YAxis allowDecimals={false} tick={{ fontSize: 12 }} label={{ value: 'Nº de Partidas', angle: -90, position: 'insideLeft', offset: 10, fontSize: 12 }} />
                             <Tooltip 
                                 contentStyle={{ 
                                     backgroundColor: 'hsl(var(--background))', 
@@ -396,26 +394,15 @@ export default function ReportsDashboardPage() {
                                 itemStyle={{ color: 'hsl(var(--foreground))' }}
                                 cursor={{ fill: 'hsl(var(--accent))', fillOpacity: 0.2 }}
                             />
-                            <Bar dataKey="count" name="Incidentes" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                            <Bar dataKey="count" name="Partidas" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
                         </RechartsBarChart>
                     </ResponsiveContainer>
                 ) : (
                     <div className="flex flex-col justify-center items-center h-full text-center text-muted-foreground">
                         <BarChart className="h-24 w-24 mx-auto" />
-                        <p className="mt-2 text-sm">No hay datos de incidentes para mostrar.</p>
+                        <p className="mt-2 text-sm">No hay datos de trivia para mostrar en el gráfico.</p>
                     </div>
                 )}
-             </div>
-             <div className="mt-6 flex justify-center">
-                 <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleDownloadIncidentsCSV}
-                    disabled={isLoadingData || incidents.length === 0}
-                >
-                    <Download className="mr-2 h-4 w-4" />
-                    Descargar CSV de Incidentes
-                </Button>
              </div>
           </CardContent>
         </Card>
