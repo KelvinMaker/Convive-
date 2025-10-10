@@ -246,13 +246,11 @@ export default function ReportsDashboardPage() {
                   Ver todos los Incidentes
                 </Link>
             </Button>
-            <Button asChild size="sm" variant="secondary" className="ml-auto">
-                <Link href="/incidents/new">Registrar Incidente</Link></Button>
           </>
         )}
       </div>
 
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2">
         {metrics.map((metric, index) => {
           const cardComponent = (
             <Card className={`w-full shadow-lg hover:shadow-xl transition-shadow duration-300 ${metric.clickable ? 'cursor-pointer' : ''} flex flex-col`}>
@@ -411,3 +409,5 @@ export default function ReportsDashboardPage() {
     </div>
   );
 }
+
+    
