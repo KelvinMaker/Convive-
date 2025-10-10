@@ -94,16 +94,11 @@ export default function ReportsDashboardPage() {
     }
   }, [currentUser, fetchData]);
 
-  const logrosCount = useMemo(() => {
-    return incidents.filter(incident => incident.type === 'logro').length;
-  }, [incidents]);
-
   const metrics: Metric[] = useMemo(() => [
     { title: "Partidas de Trivia Jugadas", value: isLoadingData ? "..." : triviaStats.gamesPlayed.toString(), description: "Total de partidas completadas.", icon: Gamepad2, color: "text-purple-500", link: "/trivia", clickable: true },
     { title: "Puntaje Promedio Trivia", value: isLoadingData ? "..." : `${triviaStats.averageScore.toFixed(1)}/10`, description: "Rendimiento promedio en la trivia.", icon: Percent, color: "text-blue-500", link: "/trivia", clickable: true },
-    { title: "Logros Destacados", value: isLoadingData ? "..." : logrosCount.toString(), description: "Total logros registrados", icon: Trophy, color: "text-emerald-500" },
-    { title: "Total Reportes", value: isLoadingData ? "..." : incidents.length.toString(), description: "Incidentes y logros", icon: ListChecks, color: "text-orange-500", link: "/incidents/list", clickable: true },
-  ], [isLoadingData, incidents.length, logrosCount, triviaStats]);
+    { title: "Total Reportes de Incidentes", value: isLoadingData ? "..." : incidents.length.toString(), description: "Incidentes y logros.", icon: ListChecks, color: "text-orange-500", link: "/incidents/list", clickable: true },
+  ], [isLoadingData, incidents.length, triviaStats]);
 
   const recentTriviaResults = useMemo(() => {
     return [...triviaResults]
@@ -244,6 +239,12 @@ export default function ReportsDashboardPage() {
                 <Sparkles className="mr-2 h-4 w-4" />
                 Resúmenes IA
               </Link>
+            </Button>
+             <Button asChild variant="outline">
+                <Link href="/incidents/list">
+                  <ListChecks className="mr-2 h-4 w-4" />
+                  Ver todos los Incidentes
+                </Link>
             </Button>
             <Button asChild size="sm" variant="secondary" className="ml-auto">
                 <Link href="/incidents/new">Registrar Incidente</Link></Button>
