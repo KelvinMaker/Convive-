@@ -23,31 +23,56 @@ export default function MainPage() {
     };
 
     return (
-        <div className="container mx-auto flex flex-col items-center justify-center min-h-[calc(100vh-150px)] px-4">
-            <div className="text-center mb-12">
+        <div className="container mx-auto flex flex-col items-center justify-center min-h-[calc(100vh-100px)] px-4 py-8">
+            <div className="text-center mb-10">
                 <div className="flex justify-center mb-4">
                    <AppLogo size="lg" />
                 </div>
-                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                <p className="text-base text-muted-foreground max-w-md mx-auto">
                     Una herramienta para fortalecer la convivencia escolar a través del seguimiento de incidentes y el aprendizaje interactivo.
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl">
+            <div className="flex flex-col gap-8 w-full max-w-lg">
+                
                 <Card className="shadow-xl hover:shadow-2xl transition-shadow duration-300 flex flex-col">
                     <CardHeader>
-                        <div className="flex items-center gap-4">
+                        <div className="flex flex-col items-center text-center gap-3">
+                             <Gamepad2 className="h-10 w-10 text-accent-foreground bg-accent p-2 rounded-lg" />
+                            <div>
+                                <CardTitle className="text-xl font-bold font-headline">Módulo de Trivia</CardTitle>
+                                <CardDescription className="text-sm">
+                                    Juega y aprende sobre el Manual de Convivencia.
+                                </CardDescription>
+                            </div>
+                        </div>
+                    </CardHeader>
+                    <CardContent className="flex-grow text-center">
+                        <p className="text-muted-foreground text-sm mb-6">
+                            Participa en un divertido juego para poner a prueba tus conocimientos sobre los deberes y derechos en la institución.
+                        </p>
+                    </CardContent>
+                    <div className="p-6 pt-0">
+                        <Button onClick={() => handleNavigation('/trivia')} className="w-full" variant="secondary" size="lg">
+                            Ir a Jugar
+                        </Button>
+                    </div>
+                </Card>
+
+                <Card className="shadow-xl hover:shadow-2xl transition-shadow duration-300 flex flex-col">
+                    <CardHeader>
+                        <div className="flex flex-col items-center text-center gap-3">
                             <FileText className="h-10 w-10 text-primary" />
                             <div>
-                                <CardTitle className="text-2xl font-bold font-headline">Módulo de Reportes</CardTitle>
-                                <CardDescription>
+                                <CardTitle className="text-xl font-bold font-headline">Módulo de Reportes</CardTitle>
+                                <CardDescription className="text-sm">
                                     Gestión y seguimiento de incidentes de convivencia.
                                 </CardDescription>
                             </div>
                         </div>
                     </CardHeader>
-                    <CardContent className="flex-grow">
-                        <p className="text-muted-foreground mb-6">
+                    <CardContent className="flex-grow text-center">
+                        <p className="text-muted-foreground text-sm mb-6">
                             Accede al panel para registrar, visualizar y administrar los reportes de incidentes y logros en la comunidad educativa.
                         </p>
                     </CardContent>
@@ -58,29 +83,6 @@ export default function MainPage() {
                     </div>
                 </Card>
 
-                <Card className="shadow-xl hover:shadow-2xl transition-shadow duration-300 flex flex-col">
-                    <CardHeader>
-                        <div className="flex items-center gap-4">
-                            <Gamepad2 className="h-10 w-10 text-accent-foreground bg-accent p-2 rounded-lg" />
-                            <div>
-                                <CardTitle className="text-2xl font-bold font-headline">Módulo de Trivia</CardTitle>
-                                <CardDescription>
-                                    Juega y aprende sobre el Manual de Convivencia.
-                                </CardDescription>
-                            </div>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="flex-grow">
-                        <p className="text-muted-foreground mb-6">
-                            Participa en un divertido juego de trivia para poner a prueba tus conocimientos sobre los deberes y derechos en la institución.
-                        </p>
-                    </CardContent>
-                    <div className="p-6 pt-0">
-                        <Button onClick={() => handleNavigation('/trivia')} className="w-full" variant="secondary" size="lg">
-                            Ir a Jugar
-                        </Button>
-                    </div>
-                </Card>
             </div>
         </div>
     );
