@@ -1,0 +1,18 @@
+[
+  {
+    "id": "user-1750809736316",
+    "email": "kelachad3@gmail.com",
+    "password": "K31v1n",
+    "role": "directivo",
+    "name": "kelachad3",
+    "status": "active"
+  },
+  {
+    "id": "user-1750810122871",
+    "name": "Abdala Chadid",
+    "email": "kelachad@hotmail.com",
+    "password": "123456",
+    "role": "docente",
+    "status": "active"
+  }
+]

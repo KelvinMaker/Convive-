@@ -38,7 +38,7 @@ export default function LoginPage() {
   useEffect(() => {
     if (!userContextLoading) {
       if (currentUser) {
-        router.push('/'); // Already logged in
+        router.push('/'); // Already logged in, go to main landing page
       } else if (!isAdminSetupComplete) {
         router.push('/setup-admin'); // Admin not set up
       }
@@ -57,7 +57,7 @@ export default function LoginPage() {
       if (result.success && result.user) {
         toast({ title: "Inicio de Sesión Exitoso", description: `Bienvenido de nuevo, ${result.user.name}.` });
         login(result.user);
-        // router.push('/'); // login function will redirect
+        // login function will redirect
       } else {
         toast({ title: "Error de Inicio de Sesión", description: result.error || "Credenciales incorrectas.", variant: "destructive" });
       }
@@ -105,6 +105,9 @@ export default function LoginPage() {
           </form>
           <p className="mt-4 text-center text-sm">
             ¿No tienes cuenta? <Link href="/register" className="underline text-primary">Regístrate aquí</Link>.
+          </p>
+           <p className="mt-2 text-center text-sm">
+            <Link href="/" className="text-sm text-muted-foreground hover:underline">Volver al inicio</Link>
           </p>
         </CardContent>
       </Card>

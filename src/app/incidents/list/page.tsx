@@ -129,7 +129,7 @@ export default function IncidentListPage() {
                 </CardDescription>
               </div>
               <Button asChild variant="outline">
-                <Link href="/">
+                <Link href="/reports">
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   Volver al Panel Principal
                 </Link>
@@ -174,7 +174,6 @@ export default function IncidentListPage() {
                   {incidents.map((incident) => {
                     const incidentDate = new Date(incident.date);
                     const expirationDate = incident.expiresAt ? new Date(incident.expiresAt) : add(incidentDate, { days: 30 });
-                    // Robust check: assume 'open' if status is missing or not 'closed'
                     const isClosed = incident.status === 'closed';
                     
                     return (
@@ -188,7 +187,7 @@ export default function IncidentListPage() {
                       </TableCell>
                        <TableCell>
                         <Badge variant={isClosed ? 'secondary' : (incident.type === 'conflicto' ? 'destructive' : 'default')}>
-                          {isClosed ? 'Cerrado' : 'Abierto'}
+                           {isClosed ? 'Cerrado' : 'Abierto'}
                         </Badge>
                       </TableCell>
                       <TableCell>

@@ -48,7 +48,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const login = (userData: User) => {
     setCurrentUser(userData);
     setIsAdminSetupComplete(true); // Logging in means setup is done or user is admin
-    router.push('/'); // Redirect to dashboard after login
+    router.push('/'); // Redirect to main landing page after login
   };
 
   const logout = () => {
@@ -73,4 +73,3 @@ export const useUser = (): UserContextType => {
   }
   return context;
 };
-

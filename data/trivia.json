@@ -1,0 +1,787 @@
+
+[
+  {
+    "id": 1,
+    "situacion_pregunta": "Un compañero exige que respeten su opinión. ¿Qué se exige?",
+    "opcion_a": "Respetar solo si estoy de acuerdo.",
+    "opcion_b": "Respetar puntos de vista y dignidad.",
+    "opcion_c": "Que mi opinión siempre sea prioridad.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 2,
+    "situacion_pregunta": "¿Cuál derecho es siempre más importante en el colegio?",
+    "opcion_a": "El derecho de un estudiante particular.",
+    "opcion_b": "Los derechos de la comunidad y el interés general.",
+    "opcion_c": "El derecho al libre desarrollo.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 3,
+    "situacion_pregunta": "¿Qué limita tu libre desarrollo de personalidad (LDP)?",
+    "opcion_a": "Mi edad o mi rendimiento.",
+    "opcion_b": "No vulnerar ni afectar a otros educandos.",
+    "opcion_c": "Que el colegio no me lo permita.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 4,
+    "situacion_pregunta": "Si mi comportamiento afecta la convivencia, ¿qué pasa?",
+    "opcion_a": "Deben respetar mi derecho a la educación.",
+    "opcion_b": "Puede prevalecer el interés general.",
+    "opcion_c": "Solo me ponen una falta leve.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 5,
+    "situacion_pregunta": "¿El manual de convivencia es igual para quién?",
+    "opcion_a": "Solo para los estudiantes nuevos.",
+    "opcion_b": "Es el mismo para todos los educandos.",
+    "opcion_c": "Solo aplica para estudiantes mayores.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 6,
+    "situacion_pregunta": "¿Qué obligación principal tienes como estudiante?",
+    "opcion_a": "Ser solo un buen deportista.",
+    "opcion_b": "Conocer y acatar la Ley de Infancia y Adolescencia.",
+    "opcion_c": "Conocer solo la Constitución.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 7,
+    "situacion_pregunta": "¿Qué implica la educación como \"derecho-deber\"?",
+    "opcion_a": "Que tengo derechos ilimitados.",
+    "opcion_b": "Debo cumplir las normas desde el ingreso.",
+    "opcion_c": "Puedo excusar faltas con mi derecho a estudiar.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 8,
+    "situacion_pregunta": "¿Debo ser un ejemplo para los grados inferiores?",
+    "opcion_a": "No, es solo responsabilidad del profesor.",
+    "opcion_b": "Sí, soy un especial y prioritario ejemplo.",
+    "opcion_c": "Solo si porto el uniforme completo.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 9,
+    "situacion_pregunta": "¿Cómo debe ser mi comportamiento y actitud?",
+    "opcion_a": "Solo mientras los profesores me vean.",
+    "opcion_b": "Digno, ejemplar, maduro y coherente.",
+    "opcion_c": "Que solo me afecte a mí mismo.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 10,
+    "situacion_pregunta": "¿Se respeta mi orientación sexual o desarrollo sexual?",
+    "opcion_a": "Sí, si no hablo de ello.",
+    "opcion_b": "Sí, pero con mesura, dignidad y respeto.",
+    "opcion_c": "Solo fuera del plantel educativo.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 11,
+    "situacion_pregunta": "Llevo mi uniforme con el cabello desordenado. ¿Cuál es mi deber?",
+    "opcion_a": "Solo llevar el uniforme limpio.",
+    "opcion_b": "Mantener una excelente presentación, aseo e higiene personal.",
+    "opcion_c": "La presentación es secundaria a la dignidad.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 12,
+    "situacion_pregunta": "¿Puedo convertir mi uniforme en una moda urbana?",
+    "opcion_a": "Sí, si lo uso con decoro.",
+    "opcion_b": "No, no está supeditado a modas o iconos de imitación irracional.",
+    "opcion_c": "Solo si mi grupo de amigos lo hace.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 13,
+    "situacion_pregunta": "¿Cuándo puedo imitar o seguir cualquier moda?",
+    "opcion_a": "Siempre que el uniforme me lo permita.",
+    "opcion_b": "Solo cuando NO esté portando el uniforme.",
+    "opcion_c": "Si el director no me llama la atención.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 14,
+    "situacion_pregunta": "Llevas el uniforme. ¿Dónde debe ser digno tu comportamiento?",
+    "opcion_a": "Solo dentro de la institución.",
+    "opcion_b": "Dentro o fuera de la institución.",
+    "opcion_c": "Solo durante los actos cívicos.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 15,
+    "situacion_pregunta": "¿Qué debe reflejar mi uniforme y presentación?",
+    "opcion_a": "Que sigo las tendencias juveniles.",
+    "opcion_b": "Dignidad, decoro y mi autoestima.",
+    "opcion_c": "El dinero que tienen mis padres.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 16,
+    "situacion_pregunta": "¿Cómo debo portar el uniforme?",
+    "opcion_a": "De forma cómoda, sin importar el modelo.",
+    "opcion_b": "Con decoro y dignidad, completo y respectivo.",
+    "opcion_c": "Modificando la prenda según la actividad.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 17,
+    "situacion_pregunta": "¿Qué debo hacer si mi uniforme se daña?",
+    "opcion_a": "Dejarlo así si es una rotura pequeña.",
+    "opcion_b": "Portar cada prenda en su lugar y darle el uso correcto.",
+    "opcion_c": "Usar otra ropa mientras lo arreglo.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 18,
+    "situacion_pregunta": "¿Mi buena presentación personal es un deber?",
+    "opcion_a": "Es un favor que le hago al colegio.",
+    "opcion_b": "Sí, muestra mi compromiso de autoestima y dignidad.",
+    "opcion_c": "Es solo una norma de mi casa.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 21,
+    "situacion_pregunta": "¿Qué debo hacer al llegar al salón de clases?",
+    "opcion_a": "Esperar en el pasillo hasta que llegue.",
+    "opcion_b": "Esperar al profesor dentro del aula de clase.",
+    "opcion_c": "Ir a la tienda escolar por algo de comer.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 22,
+    "situacion_pregunta": "¿Cuál es la consecuencia de no justificar una ausencia a tiempo?",
+    "opcion_a": "Me ponen una falta disciplinaria.",
+    "opcion_b": "Pierdo irremediablemente los logros de esa fecha.",
+    "opcion_c": "Me dejan hacer un trabajo extra.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 23,
+    "situacion_pregunta": "Faltaste, pero la falla es justificada. ¿Cuál es tu deber?",
+    "opcion_a": "Ya no debo hacer los trabajos perdidos.",
+    "opcion_b": "Solicitar, presentar y sustentar las actividades perdidas.",
+    "opcion_c": "Solo preguntar al profesor qué hicieron.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 24,
+    "situacion_pregunta": "Te encuentras fuera del salón. ¿Qué debes tener?",
+    "opcion_a": "Un mensaje de texto del profesor.",
+    "opcion_b": "Una constancia o permiso escrito del docente.",
+    "opcion_c": "Un permiso verbal de un compañero.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 25,
+    "situacion_pregunta": "¿Qué debe hacer mi acudiente si falto sin excusa?",
+    "opcion_a": "Escribir un correo electrónico al coordinador.",
+    "opcion_b": "Presentarse al colegio para justificar mi ausencia.",
+    "opcion_c": "No ir, solo si la falta fue de un día.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 26,
+    "situacion_pregunta": "¿Cuál es el deber al asistir a clases?",
+    "opcion_a": "Solo escuchar y no participar.",
+    "opcion_b": "Asumir una actitud de interés y diálogo constante.",
+    "opcion_c": "Estar en silencio sin opinar.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 27,
+    "situacion_pregunta": "Debo asistir a clases extras, si...",
+    "opcion_a": "No, si son fuera del horario normal.",
+    "opcion_b": "Sí, si se dejaron de dictar clases fundamentales.",
+    "opcion_c": "Solo si son clases de mi materia favorita.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 28,
+    "situacion_pregunta": "¿El derecho a la educación excusa el incumplimiento de tareas?",
+    "opcion_a": "Sí, mi derecho me protege.",
+    "opcion_b": "No, debo cumplir mis obligaciones curriculares.",
+    "opcion_c": "Solo si las tareas son muy difíciles.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 29,
+    "situacion_pregunta": "¿Qué pasa si evado clases sin permiso?",
+    "opcion_a": "Me pondrán tareas extra para recuperar el tiempo.",
+    "opcion_b": "Se citará de inmediato a mis padres o acudientes.",
+    "opcion_c": "No pasa nada si regreso rápido al salón.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 30,
+    "situacion_pregunta": "¿Debo presentar los documentos de matrícula?",
+    "opcion_a": "Solo si me los pide la secretaría.",
+    "opcion_b": "Sí, debo presentar oportunamente los documentos exigidos.",
+    "opcion_c": "Puedo entregarlos cuando termine el año.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 31,
+    "situacion_pregunta": "¿Qué debo demostrar en mi lenguaje ante profesores?",
+    "opcion_a": "Dignidad sin decoro.",
+    "opcion_b": "Dignidad y decoro en mi lenguaje.",
+    "opcion_c": "Lenguaje juvenil actual, pero sin insultos.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 32,
+    "situacion_pregunta": "¿Puedo usar apodos o palabras despectivas?",
+    "opcion_a": "Sí, si son entre compañeros de confianza.",
+    "opcion_b": "No, se prohíben palabras soeces, peyorativas o apodos.",
+    "opcion_c": "Solo si son malintencionados o vulgares.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 33,
+    "situacion_pregunta": "¿Qué debo decir ante los comités de convivencia?",
+    "opcion_a": "Una verdad que me favorezca.",
+    "opcion_b": "Decir solamente la verdad en los descargos.",
+    "opcion_c": "Puedo ocultar algo si es pequeño.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 34,
+    "situacion_pregunta": "¿Es permitido usar comentarios de burla o desprecio?",
+    "opcion_a": "Sí, si es una broma.",
+    "opcion_b": "No, debo respetar la opinión sin comentarios de burla.",
+    "opcion_c": "Solo si la persona se ríe de ello.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 35,
+    "situacion_pregunta": "¿Qué debes hacer si ves un accidente en el colegio?",
+    "opcion_a": "No intervenir para no meterme en problemas.",
+    "opcion_b": "Brindar inmediato aviso a profesores o administrativos.",
+    "opcion_c": "Esperar a ver si alguien más lo nota.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 36,
+    "situacion_pregunta": "¿Qué debo mostrar a compañeros con discapacidad?",
+    "opcion_a": "Solo evitar hacerles bromas.",
+    "opcion_b": "Total respeto, humildad y tolerancia.",
+    "opcion_c": "No interactuar para no incomodarlos.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 37,
+    "situacion_pregunta": "¿Cuál es mi deber ante profesores y directivas?",
+    "opcion_a": "Solo tratar con respeto a mis compañeros.",
+    "opcion_b": "Respetar y cuidar el buen nombre de maestros y directivas.",
+    "opcion_c": "Criticarlos si no estoy de acuerdo con algo.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 38,
+    "situacion_pregunta": "¿Qué son la injuria y la calumnia?",
+    "opcion_a": "Faltas leves de disciplina.",
+    "opcion_b": "Son delitos que se tipifican como Tipo III.",
+    "opcion_c": "Solo palabras ofensivas entre compañeros.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 39,
+    "situacion_pregunta": "¿Debo tolerar el credo de mis compañeros?",
+    "opcion_a": "No, si mi credo es más importante.",
+    "opcion_b": "Sí, debo respetar el credo o inclinación espiritual de mis pares.",
+    "opcion_c": "Solo si mi compañero respeta el mío.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 40,
+    "situacion_pregunta": "¿Qué actitud debo mantener en celebraciones espirituales?",
+    "opcion_a": "Estar en silencio sin participar.",
+    "opcion_b": "Actitud respetuosa y decorosa.",
+    "opcion_c": "Sentarme y leer un libro si me aburro.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 41,
+    "situacion_pregunta": "Te pillan portando un bisturí en la maleta. ¿Qué sucede?",
+    "opcion_a": "Te quitan el bisturí y te suspenden.",
+    "opcion_b": "Pérdida del cupo, retiro inmediato, es Situación TIPO III.",
+    "opcion_c": "Se hace una denuncia sin retiro del colegio.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 42,
+    "situacion_pregunta": "¿Qué objetos NO está permitido portar?",
+    "opcion_a": "Celular, iPods o agendas.",
+    "opcion_b": "Armas de fuego, navajas, bisturís u objetos explosivos.",
+    "opcion_c": "Útiles escolares sin el nombre marcado.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 43,
+    "situacion_pregunta": "¿A dónde se remite a un estudiante hallado culpable de un delito?",
+    "opcion_a": "Al Consejo Directivo para más reuniones.",
+    "opcion_b": "A la Comisaría de Familia o Policía de Infancia.",
+    "opcion_c": "Solo se le asigna servicio social.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 44,
+    "situacion_pregunta": "¿Qué ocurre si un estudiante mayor de 14 años comete un delito?",
+    "opcion_a": "Responderán sus padres civilmente.",
+    "opcion_b": "Es completamente judicializable ante la ley penal juvenil.",
+    "opcion_c": "El colegio solo lo sanciona internamente.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 45,
+    "situacion_pregunta": "¿Puede un estudiante inducir a otro a cometer faltas o infracciones?",
+    "opcion_a": "Sí, si son faltas leves sin daño.",
+    "opcion_b": "No, está prohibido inducir, promover o ser cómplice.",
+    "opcion_c": "Solo si el compañero es menor que yo.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 46,
+    "situacion_pregunta": "¿Qué pasa con el estudiante culpable de infracciones de ley?",
+    "opcion_a": "Se le garantiza su permanencia en clases.",
+    "opcion_b": "Será inmediatamente retirado de la institución.",
+    "opcion_c": "Solo debe firmar un pacto de convivencia.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 47,
+    "situacion_pregunta": "¿Qué prevalece si un alumno es confirmado como consumidor?",
+    "opcion_a": "Su derecho a la educación.",
+    "opcion_b": "Su derecho a la Salud, Resocialización y Rehabilitación.",
+    "opcion_c": "El interés del colegio en retenerlo.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 48,
+    "situacion_pregunta": "¿Qué pasa si el estudiante promueve escenas sexuales?",
+    "opcion_a": "Se le da una advertencia.",
+    "opcion_b": "Activa la ruta de atención; es Situación Tipo III.",
+    "opcion_c": "Solo si lo hace frente a sus compañeros de Séptimo.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 49,
+    "situacion_pregunta": "¿Qué busca el colegio al prohibir escenas eróticas explícitas?",
+    "opcion_a": "Controlar la orientación sexual.",
+    "opcion_b": "Proteger la correcta apreciación frente a la primera infancia.",
+    "opcion_c": "Que los estudiantes no tengan pareja.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 50,
+    "situacion_pregunta": "¿Es el matoneo una Situación Tipo III?",
+    "opcion_a": "No, es solo una falta grave.",
+    "opcion_b": "Sí, el matoneo y acoso escolar se tipifican como Tipo III.",
+    "opcion_c": "Solo si el matoneo incluye agresión física.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 51,
+    "situacion_pregunta": "¿Se permite el consumo de bebidas alcohólicas?",
+    "opcion_a": "Sí, si es fuera del colegio.",
+    "opcion_b": "No, se prohíbe el consumo dentro o fuera con uniforme.",
+    "opcion_c": "Solo si es con permiso de los padres.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 52,
+    "situacion_pregunta": "¿Se permite el uso de cigarrillo electrónico (vapeador)?",
+    "opcion_a": "Sí, porque no es cigarrillo normal.",
+    "opcion_b": "No, el uso de vapeadores NO está permitido.",
+    "opcion_c": "Solo si se usa discretamente.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 53,
+    "situacion_pregunta": "Si me descubren con alcohol, ¿qué falta es?",
+    "opcion_a": "Una falta grave, pero no TIPO III.",
+    "opcion_b": "Presunción de Situación TIPO III.",
+    "opcion_c": "Una falta que solo implica suspensión.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 54,
+    "situacion_pregunta": "Mis padres se niegan a un examen toxicológico. ¿Qué ocurre?",
+    "opcion_a": "El colegio debe respetar su decisión.",
+    "opcion_b": "No puedo seguir asistiendo a clases normales.",
+    "opcion_c": "El Defensor de Familia debe investigar primero.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 55,
+    "situacion_pregunta": "¿Qué se considera la negativa de los padres a hacer la prueba?",
+    "opcion_a": "Un error por desconocimiento.",
+    "opcion_b": "Omisión, abandono y trato negligente.",
+    "opcion_c": "Presunción de que el estudiante es inocente.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 56,
+    "situacion_pregunta": "Si eres menor de 14 años y cometes una infracción, ¿quién responde?",
+    "opcion_a": "Responderá directamente el estudiante.",
+    "opcion_b": "Tus padres o acudientes legalmente responden.",
+    "opcion_c": "Solo responderá el Defensor de Familia.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 57,
+    "situacion_pregunta": "¿Se permiten las barras bravas o pandillas en el colegio?",
+    "opcion_a": "Solo si son pacíficas y ordenadas.",
+    "opcion_b": "No, están prohibidas las pandillas, asaltos y violencia.",
+    "opcion_c": "Sí, si no hay matoneo.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 58,
+    "situacion_pregunta": "Si soy un consumidor de sustancias, ¿el colegio me recibe de vuelta?",
+    "opcion_a": "Sí, porque mi derecho a la educación es primordial.",
+    "opcion_b": "No, hasta ser remitido a resocialización.",
+    "opcion_c": "Sí, después de una suspensión larga.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 59,
+    "situacion_pregunta": "¿Puedo portar material pornográfico?",
+    "opcion_a": "Sí, si lo veo solo en mi celular.",
+    "opcion_b": "No, está prohibido y es Situación Tipo III.",
+    "opcion_c": "Solo si es en formato de revista o dibujo.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 60,
+    "situacion_pregunta": "¿Se pueden comprar artículos a vendedores ambulantes cerca?",
+    "opcion_a": "Sí, si tengo hambre y es más barato.",
+    "opcion_b": "No, para evitar intoxicaciones o acciones lesivas.",
+    "opcion_c": "Es responsabilidad solo de mis padres.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 61,
+    "situacion_pregunta": "¿Cuál es mi compromiso con el colegio?",
+    "opcion_a": "Solo estudiar y hacer tareas.",
+    "opcion_b": "Cuidar el buen nombre y propender por el aseo.",
+    "opcion_c": "Solo preocuparme por mi salón.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 62,
+    "situacion_pregunta": "¿Puedo rayar paredes o puertas de los baños?",
+    "opcion_a": "Sí, si son mensajes académicos.",
+    "opcion_b": "No, se prohíbe escribir grafitis ni mensajes vulgares.",
+    "opcion_c": "Solo si no hay nadie mirando.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 63,
+    "situacion_pregunta": "Rayaste un escritorio del salón. ¿Qué debes hacer?",
+    "opcion_a": "La institución debe repararlo.",
+    "opcion_b": "Reparar los daños que cause al mobiliario o planta física.",
+    "opcion_c": "Pagar una multa al profesor.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 64,
+    "situacion_pregunta": "¿Qué debes hacer con los recursos naturales de la región?",
+    "opcion_a": "Solo usarlos en clase de ciencias.",
+    "opcion_b": "Propender por su conservación y renovación.",
+    "opcion_c": "Dejarlos como están sin intervenir.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 65,
+    "situacion_pregunta": "¿Cómo debo usar los patios y zonas de recreación?",
+    "opcion_a": "Con agresividad para ganar los juegos.",
+    "opcion_b": "En actitud de respeto y sin agresiones.",
+    "opcion_c": "Usando un lenguaje libre y juvenil.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 66,
+    "situacion_pregunta": "¿Cuál es mi deber con los bienes de mis compañeros?",
+    "opcion_a": "Cuidar solo mis pertenencias.",
+    "opcion_b": "Respetar los bienes ajenos y del colegio.",
+    "opcion_c": "Solo responder por si los daño.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 67,
+    "situacion_pregunta": "¿Qué ocurre si me sorprenden robando algo en flagrancia?",
+    "opcion_a": "Solo se llama a mis padres.",
+    "opcion_b": "Se remite a la Policía de Infancia por presunción de robo.",
+    "opcion_c": "Me suspenden y devuelvo el objeto.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 68,
+    "situacion_pregunta": "¿Debo colaborar con el aseo y orden?",
+    "opcion_a": "No, es deber del personal de servicios.",
+    "opcion_b": "Sí, colaborar activamente con el orden y aseo de instalaciones.",
+    "opcion_c": "Solo tirar la basura en el salón.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 69,
+    "situacion_pregunta": "¿Qué debo hacer con los baños y el agua?",
+    "opcion_a": "Usarlos sin preocuparme por el desperdicio.",
+    "opcion_b": "Utilizar correctamente el agua y demás recursos sanitarios.",
+    "opcion_c": "Pedirle a un adulto que me ayude a usarlos.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 70,
+    "situacion_pregunta": "¿Qué hago con los canecas de basura?",
+    "opcion_a": "Las uso solo si están cerca.",
+    "opcion_b": "Hacer buen uso de las canecas destinadas para la basura.",
+    "opcion_c": "Dejar la basura en el patio.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 71,
+    "situacion_pregunta": "¿Qué es un acto de \"fraude\" en el colegio?",
+    "opcion_a": "Solo copiar en un examen.",
+    "opcion_b": "Engaño, suplantación, encubrimiento o maniobra inescrupulosa.",
+    "opcion_c": "Pedir ayuda a un compañero.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 72,
+    "situacion_pregunta": "¿Cuál es mi deber con las citaciones del colegio?",
+    "opcion_a": "Guardarlas y entregarlas en casa luego.",
+    "opcion_b": "Entregar inmediatamente las circulares y citaciones a padres.",
+    "opcion_c": "Solo leerlas yo si es algo personal.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 73,
+    "situacion_pregunta": "¿Puedo falsificar firmas en documentos?",
+    "opcion_a": "Sí, si es un permiso simple.",
+    "opcion_b": "No, se prohíbe falsificar firmas en cualquier documento.",
+    "opcion_c": "Solo si es la firma de mi acudiente.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 74,
+    "situacion_pregunta": "¿Debo presentarme al coordinador con mis padres?",
+    "opcion_a": "No, solo mi acudiente.",
+    "opcion_b": "Sí, en caso de inasistencia sin excusa.",
+    "opcion_c": "Solo si soy llamado a descargos por Tipo III.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 75,
+    "situacion_pregunta": "¿Qué debo llevar diariamente al colegio?",
+    "opcion_a": "Únicamente los útiles escolares.",
+    "opcion_b": "Agenda escolar, carné y documento de la EPS.",
+    "opcion_c": "Mi celular y mi Ipad.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 76,
+    "situacion_pregunta": "¿Qué pasa si pierdes el carné o la agenda?",
+    "opcion_a": "El colegio te da uno nuevo sin costo.",
+    "opcion_b": "Debes solicitar duplicado sufragando el costo.",
+    "opcion_c": "Puedes entrar sin carné por una semana.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 77,
+    "situacion_pregunta": "¿Puedo entrar a la sala de profesores?",
+    "opcion_a": "Sí, si necesito hablar con un maestro.",
+    "opcion_b": "No, salvo que sea invitado o autorizado.",
+    "opcion_c": "Si hay un profesor afuera esperándome.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 78,
+    "situacion_pregunta": "¿Cómo uso el portal interactivo del colegio?",
+    "opcion_a": "Para chatear con mis amigos.",
+    "opcion_b": "De manera exclusiva con fines académicos.",
+    "opcion_c": "Para buscar videos de música.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 79,
+    "situacion_pregunta": "¿Puedo salir del aula sin permiso?",
+    "opcion_a": "Sí, si voy al baño rápidamente.",
+    "opcion_b": "No, debo solicitar y presentar autorización escrita.",
+    "opcion_c": "Solo si el compañero me acompaña.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 80,
+    "situacion_pregunta": "¿Puedo ocultar circulares a mis padres?",
+    "opcion_a": "Sí, si es algo que hice mal.",
+    "opcion_b": "No, está prohibido ocultar u olvidar entregarlas.",
+    "opcion_c": "Es mejor no entregarlas si es una falta.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 81,
+    "situacion_pregunta": "¿Se permite traer juegos de video o iPods?",
+    "opcion_a": "Sí, si los guardo en la mochila.",
+    "opcion_b": "No, y el colegio se exime de responsabilidad por pérdida.",
+    "opcion_c": "Solo si el profesor de tecnología lo pide.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 82,
+    "situacion_pregunta": "¿Puedo usar el internet del colegio para cualquier página?",
+    "opcion_a": "Sí, si es para buscar información.",
+    "opcion_b": "No, se prohíbe entrar a páginas no permitidas.",
+    "opcion_c": "Solo si el profesor no lo nota.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 83,
+    "situacion_pregunta": "¿Cuándo puedo traer elementos deportivos o artísticos?",
+    "opcion_a": "En mi tiempo libre.",
+    "opcion_b": "Con previa autorización del docente del área.",
+    "opcion_c": "Siempre que los cuide muy bien.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 84,
+    "situacion_pregunta": "¿Quién responde si pierdo mi Ipad en el colegio?",
+    "opcion_a": "La institución debe responder por mis cosas.",
+    "opcion_b": "La institución se exonera y exime de cualquier responsabilidad.",
+    "opcion_c": "El director de grupo debe buscarlo.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 85,
+    "situacion_pregunta": "¿Puedo interrumpir el estudio de mis compañeros?",
+    "opcion_a": "Sí, si es una emergencia.",
+    "opcion_b": "No, con desórdenes, gritos o silbidos.",
+    "opcion_c": "Solo si lo hago en el recreo.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 86,
+    "situacion_pregunta": "¿Qué debo hacer si no asisto a una actividad religiosa?",
+    "opcion_a": "Quedarme en casa ese día.",
+    "opcion_b": "Debo ir a la biblioteca a realizar un trabajo sobre mi credo.",
+    "opcion_c": "Sentarme y criticar la actividad.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 87,
+    "situacion_pregunta": "¿Cómo debo comportarme en el transporte público?",
+    "opcion_a": "De forma normal, como en mi casa.",
+    "opcion_b": "Observar un comportamiento digno y correcto.",
+    "opcion_c": "Solo me sancionan si porto el uniforme.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 88,
+    "situacion_pregunta": "Si estoy fuera, sin uniforme, ¿se me aplica alguna norma?",
+    "opcion_a": "No, el colegio ya no me sanciona.",
+    "opcion_b": "Sí, debo observar un comportamiento digno y correcto.",
+    "opcion_c": "Solo si realizo un delito grave.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 89,
+    "situacion_pregunta": "¿Qué deben hacer los padres de familia con los documentos del colegio?",
+    "opcion_a": "Dejarlos firmados para todo el año.",
+    "opcion_b": "Colaborar en el debido proceso y no ser omisivos.",
+    "opcion_c": "Ignorarlos si el tema es de disciplina.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 90,
+    "situacion_pregunta": "Si un comportamiento fuera del colegio es contrario a la filosofía, ¿quién lo evalúa?",
+    "opcion_a": "Solo la Policía de Infancia.",
+    "opcion_b": "El Consejo Directivo para definir la falta.",
+    "opcion_c": "El director de grupo en privado.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 91,
+    "situacion_pregunta": "¿Qué debo hacer durante la entonación de los himnos?",
+    "opcion_a": "Pararme quieto y en silencio.",
+    "opcion_b": "Entonar los himnos con postura correcta y respeto.",
+    "opcion_c": "Entonar solo si me sé la letra.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 92,
+    "situacion_pregunta": "¿Cuál es mi compromiso con el colegio?",
+    "opcion_a": "Respetar solo a mis amigos.",
+    "opcion_b": "Defender y cuidar su nombre y prestigio.",
+    "opcion_c": "Solo si me da buenos resultados académicos.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 93,
+    "situacion_pregunta": "¿Debo estar en la búsqueda de un proceder ejemplar?",
+    "opcion_a": "Solo en mi casa y con mi familia.",
+    "opcion_b": "Sí, en todos los aspectos de mi vida cotidiana.",
+    "opcion_c": "Si solo me beneficia a mí.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 94,
+    "situacion_pregunta": "¿Qué pasa si incumplo con mis deberes?",
+    "opcion_a": "Solo me bajan las notas.",
+    "opcion_b": "Da lugar a sanciones de faltas leves, graves o muy graves.",
+    "opcion_c": "El colegio no puede sancionarme.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 95,
+    "situacion_pregunta": "¿Debo cumplir las funciones si soy elegido monitor o líder?",
+    "opcion_a": "No, si el cargo es muy difícil.",
+    "opcion_b": "Sí, debo conocer y cumplir las funciones asignadas.",
+    "opcion_c": "Si el profesor me lo pide de favor.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 96,
+    "situacion_pregunta": "¿Debo respetar los tiempos para consumir alimentos?",
+    "opcion_a": "Sí, si el colegio me los da gratis.",
+    "opcion_b": "Sí, respetar los espacios y tiempos establecidos.",
+    "opcion_c": "No, puedo comer en el salón o pasillo.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 97,
+    "situacion_pregunta": "¿Debo cumplir con las actividades de refuerzo?",
+    "opcion_a": "Solo si quiero subir mis notas.",
+    "opcion_b": "Sí, es un compromiso presentarse a las actividades de refuerzo.",
+    "opcion_c": "Solo si mi profesor me obliga.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 98,
+    "situacion_pregunta": "¿Debo cumplir las normas del transporte escolar?",
+    "opcion_a": "No, solo las del manual de convivencia.",
+    "opcion_b": "Sí, debo conocer y cumplir el reglamento interno del transporte.",
+    "opcion_c": "Solo si viajo en el bus del colegio.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 99,
+    "situacion_pregunta": "¿Qué hago si tengo una calamidad doméstica justificada?",
+    "opcion_a": "Avisar al profesor por un mensaje de texto.",
+    "opcion_b": "Presentar por escrito la excusa a la coordinación.",
+    "opcion_c": "No debo preocuparme, mi derecho a la educación me cubre.",
+    "correcta": "opcion_b"
+  },
+  {
+    "id": 100,
+    "situacion_pregunta": "¿Qué debe reflejar mi comportamiento en mi entorno?",
+    "opcion_a": "Que soy dueño de mis actos.",
+    "opcion_b": "Reflejar mi educación y los principios adquiridos en mi hogar.",
+    "opcion_c": "Solo la disciplina y moral del colegio.",
+    "correcta": "opcion_b"
+  }
+]

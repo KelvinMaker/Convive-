@@ -1,0 +1,47 @@
+[
+  {
+    "id": "1750810594844",
+    "title": "Daños a pupitres",
+    "description": "EL ESTUDIANTE PEPITO PEREZ DESTRUYO UN PUPITRE DEL AULA 9A.",
+    "type": "conflicto",
+    "isAnonymous": false,
+    "date": "2025-06-25T00:16:34.844Z",
+    "expiresAt": "2025-07-25T00:16:34.844Z",
+    "reportedBy": "user-1750809736316",
+    "userId": "user-1750809736316",
+    "userName": "kelachad3",
+    "userRole": "directivo",
+    "status": "open"
+  },
+  {
+    "id": "1750810668019",
+    "title": "Distracción en clase por dispositivos",
+    "description": "ANA VEGA DE 10 B SE ENCONTRO VIENDO TIKTOK EN HORAS DE CLASE. ",
+    "type": "conflicto",
+    "isAnonymous": false,
+    "date": "2025-06-25T00:17:48.019Z",
+    "expiresAt": "2025-07-25T00:17:48.019Z",
+    "reportedBy": "user-1750809736316",
+    "userId": "user-1750809736316",
+    "userName": "kelachad3",
+    "userRole": "directivo",
+    "status": "open"
+  },
+  {
+    "id": "1750810740725",
+    "title": "Uso o porte de alcohol",
+    "description": "El estudiante Pedro González 11C estaba tomando un cerveza en horas del descanso.",
+    "type": "conflicto",
+    "isAnonymous": false,
+    "date": "2025-06-25T00:19:00.725Z",
+    "expiresAt": "2025-07-25T00:19:00.725Z",
+    "reportedBy": "user-1750810122871",
+    "userId": "user-1750810122871",
+    "userName": "Abdala Chadid",
+    "userRole": "docente",
+    "status": "closed",
+    "closingObservation": "SE REALIZA LLAMADO DE ATENCION AL ESTUDIANTE, SE NOTIFICA A LOS PADRES DE FAMILIA, Y SE REALIZA UNA SOCIALIZACION DE LAS NORMAS Y COMPORTAMIENTO QUE DEBEN TENER LOS ESTUDIANTES DENTRO DE LA INSTITUCION EDUCATIVA.",
+    "closedAt": "2025-06-25T00:22:06.829Z",
+    "closedBy": "user-1750809736316"
+  }
+]

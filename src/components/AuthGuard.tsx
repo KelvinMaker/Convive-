@@ -35,11 +35,12 @@ export default function AuthGuard({ children, allowedRoles }: AuthGuardProps) {
       return;
     }
 
+    const isPublicPath = ['/login', '/register', '/'].includes(pathname);
+
     // 2. If admin IS set up, but user is NOT logged in...
     if (!currentUser) {
-      const publicPaths = ['/login', '/register'];
       // ...allow access only to public pages, otherwise redirect to login.
-      if (!publicPaths.includes(pathname)) {
+      if (!isPublicPath) {
         router.push('/login');
       }
       return;
@@ -47,7 +48,7 @@ export default function AuthGuard({ children, allowedRoles }: AuthGuardProps) {
 
     // 3. If user IS logged in, check role-based access
     if (allowedRoles && allowedRoles.length > 0 && !allowedRoles.includes(currentUser.role)) {
-      // User does not have the required role, redirect to dashboard
+      // User does not have the required role, redirect to home page
       router.push('/');
       return;
     }
@@ -62,7 +63,7 @@ export default function AuthGuard({ children, allowedRoles }: AuthGuardProps) {
   }
   
   // Define public/setup paths
-  const publicPathsWhenNotLoggedIn = ['/login', '/register'];
+  const publicPathsWhenNotLoggedIn = ['/login', '/register', '/'];
   const setupPath = '/setup-admin';
 
   // Case 1: App not set up. Render only the setup page, show redirect message for others.

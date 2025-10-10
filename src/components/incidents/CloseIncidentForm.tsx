@@ -30,7 +30,7 @@ export default function CloseIncidentForm() {
   const { currentUser } = useUser();
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [incidents, setIncidents] = useState<Incident[]>([]);
+  const [openIncidents, setOpenIncidents] = useState<Incident[]>([]);
   const [isLoadingIncidents, setIsLoadingIncidents] = useState(true);
   const [selectedIncidentDescription, setSelectedIncidentDescription] = useState("");
 
@@ -44,7 +44,7 @@ export default function CloseIncidentForm() {
       setIsLoadingIncidents(true);
       const result = await getIncidentsAction();
       if (result.success && result.data) {
-        setIncidents(result.data);
+        setOpenIncidents(result.data.filter(inc => inc.status !== 'closed'));
       }
       setIsLoadingIncidents(false);
     }
@@ -71,7 +71,7 @@ export default function CloseIncidentForm() {
       const result = await closeIncidentAction(formData);
       if (result.success) {
         toast({ title: "Incidente Cerrado", description: "El incidente ha sido cerrado y archivado." });
-        router.push("/");
+        router.push("/reports");
       } else {
         toast({ title: "Error", description: result.error || "No se pudo cerrar el incidente.", variant: "destructive" });
       }
@@ -103,7 +103,7 @@ export default function CloseIncidentForm() {
               <Select
                 onValueChange={(value) => {
                   field.onChange(value);
-                  const selected = incidents.find((inc) => inc.id === value);
+                  const selected = openIncidents.find((inc) => inc.id === value);
                   setSelectedIncidentDescription(selected ? selected.description : "");
                   if (!value) {
                     setSelectedIncidentDescription("");
@@ -118,15 +118,15 @@ export default function CloseIncidentForm() {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {!isLoadingIncidents && incidents.length === 0 && <SelectItem value="none" disabled>No hay incidentes para cerrar</SelectItem>}
-                  {incidents.map((incident) => (
-                    <SelectItem key={incident.id} value={incident.id} disabled={incident.status === 'closed'}>
-                      {incident.title} {incident.status === 'closed' ? '(Cerrado)' : ''}
+                  {!isLoadingIncidents && openIncidents.length === 0 && <SelectItem value="none" disabled>No hay incidentes abiertos para cerrar</SelectItem>}
+                  {openIncidents.map((incident) => (
+                    <SelectItem key={incident.id} value={incident.id}>
+                      {incident.title}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-              <FormDescription>Elige el incidente que deseas marcar como resuelto. Los incidentes ya cerrados están deshabilitados.</FormDescription>
+              <FormDescription>Elige el incidente que deseas marcar como resuelto.</FormDescription>
               <FormMessage />
             </FormItem>
           )}

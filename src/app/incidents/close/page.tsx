@@ -1,3 +1,4 @@
+
 // src/app/incidents/close/page.tsx
 import CloseIncidentForm from '@/components/incidents/CloseIncidentForm';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -18,7 +19,7 @@ export default function CloseIncidentPage() {
               </CardDescription>
             </div>
             <Button asChild variant="outline">
-              <Link href="/">
+              <Link href="/reports">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Volver al Panel
               </Link>
