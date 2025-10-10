@@ -52,4 +52,11 @@ export interface Invitation {
   expiresAt: string; // ISO Date string
 }
 
-    
+export interface TriviaResult {
+  id: string;
+  userId?: string;
+  userName?: string;
+  score: number;
+  totalQuestions: number;
+  playedAt: string; // ISO date string
+}

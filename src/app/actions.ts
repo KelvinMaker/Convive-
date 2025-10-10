@@ -2,7 +2,7 @@
 // src/app/actions.ts
 "use server";
 
-import type { Incident, IncidentType, User, UserRole } from "@/lib/types";
+import type { Incident, IncidentType, User, UserRole, TriviaResult } from "@/lib/types";
 import { summarizeIncidentReports } from "@/ai/flows/summarize-incident-reports";
 import { z } from "zod";
 import { SELF_REGISTER_USER_ROLES } from "@/lib/constants";
@@ -16,6 +16,8 @@ import path from 'path';
 const dataDir = path.join(process.cwd(), 'data');
 const usersFilePath = path.join(dataDir, 'users.json');
 const incidentsFilePath = path.join(dataDir, 'incidents.json');
+const triviaResultsFilePath = path.join(dataDir, 'trivia_results.json');
+
 
 async function ensureDataDirExists() {
   try {
@@ -326,5 +328,62 @@ export async function getUsersAction(): Promise<{ success: boolean; data?: User[
   } catch (error) {
     console.error("Error fetching users:", error);
     return { success: false, error: "Failed to fetch users." };
+  }
+}
+
+// --- Trivia Actions ---
+
+const SaveTriviaResultSchema = z.object({
+  score: z.coerce.number(),
+  totalQuestions: z.coerce.number(),
+  userId: z.string().optional(),
+  userName: z.string().optional(),
+});
+
+export async function saveTriviaResultAction(formData: FormData) {
+  try {
+    const rawData = Object.fromEntries(formData.entries());
+    const validation = SaveTriviaResultSchema.safeParse(rawData);
+
+    if (!validation.success) {
+      return { success: false, error: "Datos de trivia inválidos." };
+    }
+    
+    const data = validation.data;
+    const newResult: TriviaResult = {
+      id: `trivia-${Date.now()}`,
+      userId: data.userId,
+      userName: data.userName || 'Anónimo',
+      score: data.score,
+      totalQuestions: data.totalQuestions,
+      playedAt: new Date().toISOString(),
+    };
+
+    const results = await readData<TriviaResult>(triviaResultsFilePath);
+    results.push(newResult);
+    await writeData<TriviaResult>(triviaResultsFilePath, results);
+    
+    console.log("Trivia result saved:", newResult.id);
+    return { success: true };
+
+  } catch (error) {
+    console.error("Error saving trivia result:", error);
+    return { success: false, error: "No se pudo guardar el resultado de la trivia." };
+  }
+}
+
+export async function getTriviaStatsAction(): Promise<{ success: boolean; data?: { gamesPlayed: number; averageScore: number }; error?: string }> {
+  try {
+    const results = await readData<TriviaResult>(triviaResultsFilePath);
+    const gamesPlayed = results.length;
+    if (gamesPlayed === 0) {
+      return { success: true, data: { gamesPlayed: 0, averageScore: 0 } };
+    }
+    const totalScore = results.reduce((acc, result) => acc + result.score, 0);
+    const averageScore = totalScore / gamesPlayed;
+    return { success: true, data: { gamesPlayed, averageScore } };
+  } catch (error) {
+    console.error("Error fetching trivia stats:", error);
+    return { success: false, error: "No se pudieron obtener las estadísticas de la trivia." };
   }
 }

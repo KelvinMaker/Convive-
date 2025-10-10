@@ -10,6 +10,8 @@ import { Progress } from "@/components/ui/progress";
 import triviaData from '@/../data/trivia.json';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
+import { useUser } from '@/contexts/UserContext';
+import { saveTriviaResultAction } from '@/app/actions';
 
 type Question = {
   id: number;
@@ -34,12 +36,30 @@ function shuffleArray<T>(array: T[]): T[] {
 
 export default function TriviaPage() {
   const router = useRouter();
+  const { currentUser } = useUser();
   const [gameState, setGameState] = useState<'start' | 'playing' | 'finished'>('start');
   const [questions, setQuestions] = useState<ShuffledQuestion[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<'opcion_a' | 'opcion_b' | 'opcion_c' | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
+
+  const handleGameFinish = useCallback(async (finalScore: number, totalQuestions: number) => {
+    setGameState('finished');
+    const formData = new FormData();
+    formData.append('score', String(finalScore));
+    formData.append('totalQuestions', String(totalQuestions));
+    if (currentUser) {
+      formData.append('userId', currentUser.id);
+      formData.append('userName', currentUser.name);
+    }
+    try {
+      await saveTriviaResultAction(formData);
+    } catch (error) {
+      console.error("Could not save trivia result:", error);
+      // Non-critical, so we don't show a toast to the user
+    }
+  }, [currentUser]);
 
   const startGame = useCallback(() => {
     const randomQuestions = shuffleArray(triviaData as Question[]).slice(0, 10);
@@ -66,12 +86,14 @@ export default function TriviaPage() {
     setGameState('playing');
   }, []);
 
-  const handleAnswer = (optionId: 'opcion_a' | 'opcion_b' | 'opcion_c') => {
+  const handleAnswer = useCallback((optionId: 'opcion_a' | 'opcion_b' | 'opcion_c') => {
     if (showFeedback) return; // Prevent answering again while feedback is shown
 
+    let newScore = score;
     setSelectedAnswer(optionId);
     if (optionId === questions[currentQuestionIndex].correctAnswerId) {
-      setScore(prev => prev + 1);
+      newScore = score + 1;
+      setScore(newScore);
     }
     setShowFeedback(true);
 
@@ -81,10 +103,11 @@ export default function TriviaPage() {
       if (currentQuestionIndex < questions.length - 1) {
         setCurrentQuestionIndex(prev => prev + 1);
       } else {
-        setGameState('finished');
+        handleGameFinish(newScore, questions.length);
       }
     }, 1500); // Wait 1.5 seconds before moving to the next question
-  };
+  }, [showFeedback, score, questions, currentQuestionIndex, handleGameFinish]);
+
 
   const currentQuestion = useMemo(() => {
     if (gameState === 'playing' && questions.length > 0) {

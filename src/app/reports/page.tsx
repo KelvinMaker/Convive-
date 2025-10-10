@@ -3,12 +3,12 @@
 "use client";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, Users, Trophy, TrendingUp, AlertTriangle, Loader2, Info, ListChecks, Download, LayoutDashboard, Sparkles, FolderClosed } from 'lucide-react';
+import { BarChart, Users, Trophy, TrendingUp, AlertTriangle, Loader2, Info, ListChecks, Download, LayoutDashboard, Sparkles, FolderClosed, Gamepad2, Percent } from 'lucide-react';
 import { useUser } from "@/contexts/UserContext";
 import { useEffect, useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { getIncidentsAction } from "@/app/actions";
+import { getIncidentsAction, getTriviaStatsAction } from "@/app/actions";
 import type { Incident } from "@/lib/types";
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -27,12 +27,18 @@ interface Metric {
   actionButton?: React.ReactNode;
 }
 
+interface TriviaStats {
+    gamesPlayed: number;
+    averageScore: number;
+}
+
 export default function ReportsDashboardPage() {
   const { currentUser, isLoading: userContextLoading, isAdminSetupComplete } = useUser();
   const [greeting, setGreeting] = useState('');
   const [incidents, setIncidents] = useState<Incident[]>([]);
-  const [isLoadingIncidents, setIsLoadingIncidents] = useState(true);
-  const [incidentsError, setIncidentsError] = useState<string | null>(null);
+  const [triviaStats, setTriviaStats] = useState<TriviaStats>({ gamesPlayed: 0, averageScore: 0 });
+  const [isLoadingData, setIsLoadingData] = useState(true);
+  const [dataError, setDataError] = useState<string | null>(null);
 
   useEffect(() => {
     const hour = new Date().getHours();
@@ -41,31 +47,45 @@ export default function ReportsDashboardPage() {
     else setGreeting('Buenas noches');
   }, []);
 
-  const fetchIncidents = useCallback(async () => {
-    setIsLoadingIncidents(true);
-    setIncidentsError(null);
+  const fetchData = useCallback(async () => {
+    setIsLoadingData(true);
+    setDataError(null);
     try {
-      const result = await getIncidentsAction();
-      if (result.success && result.data) {
-        setIncidents(result.data);
+      const [incidentsResult, triviaStatsResult] = await Promise.all([
+        getIncidentsAction(),
+        getTriviaStatsAction(),
+      ]);
+
+      if (incidentsResult.success && incidentsResult.data) {
+        setIncidents(incidentsResult.data);
       } else {
-        setIncidentsError(result.error || "No se pudieron cargar los incidentes.");
+        setDataError(incidentsResult.error || "No se pudieron cargar los incidentes.");
         setIncidents([]);
       }
+
+      if (triviaStatsResult.success && triviaStatsResult.data) {
+        setTriviaStats(triviaStatsResult.data);
+      } else {
+        // Non-critical error, can be ignored or logged
+        console.warn(triviaStatsResult.error || "No se pudieron cargar las estadísticas de trivia.");
+        setTriviaStats({ gamesPlayed: 0, averageScore: 0 });
+      }
+
     } catch (error) {
-      console.error("Error fetching incidents for dashboard:", error);
-      setIncidentsError("Error al conectar con el servidor para obtener incidentes.");
+      console.error("Error fetching dashboard data:", error);
+      setDataError("Error al conectar con el servidor para obtener datos.");
       setIncidents([]);
+      setTriviaStats({ gamesPlayed: 0, averageScore: 0 });
     } finally {
-      setIsLoadingIncidents(false);
+      setIsLoadingData(false);
     }
   }, []);
 
   useEffect(() => {
     if (currentUser) {
-      fetchIncidents();
+      fetchData();
     }
-  }, [currentUser, fetchIncidents]);
+  }, [currentUser, fetchData]);
 
   const todayISO = new Date().toISOString().split('T')[0];
 
@@ -82,14 +102,14 @@ export default function ReportsDashboardPage() {
   }, [incidents]);
 
   const metrics: Metric[] = useMemo(() => [
-    { title: "Incidentes Reportados", value: isLoadingIncidents ? "..." : incidentsTodayCount.toString(), description: incidentsTodayCount === 1 ? "1 nuevo incidente hoy" : `${incidentsTodayCount} nuevos incidentes hoy`, icon: BarChart, color: "text-primary",
+    { title: "Incidentes Reportados", value: isLoadingData ? "..." : incidentsTodayCount.toString(), description: incidentsTodayCount === 1 ? "1 nuevo incidente hoy" : `${incidentsTodayCount} nuevos incidentes hoy`, icon: BarChart, color: "text-primary",
       actionButton: (
         <Button asChild size="sm" variant="default" className="w-full">
           <Link href="/incidents/new">Registrar Nuevo Incidente</Link>
         </Button>
       )
     },
-    { title: "Incidentes Cerrados", value: isLoadingIncidents ? "..." : closedIncidentsCount.toString(), description: closedIncidentsCount === 1 ? "1 incidente cerrado" : `${closedIncidentsCount} incidentes cerrados`, icon: FolderClosed, color: "text-green-500",
+    { title: "Incidentes Cerrados", value: isLoadingData ? "..." : closedIncidentsCount.toString(), description: closedIncidentsCount === 1 ? "1 incidente cerrado" : `${closedIncidentsCount} incidentes cerrados`, icon: FolderClosed, color: "text-green-500",
       actionButton: (
         currentUser?.role === 'directivo' ? (
           <Button asChild size="sm" variant="secondary" className="w-full">
@@ -100,11 +120,11 @@ export default function ReportsDashboardPage() {
         )
       )
     },
-    { title: "Logros Destacados", value: isLoadingIncidents ? "..." : logrosCount.toString(), description: "Total logros registrados", icon: Trophy, color: "text-green-500" },
-    { title: "Participación Estudiantil", value: "N/A", description: "En reportes anónimos", icon: Users, color: "text-blue-500" },
-    { title: "Tendencia de Convivencia", value: "N/A", description: "Últimos 30 días", icon: TrendingUp, color: "text-emerald-500" },
-    { title: "Total Reportes", value: isLoadingIncidents ? "..." : incidents.length.toString(), description: "Incidentes y logros", icon: ListChecks, color: "text-purple-500", link: "/incidents/list", clickable: true },
-  ], [isLoadingIncidents, incidentsTodayCount, closedIncidentsCount, logrosCount, incidents.length, currentUser?.role]);
+    { title: "Partidas de Trivia Jugadas", value: isLoadingData ? "..." : triviaStats.gamesPlayed.toString(), description: "Total de partidas completadas.", icon: Gamepad2, color: "text-purple-500", link: "/trivia", clickable: true },
+    { title: "Puntaje Promedio Trivia", value: isLoadingData ? "..." : `${triviaStats.averageScore.toFixed(1)}/10`, description: "Rendimiento promedio en la trivia.", icon: Percent, color: "text-blue-500", link: "/trivia", clickable: true },
+    { title: "Logros Destacados", value: isLoadingData ? "..." : logrosCount.toString(), description: "Total logros registrados", icon: Trophy, color: "text-emerald-500" },
+    { title: "Total Reportes", value: isLoadingData ? "..." : incidents.length.toString(), description: "Incidentes y logros", icon: ListChecks, color: "text-orange-500", link: "/incidents/list", clickable: true },
+  ], [isLoadingData, incidentsTodayCount, closedIncidentsCount, logrosCount, incidents.length, currentUser?.role, triviaStats]);
 
   const recentIncidents = useMemo(() => {
     return [...incidents]
@@ -123,7 +143,7 @@ export default function ReportsDashboardPage() {
   }, []);
 
   const chartData = useMemo(() => {
-    if (isLoadingIncidents || incidents.length === 0) return [];
+    if (isLoadingData || incidents.length === 0) return [];
     
     const categoryMap = new Map<string, number>();
 
@@ -135,7 +155,7 @@ export default function ReportsDashboardPage() {
     });
     
     return Array.from(categoryMap, ([name, count]) => ({ name, count }));
-  }, [incidents, isLoadingIncidents, titleToCategoryMap]);
+  }, [incidents, isLoadingData, titleToCategoryMap]);
 
   const handleDownloadCSV = () => {
     if (incidents.length === 0) return;
@@ -268,15 +288,15 @@ export default function ReportsDashboardPage() {
             <CardDescription className="font-body">Últimos incidentes y logros reportados.</CardDescription>
           </CardHeader>
           <CardContent>
-            {isLoadingIncidents ? (
+            {isLoadingData ? (
               <div className="flex justify-center items-center h-40">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
                 <span className="ml-2">Cargando actividad...</span>
               </div>
-            ) : incidentsError ? (
+            ) : dataError ? (
               <div className="text-center text-destructive py-6">
                 <AlertTriangle className="h-10 w-10 mx-auto mb-2" />
-                <p>Error: {incidentsError}</p>
+                <p>Error: {dataError}</p>
               </div>
             ) : recentIncidents.length > 0 ? (
               <ul className="space-y-3">
@@ -319,11 +339,11 @@ export default function ReportsDashboardPage() {
           </CardHeader>
           <CardContent className="p-4">
              <div className="h-96">
-                {isLoadingIncidents ? (
+                {isLoadingData ? (
                     <div className="flex justify-center items-center h-full">
                         <Loader2 className="h-12 w-12 animate-spin text-primary" />
                     </div>
-                ) : incidentsError ? (
+                ) : dataError ? (
                     <div className="flex flex-col justify-center items-center h-full text-center text-destructive">
                         <AlertTriangle className="h-12 w-12 mx-auto" />
                         <p className="mt-2">Error al cargar datos del gráfico.</p>
@@ -369,7 +389,7 @@ export default function ReportsDashboardPage() {
                     variant="outline"
                     size="sm"
                     onClick={handleDownloadCSV}
-                    disabled={isLoadingIncidents || incidents.length === 0}
+                    disabled={isLoadingData || incidents.length === 0}
                 >
                     <Download className="mr-2 h-4 w-4" />
                     Descargar CSV
