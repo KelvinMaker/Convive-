@@ -102,29 +102,11 @@ export default function ReportsDashboardPage() {
   }, [incidents]);
 
   const metrics: Metric[] = useMemo(() => [
-    { title: "Incidentes Reportados", value: isLoadingData ? "..." : incidentsTodayCount.toString(), description: incidentsTodayCount === 1 ? "1 nuevo incidente hoy" : `${incidentsTodayCount} nuevos incidentes hoy`, icon: BarChart, color: "text-primary",
-      actionButton: (
-        <Button asChild size="sm" variant="default" className="w-full">
-          <Link href="/incidents/new">Registrar Nuevo Incidente</Link>
-        </Button>
-      )
-    },
-    { title: "Incidentes Cerrados", value: isLoadingData ? "..." : closedIncidentsCount.toString(), description: closedIncidentsCount === 1 ? "1 incidente cerrado" : `${closedIncidentsCount} incidentes cerrados`, icon: FolderClosed, color: "text-green-500",
-      actionButton: (
-        currentUser?.role === 'directivo' ? (
-          <Button asChild size="sm" variant="secondary" className="w-full">
-            <Link href="/incidents/close">Cerrar Incidente</Link>
-          </Button>
-        ) : (
-          <div className="h-9" />
-        )
-      )
-    },
     { title: "Partidas de Trivia Jugadas", value: isLoadingData ? "..." : triviaStats.gamesPlayed.toString(), description: "Total de partidas completadas.", icon: Gamepad2, color: "text-purple-500", link: "/trivia", clickable: true },
     { title: "Puntaje Promedio Trivia", value: isLoadingData ? "..." : `${triviaStats.averageScore.toFixed(1)}/10`, description: "Rendimiento promedio en la trivia.", icon: Percent, color: "text-blue-500", link: "/trivia", clickable: true },
     { title: "Logros Destacados", value: isLoadingData ? "..." : logrosCount.toString(), description: "Total logros registrados", icon: Trophy, color: "text-emerald-500" },
     { title: "Total Reportes", value: isLoadingData ? "..." : incidents.length.toString(), description: "Incidentes y logros", icon: ListChecks, color: "text-orange-500", link: "/incidents/list", clickable: true },
-  ], [isLoadingData, incidentsTodayCount, closedIncidentsCount, logrosCount, incidents.length, currentUser?.role, triviaStats]);
+  ], [isLoadingData, incidents.length, logrosCount, triviaStats]);
 
   const recentIncidents = useMemo(() => {
     return [...incidents]
@@ -239,16 +221,21 @@ export default function ReportsDashboardPage() {
           </Link>
         </Button>
         {currentUser && ['docente', 'directivo'].includes(currentUser.role) && (
-          <Button asChild variant="outline">
-            <Link href="/summaries">
-              <Sparkles className="mr-2 h-4 w-4" />
-              Resúmenes IA
-            </Link>
-          </Button>
+          <>
+            <Button asChild variant="outline">
+              <Link href="/summaries">
+                <Sparkles className="mr-2 h-4 w-4" />
+                Resúmenes IA
+              </Link>
+            </Button>
+            <Button asChild size="sm" variant="secondary" className="ml-auto">
+                <Link href="/incidents/new">Registrar Incidente</Link>
+            </Button>
+          </>
         )}
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {metrics.map((metric, index) => {
           const cardComponent = (
             <Card className={`w-full shadow-lg hover:shadow-xl transition-shadow duration-300 ${metric.clickable ? 'cursor-pointer' : ''} flex flex-col`}>
@@ -401,3 +388,5 @@ export default function ReportsDashboardPage() {
     </div>
   );
 }
+
+    
