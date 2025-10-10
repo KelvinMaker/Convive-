@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card";
 import { Gamepad2, CheckCircle2, XCircle, Award, RotateCw, Home } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
-import triviaData from '@/data/trivia.json';
+import triviaData from '@/../data/trivia.json';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 
