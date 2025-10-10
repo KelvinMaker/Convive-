@@ -23,25 +23,25 @@ export default function MainPage() {
     };
 
     return (
-        <div className="container mx-auto flex flex-col items-center justify-center min-h-[calc(100vh-100px)] px-4 py-8">
+        <div className="container mx-auto flex flex-col items-center justify-center min-h-[calc(100vh-120px)] w-full px-4 py-8">
             <div className="text-center mb-10">
                 <div className="flex justify-center mb-4">
                    <AppLogo size="lg" />
                 </div>
-                <p className="text-base text-muted-foreground max-w-md mx-auto">
+                <p className="text-md sm:text-base text-muted-foreground max-w-sm sm:max-w-md mx-auto">
                     Una herramienta para fortalecer la convivencia escolar a través del seguimiento de incidentes y el aprendizaje interactivo.
                 </p>
             </div>
 
-            <div className="flex flex-col gap-8 w-full max-w-lg">
+            <div className="flex flex-col gap-8 w-full max-w-md">
                 
                 <Card className="shadow-xl hover:shadow-2xl transition-shadow duration-300 flex flex-col">
                     <CardHeader>
                         <div className="flex flex-col items-center text-center gap-3">
-                             <Gamepad2 className="h-10 w-10 text-accent-foreground bg-accent p-2 rounded-lg" />
+                             <Gamepad2 className="h-12 w-12 text-accent-foreground bg-accent p-2 rounded-lg" />
                             <div>
-                                <CardTitle className="text-xl font-bold font-headline">Módulo de Trivia</CardTitle>
-                                <CardDescription className="text-sm">
+                                <CardTitle className="text-2xl font-bold font-headline">Módulo de Trivia</CardTitle>
+                                <CardDescription className="text-base">
                                     Juega y aprende sobre el Manual de Convivencia.
                                 </CardDescription>
                             </div>
@@ -62,10 +62,10 @@ export default function MainPage() {
                 <Card className="shadow-xl hover:shadow-2xl transition-shadow duration-300 flex flex-col">
                     <CardHeader>
                         <div className="flex flex-col items-center text-center gap-3">
-                            <FileText className="h-10 w-10 text-primary" />
+                            <FileText className="h-12 w-12 text-primary" />
                             <div>
-                                <CardTitle className="text-xl font-bold font-headline">Módulo de Reportes</CardTitle>
-                                <CardDescription className="text-sm">
+                                <CardTitle className="text-2xl font-bold font-headline">Módulo de Reportes</CardTitle>
+                                <CardDescription className="text-base">
                                     Gestión y seguimiento de incidentes de convivencia.
                                 </CardDescription>
                             </div>

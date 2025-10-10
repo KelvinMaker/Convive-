@@ -1,3 +1,4 @@
+
 // src/app/reports/page.tsx - Dashboard
 "use client";
 
@@ -215,7 +216,7 @@ export default function ReportsDashboardPage() {
 
 
   return (
-    <div className="container mx-auto py-8 px-4 md:px-6">
+    <div className="container mx-auto py-8 px-4 sm:px-6">
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight font-headline">
           {greeting}, {currentUser.name || 'Usuario'}!
@@ -252,7 +253,7 @@ export default function ReportsDashboardPage() {
         )}
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {metrics.map((metric, index) => {
           const cardComponent = (
             <Card className={`w-full shadow-lg hover:shadow-xl transition-shadow duration-300 ${metric.clickable ? 'cursor-pointer' : ''} flex flex-col`}>
@@ -285,7 +286,7 @@ export default function ReportsDashboardPage() {
         })}
       </div>
 
-      <div className="mt-8 grid gap-8 md:grid-cols-2">
+      <div className="mt-8 grid gap-8 lg:grid-cols-2">
         <Card className="shadow-lg">
           <CardHeader>
             <CardTitle className="font-headline">Últimas 5 Partidas de Trivia</CardTitle>
@@ -334,7 +335,7 @@ export default function ReportsDashboardPage() {
                 </p>
               </div>
             )}
-             <div className="mt-6 flex justify-center gap-4">
+             <div className="mt-6 flex flex-col sm:flex-row justify-center gap-4">
               <Button
                 variant="outline"
                 size="sm"
@@ -361,7 +362,7 @@ export default function ReportsDashboardPage() {
             <CardTitle className="font-headline">Informe de Resultados de Trivia</CardTitle>
             <CardDescription className="font-body mt-1">Distribución de puntajes obtenidos en todas las partidas.</CardDescription>
           </CardHeader>
-          <CardContent className="p-4">
+          <CardContent className="p-2 sm:p-4">
              <div className="h-96">
                 {isLoadingData ? (
                     <div className="flex justify-center items-center h-full">

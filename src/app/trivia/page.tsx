@@ -120,7 +120,7 @@ export default function TriviaPage() {
   if (gameState === 'start') {
     return (
       <div className="container mx-auto flex flex-col items-center justify-center min-h-[calc(100vh-150px)] px-4">
-        <Card className="w-full max-w-2xl text-center shadow-xl">
+        <Card className="w-full max-w-md sm:max-w-2xl text-center shadow-xl">
           <CardHeader>
             <div className="flex justify-center mb-4">
               <Gamepad2 className="h-16 w-16 text-primary" />
@@ -150,11 +150,11 @@ export default function TriviaPage() {
     const progress = ((currentQuestionIndex) / questions.length) * 100;
     return (
        <div className="container mx-auto flex flex-col items-center justify-center min-h-[calc(100vh-150px)] px-4">
-        <Card className="w-full max-w-3xl shadow-2xl">
+        <Card className="w-full max-w-md sm:max-w-3xl shadow-2xl">
           <CardHeader>
              <CardDescription>Pregunta {currentQuestionIndex + 1} de {questions.length}</CardDescription>
              <Progress value={progress + 10} className="w-full h-2" />
-             <CardTitle className="text-2xl font-bold pt-4 font-headline text-center min-h-[90px]">
+             <CardTitle className="text-xl sm:text-2xl font-bold pt-4 font-headline text-center min-h-[90px]">
                 {currentQuestion.questionText}
              </CardTitle>
           </CardHeader>
@@ -169,7 +169,7 @@ export default function TriviaPage() {
                   onClick={() => handleAnswer(option.id)}
                   disabled={showFeedback}
                   className={cn(
-                    "w-full h-auto min-h-[60px] text-wrap py-3 px-4 text-base justify-center",
+                    "w-full h-auto min-h-[60px] text-wrap py-3 px-4 text-base sm:text-lg justify-center",
                     showFeedback && isCorrect && "bg-green-600 hover:bg-green-700 animate-pulse",
                     showFeedback && isSelected && !isCorrect && "bg-destructive hover:bg-destructive/90",
                     !showFeedback && "bg-secondary hover:bg-primary/20 text-secondary-foreground"
@@ -198,7 +198,7 @@ export default function TriviaPage() {
 
     return (
        <div className="container mx-auto flex flex-col items-center justify-center min-h-[calc(100vh-150px)] px-4">
-        <Card className="w-full max-w-xl text-center shadow-xl">
+        <Card className="w-full max-w-md sm:max-w-xl text-center shadow-xl">
           <CardHeader>
             <div className="flex justify-center mb-4">
               <Award className="h-16 w-16 text-accent" />
