@@ -54,5 +54,21 @@
     "score": 9,
     "totalQuestions": 10,
     "playedAt": "2025-10-10T15:35:59.424Z"
+  },
+  {
+    "id": "trivia-1760112026992",
+    "userId": "user-1750809736316",
+    "userName": "kelachad3",
+    "score": 1,
+    "totalQuestions": 10,
+    "playedAt": "2025-10-10T16:00:26.992Z"
+  },
+  {
+    "id": "trivia-1760284897896",
+    "userId": "user-1750809736316",
+    "userName": "kelachad3",
+    "score": 9,
+    "totalQuestions": 10,
+    "playedAt": "2025-10-12T16:01:37.896Z"
   }
 ]

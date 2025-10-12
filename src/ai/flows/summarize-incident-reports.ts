@@ -2,9 +2,9 @@
 'use server';
 
 /**
- * @fileOverview A flow to summarize incident reports using AI.
+ * @fileOverview A flow to summarize trivia game results using AI.
  *
- * - summarizeIncidentReports - A function that handles the summarization of incident reports.
+ * - summarizeIncidentReports - A function that handles the summarization of trivia game results.
  * - SummarizeIncidentReportsInput - The input type for the summarizeIncidentReports function.
  * - SummarizeIncidentReportsOutput - The return type for the summarizeIncidentReports function.
  */
@@ -15,12 +15,12 @@ import {z} from 'genkit';
 const SummarizeIncidentReportsInputSchema = z.object({
   reports: z
     .string()
-    .describe('A list of incident reports, separated by newlines.'),
+    .describe('A list of trivia game results, separated by newlines.'),
 });
 export type SummarizeIncidentReportsInput = z.infer<typeof SummarizeIncidentReportsInputSchema>;
 
 const SummarizeIncidentReportsOutputSchema = z.object({
-  summary: z.string().describe('A concise summary of the incident reports.'),
+  summary: z.string().describe('A concise summary of the trivia game results.'),
 });
 export type SummarizeIncidentReportsOutput = z.infer<typeof SummarizeIncidentReportsOutputSchema>;
 
@@ -32,7 +32,7 @@ const prompt = ai.definePrompt({
   name: 'summarizeIncidentReportsPrompt',
   input: {schema: SummarizeIncidentReportsInputSchema},
   output: {schema: SummarizeIncidentReportsOutputSchema},
-  prompt: `You are a school administrator. Summarize the following incident reports to identify key issues and trends in student behavior and convivencia.\n\nIncident Reports:\n{{{reports}}}`,
+  prompt: `You are a school administrator analyzing student performance on a school conduct trivia game. Summarize the following game results to identify key trends in student knowledge and areas where they might be struggling.\n\nGame Results:\n{{{reports}}}`,
 });
 
 const summarizeIncidentReportsFlow = ai.defineFlow(
