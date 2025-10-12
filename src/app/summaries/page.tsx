@@ -10,11 +10,10 @@ export default function SummariesPage() {
         <CardHeader>
           <div className="flex items-center gap-2">
             <Sparkles className="h-6 w-6 text-primary" />
-            <CardTitle className="text-2xl font-bold font-headline">Resumen Inteligente de Resultados</CardTitle>
+            <CardTitle className="text-2xl font-bold font-headline">Análisis de Resultados de Trivia</CardTitle>
           </div>
           <CardDescription className="font-body">
-            Utiliza la inteligencia artificial para generar resúmenes concisos a partir de los resultados de la trivia.
-            Pega los datos de las partidas en el área de texto para obtener un análisis de tendencias y rendimiento.
+            Pega el contenido del archivo CSV con los resultados de la trivia para generar visualizaciones sobre el rendimiento y la actividad.
           </CardDescription>
         </CardHeader>
         <CardContent>
