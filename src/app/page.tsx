@@ -53,7 +53,7 @@ export default function MainPage() {
                         </p>
                     </CardContent>
                     <div className="p-6 pt-0">
-                        <Button onClick={() => handleNavigation('/trivia')} className="w-full" variant="secondary" size="lg">
+                        <Button onClick={() => handleNavigation('/trivia')} className="w-full" variant="default" size="lg">
                             Ir a Jugar
                         </Button>
                     </div>
