@@ -70,5 +70,253 @@
     "score": 9,
     "totalQuestions": 10,
     "playedAt": "2025-10-12T16:01:37.896Z"
+  },
+  {
+    "id": "trivia-1760530216742",
+    "userId": "user-1760484918053",
+    "userName": "estudiante",
+    "score": 1,
+    "totalQuestions": 10,
+    "playedAt": "2025-10-15T12:10:16.742Z"
+  },
+  {
+    "id": "trivia-1760530322325",
+    "userId": "user-1760484918053",
+    "userName": "estudiante",
+    "score": 10,
+    "totalQuestions": 10,
+    "playedAt": "2025-10-15T12:12:02.325Z"
+  },
+  {
+    "id": "trivia-1760530526175",
+    "userId": "user-1760108600718",
+    "userName": "Claudia Rocha ",
+    "score": 3,
+    "totalQuestions": 10,
+    "playedAt": "2025-10-15T12:15:26.175Z"
+  },
+  {
+    "id": "trivia-1760533438873",
+    "userId": "user-1760484918053",
+    "userName": "estudiante",
+    "score": 8,
+    "totalQuestions": 10,
+    "playedAt": "2025-10-15T13:03:58.873Z"
+  },
+  {
+    "id": "trivia-1760533773872",
+    "userId": "user-1760484918053",
+    "userName": "estudiante",
+    "score": 8,
+    "totalQuestions": 10,
+    "playedAt": "2025-10-15T13:09:33.872Z"
+  },
+  {
+    "id": "trivia-1760533944963",
+    "userId": "user-1760484918053",
+    "userName": "estudiante",
+    "score": 7,
+    "totalQuestions": 10,
+    "playedAt": "2025-10-15T13:12:24.963Z"
+  },
+  {
+    "id": "trivia-1760534179358",
+    "userId": "user-1760484918053",
+    "userName": "estudiante",
+    "score": 8,
+    "totalQuestions": 10,
+    "playedAt": "2025-10-15T13:16:19.358Z"
+  },
+  {
+    "id": "trivia-1760534424098",
+    "userId": "user-1760484918053",
+    "userName": "estudiante",
+    "score": 6,
+    "totalQuestions": 10,
+    "playedAt": "2025-10-15T13:20:24.098Z"
+  },
+  {
+    "id": "trivia-1760534600407",
+    "userId": "user-1760484918053",
+    "userName": "estudiante",
+    "score": 5,
+    "totalQuestions": 10,
+    "playedAt": "2025-10-15T13:23:20.407Z"
+  },
+  {
+    "id": "trivia-1760534894154",
+    "userId": "user-1760484918053",
+    "userName": "estudiante",
+    "score": 6,
+    "totalQuestions": 10,
+    "playedAt": "2025-10-15T13:28:14.154Z"
+  },
+  {
+    "id": "trivia-1760535091789",
+    "userId": "user-1760484918053",
+    "userName": "estudiante",
+    "score": 7,
+    "totalQuestions": 10,
+    "playedAt": "2025-10-15T13:31:31.789Z"
+  },
+  {
+    "id": "trivia-1760535326275",
+    "userId": "user-1760484918053",
+    "userName": "estudiante",
+    "score": 7,
+    "totalQuestions": 10,
+    "playedAt": "2025-10-15T13:35:26.275Z"
+  },
+  {
+    "id": "trivia-1760535498740",
+    "userId": "user-1760484918053",
+    "userName": "estudiante",
+    "score": 4,
+    "totalQuestions": 10,
+    "playedAt": "2025-10-15T13:38:18.740Z"
+  },
+  {
+    "id": "trivia-1760535788876",
+    "userId": "user-1760484918053",
+    "userName": "estudiante",
+    "score": 8,
+    "totalQuestions": 10,
+    "playedAt": "2025-10-15T13:43:08.876Z"
+  },
+  {
+    "id": "trivia-1760536032604",
+    "userId": "user-1760484918053",
+    "userName": "estudiante",
+    "score": 6,
+    "totalQuestions": 10,
+    "playedAt": "2025-10-15T13:47:12.604Z"
+  },
+  {
+    "id": "trivia-1760631260941",
+    "userId": "user-1760484918053",
+    "userName": "estudiante",
+    "score": 4,
+    "totalQuestions": 10,
+    "playedAt": "2025-10-16T16:14:20.941Z"
+  },
+  {
+    "id": "trivia-1760631446058",
+    "userId": "user-1760484918053",
+    "userName": "estudiante",
+    "score": 6,
+    "totalQuestions": 10,
+    "playedAt": "2025-10-16T16:17:26.058Z"
+  },
+  {
+    "id": "trivia-1760631742062",
+    "userId": "user-1760484918053",
+    "userName": "estudiante",
+    "score": 7,
+    "totalQuestions": 10,
+    "playedAt": "2025-10-16T16:22:22.062Z"
+  },
+  {
+    "id": "trivia-1760631907511",
+    "userId": "user-1760484918053",
+    "userName": "estudiante",
+    "score": 6,
+    "totalQuestions": 10,
+    "playedAt": "2025-10-16T16:25:07.511Z"
+  },
+  {
+    "id": "trivia-1760632185610",
+    "userId": "user-1760484918053",
+    "userName": "estudiante",
+    "score": 7,
+    "totalQuestions": 10,
+    "playedAt": "2025-10-16T16:29:45.610Z"
+  },
+  {
+    "id": "trivia-1760632522106",
+    "userId": "user-1760484918053",
+    "userName": "estudiante",
+    "score": 8,
+    "totalQuestions": 10,
+    "playedAt": "2025-10-16T16:35:22.106Z"
+  },
+  {
+    "id": "trivia-1760632791365",
+    "userId": "user-1760484918053",
+    "userName": "estudiante",
+    "score": 7,
+    "totalQuestions": 10,
+    "playedAt": "2025-10-16T16:39:51.365Z"
+  },
+  {
+    "id": "trivia-1760633041988",
+    "userId": "user-1760484918053",
+    "userName": "estudiante",
+    "score": 6,
+    "totalQuestions": 10,
+    "playedAt": "2025-10-16T16:44:01.988Z"
+  },
+  {
+    "id": "trivia-1760633257620",
+    "userId": "user-1760484918053",
+    "userName": "estudiante",
+    "score": 10,
+    "totalQuestions": 10,
+    "playedAt": "2025-10-16T16:47:37.620Z"
+  },
+  {
+    "id": "trivia-1760633487187",
+    "userId": "user-1760484918053",
+    "userName": "estudiante",
+    "score": 8,
+    "totalQuestions": 10,
+    "playedAt": "2025-10-16T16:51:27.187Z"
+  },
+  {
+    "id": "trivia-1760633684911",
+    "userId": "user-1760484918053",
+    "userName": "estudiante",
+    "score": 10,
+    "totalQuestions": 10,
+    "playedAt": "2025-10-16T16:54:44.911Z"
+  },
+  {
+    "id": "trivia-1764101537733",
+    "userId": "user-1750809736316",
+    "userName": "kelachad3",
+    "score": 8,
+    "totalQuestions": 10,
+    "playedAt": "2025-11-25T20:12:17.733Z"
+  },
+  {
+    "id": "trivia-1769817282520",
+    "userId": "user-1769817130284",
+    "userName": "Melanie Lambraño",
+    "score": 8,
+    "totalQuestions": 10,
+    "playedAt": "2026-01-30T23:54:42.520Z"
+  },
+  {
+    "id": "trivia-1769868801450",
+    "userId": "user-1769868670685",
+    "userName": "Donovan Lambraño ",
+    "score": 8,
+    "totalQuestions": 10,
+    "playedAt": "2026-01-31T14:13:21.450Z"
+  },
+  {
+    "id": "trivia-1769869387744",
+    "userId": "user-1750810122871",
+    "userName": "Abdala Chadid",
+    "score": 5,
+    "totalQuestions": 10,
+    "playedAt": "2026-01-31T14:23:07.744Z"
+  },
+  {
+    "id": "trivia-1769870017508",
+    "userId": "user-1750809736316",
+    "userName": "kelachad3",
+    "score": 4,
+    "totalQuestions": 10,
+    "playedAt": "2026-01-31T14:33:37.508Z"
   }
 ]

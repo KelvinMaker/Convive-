@@ -38,5 +38,29 @@
     "password": "dslr2808",
     "role": "estudiante",
     "status": "active"
+  },
+  {
+    "id": "user-1760484918053",
+    "name": "estudiante",
+    "email": "estudiantes7.c.esmeralda@gmail.com",
+    "password": "123456",
+    "role": "docente",
+    "status": "active"
+  },
+  {
+    "id": "user-1769817130284",
+    "name": "Melanie Lambraño",
+    "email": "cristelles541223@gmail.com",
+    "password": "1234567",
+    "role": "estudiante",
+    "status": "active"
+  },
+  {
+    "id": "user-1769868670685",
+    "name": "Donovan Lambraño ",
+    "email": "donovanlambrano98@gmail.com",
+    "password": "dslr2808.",
+    "role": "estudiante",
+    "status": "active"
   }
 ]
