@@ -15,7 +15,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: 'Convive+',
   description: 'Aplicación de Registro y seguimiento de incidentes de convivencia',
-  icons: { icon: '/convive-logo.jpg' },
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({
@@ -34,6 +34,24 @@ export default function RootLayout({
             </AuthGuard>
           </div>
           <Toaster />
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                if ('serviceWorker' in navigator) {
+                  window.addEventListener('load', function() {
+                    navigator.serviceWorker.register('/sw.js').then(
+                      function(registration) {
+                        console.log('ServiceWorker registration successful');
+                      },
+                      function(err) {
+                        console.log('ServiceWorker registration failed: ', err);
+                      }
+                    );
+                  });
+                }
+              `,
+            }}
+          />
         </UserProvider>
       </body>
     </html>
