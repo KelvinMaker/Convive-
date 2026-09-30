@@ -183,3 +183,5 @@ export const PREDEFINED_INCIDENTS_HIERARCHICAL: HierarchicalIncidentCategory[] =
 
 
 export const APP_NAME = 'Convive+';
+
+export const DEFAULT_PLAYER_NAME = 'JUGADOR 1';

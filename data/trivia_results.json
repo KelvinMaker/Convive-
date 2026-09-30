@@ -318,5 +318,19 @@
     "score": 4,
     "totalQuestions": 10,
     "playedAt": "2026-01-31T14:33:37.508Z"
+  },
+  {
+    "id": "trivia-1790717002545",
+    "userName": "JUGADOR 1",
+    "score": 4,
+    "totalQuestions": 10,
+    "playedAt": "2026-09-29T21:23:22.545Z"
+  },
+  {
+    "id": "trivia-1790781441397",
+    "userName": "JUGADOR 1",
+    "score": 8,
+    "totalQuestions": 10,
+    "playedAt": "2026-09-30T15:17:21.397Z"
   }
 ]

@@ -1,66 +1,50 @@
-
-// src/contexts/UserContext.tsx
 "use client";
 
-import type { User, UserRole } from '@/lib/types';
-import React, { createContext, useContext, useState, ReactNode, useEffect, useCallback } from 'react';
-import { USER_ROLES } from '@/lib/constants'; // Keep for role definitions if needed elsewhere
-import { checkAdminExistsAction } from '@/app/actions';
-import { useRouter, usePathname } from 'next/navigation';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { DEFAULT_PLAYER_NAME } from "@/lib/constants";
+
+const STORAGE_KEY = "convive-player-name";
+
+export function resolvePlayerName(name?: string | null): string {
+  const trimmed = name?.trim() ?? "";
+  return trimmed.length > 0 ? trimmed.slice(0, 40) : DEFAULT_PLAYER_NAME;
+}
 
 interface UserContextType {
-  currentUser: User | null;
-  setCurrentUser: React.Dispatch<React.SetStateAction<User | null>>;
+  playerName: string | null;
   isLoading: boolean;
-  isAdminSetupComplete: boolean;
-  login: (userData: User) => void;
-  logout: () => void;
+  setPlayerName: (name?: string) => void;
+  clearPlayerName: () => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [playerName, setPlayerNameState] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isAdminSetupComplete, setIsAdminSetupComplete] = useState(false);
   const router = useRouter();
-  const pathname = usePathname();
-
-  const fetchAdminStatus = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const adminExists = await checkAdminExistsAction();
-      setIsAdminSetupComplete(adminExists);
-      console.log("Admin exists:", adminExists);
-    } catch (error) {
-      console.error("Error checking admin status:", error);
-      // Potentially handle error, e.g., by assuming setup is needed or showing an error
-      setIsAdminSetupComplete(false); 
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
 
   useEffect(() => {
-    fetchAdminStatus();
-  }, [fetchAdminStatus]);
+    const saved = sessionStorage.getItem(STORAGE_KEY);
+    setPlayerNameState(saved ? resolvePlayerName(saved) : null);
+    setIsLoading(false);
+  }, []);
 
-  const login = (userData: User) => {
-    setCurrentUser(userData);
-    setIsAdminSetupComplete(true); // Logging in means setup is done or user is admin
-    router.push('/'); // Redirect to main landing page after login
+  const setPlayerName = (name?: string) => {
+    const resolved = resolvePlayerName(name);
+    sessionStorage.setItem(STORAGE_KEY, resolved);
+    setPlayerNameState(resolved);
   };
 
-  const logout = () => {
-    setCurrentUser(null);
-    router.push('/login'); // Redirect to login after logout
+  const clearPlayerName = () => {
+    sessionStorage.removeItem(STORAGE_KEY);
+    setPlayerNameState(null);
+    router.push("/");
   };
-  
-  // Effect for handling redirection logic centrally might be too complex here.
-  // AuthGuard component will handle route protection.
 
   return (
-    <UserContext.Provider value={{ currentUser, setCurrentUser, isLoading, isAdminSetupComplete, login, logout }}>
+    <UserContext.Provider value={{ playerName, isLoading, setPlayerName, clearPlayerName }}>
       {children}
     </UserContext.Provider>
   );
@@ -69,7 +53,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 export const useUser = (): UserContextType => {
   const context = useContext(UserContext);
   if (context === undefined) {
-    throw new Error('useUser must be used within a UserProvider');
+    throw new Error("useUser must be used within a UserProvider");
   }
   return context;
 };

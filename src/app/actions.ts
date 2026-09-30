@@ -294,15 +294,8 @@ export async function getIncidentsAction(): Promise<{ success: boolean; data?: I
   }
 }
 
-export async function deleteIncidentAction(incidentId: string, userId: string): Promise<{ success: boolean; error?: string }> {
+export async function deleteIncidentAction(incidentId: string): Promise<{ success: boolean; error?: string }> {
   try {
-    const users = await readData<User>(usersFilePath);
-    const user = users.find(u => u.id === userId);
-
-    if (!user || !['directivo', 'docente'].includes(user.role)) {
-      return { success: false, error: "No tienes permiso para eliminar incidentes." };
-    }
-
     let incidents = await readData<Incident>(incidentsFilePath);
     const initialLength = incidents.length;
     incidents = incidents.filter(incident => incident.id !== incidentId);
